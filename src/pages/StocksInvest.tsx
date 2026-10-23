@@ -94,7 +94,7 @@ const useB3 = () =>
           range: [0, 50],
         }),
       })
-      if (!r.ok) throw new Error('TradingView indisponível no momento.')
+      if (!r.ok) throw new Error('Dados de mercado indisponíveis no momento.')
       const j: { data: { s: string; d: (string | number | null)[] }[] } = await r.json()
       const stocks: Stock[] = j.data.map(({ d }) => ({
         ticker: String(d[0]), name: String(d[1] ?? d[0]), logo: d[2] ? `https://s3-symbol-logo.tradingview.com/${d[2]}.svg` : null,
@@ -215,7 +215,7 @@ function Board({ market }: { market: Market }) {
             <span><Search size={15} /></span>
             <input className="input" style={{ fontFamily: 'var(--font)' }} placeholder="Buscar ticker ou empresa (ex.: PETR4, Vale)" value={query} onChange={(e) => setQuery(e.target.value)} />
           </div>
-          <span className="tiny faint">{all.length} ações mais negociadas da B3 · base TradingView</span>
+          <span className="tiny faint">{all.length} ações mais negociadas da B3 · atualização a cada 2 min</span>
         </div>
       )}
       {market === 'us' && <div className="stock-chips">

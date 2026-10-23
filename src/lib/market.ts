@@ -51,7 +51,7 @@ type ScanRow = { s: string; d: (string | number | null)[] }
 async function scan(market: string, body: object, signal?: AbortSignal): Promise<ScanRow[]> {
   // text/plain keeps this a "simple" request: the scanner rejects the CORS preflight a JSON content-type would trigger.
   const r = await fetch(`${SCAN}/${market}/scan`, { method: 'POST', headers: { 'content-type': 'text/plain;charset=UTF-8' }, body: JSON.stringify(body), signal })
-  if (!r.ok) throw new Error('TradingView indisponível no momento')
+  if (!r.ok) throw new Error('Dados de mercado indisponíveis no momento')
   return (await r.json()).data ?? []
 }
 
@@ -84,7 +84,7 @@ export async function searchAssets(q: string, signal?: AbortSignal): Promise<Ass
 export async function analyze(asset: Asset): Promise<Analysis> {
   const rows = await scan('global', { symbols: { tickers: [asset.symbol] }, columns: ['close', 'change', ...FRAMES.map((f) => f.col)] })
   const d = rows[0]?.d
-  if (!d) throw new Error('Ativo sem dados no TradingView')
+  if (!d) throw new Error('Ativo sem dados disponíveis no momento')
   return {
     asset,
     price: d[0] as number | null,

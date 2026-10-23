@@ -5,6 +5,7 @@ import { ArrowLeft, Loader2, Mic, RefreshCw, Search } from 'lucide-react'
 import { analyze, searchAssets, zoneOf, type Asset } from '../lib/market'
 import { Delta, Gauge, Hint, Toaster } from '../components/ui'
 import TradingViewChart from '../components/TradingViewChart'
+import { useRoles } from '../lib/roles'
 import { num, timeAgo } from '../lib/format'
 
 const SUGGESTIONS = ['PETR4', 'VALE3', 'Dólar', 'Bitcoin', 'ITUB4', 'Euro', 'WEGE3', 'AAPL']
@@ -126,7 +127,7 @@ function SearchHome({ onPick }: { onPick: (a: Asset) => void }) {
   }
   return (
     <div className="mercado-home">
-      <h1>Qual ativo deseja <span className="serif">analisar?</span><Hint text="Pesquise ações da B3 e dos EUA, moedas e criptomoedas. O índice Treend é calculado sobre os dados oficiais do TradingView em cada tempo gráfico." side="bottom" /></h1>
+      <h1>Qual ativo deseja <span className="serif">analisar?</span><Hint text="Pesquise ações da B3 e dos EUA, moedas e criptomoedas e veja o índice Treend de 0 a 100 em cada tempo gráfico." side="bottom" /></h1>
       <p>Digite o nome ou o código do ativo e veja o índice Treend em cada tempo gráfico.</p>
       <SearchBox onPick={onPick} autoFocus />
       <div className="mercado-sugs">
@@ -144,6 +145,7 @@ function Result({ asset, onBack, onPick }: { asset: Asset; onBack: () => void; o
     refetchInterval: 60_000,
     staleTime: 30_000,
   })
+  const { isAdmin } = useRoles()
   const dark = typeof document !== 'undefined' && document.documentElement.dataset.theme === 'dark'
   const best = useMemo(() => (data?.frames ?? []).filter((f) => f.index != null).sort((a, b) => (b.index ?? 0) - (a.index ?? 0))[0], [data])
   const digits = (data?.price ?? 0) < 10 ? 4 : 2
@@ -172,7 +174,7 @@ function Result({ asset, onBack, onPick }: { asset: Asset; onBack: () => void; o
       ) : (
         <>
           <div className="row between wrap" style={{ marginBottom: 12, gap: 8 }}>
-            <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Índice Treend por tempo gráfico<Hint text="Calculado sobre o RSI de 14 períodos do TradingView em cada tempo gráfico: abaixo de 30 vira oportunidade forte (90+), acima de 70 vira esticado (20 ou menos). Os valores batem com o gráfico do TradingView abaixo." /></h2>
+            <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Índice Treend por tempo gráfico<Hint text="O índice Treend vai de 0 a 100 em cada tempo gráfico. Acima de 90, oportunidade forte; abaixo de 20, preço esticado. Use a melhor janela para planejar a sua operação." /></h2>
             <span className="row gap-8 tiny faint">{data && `Atualizado há ${timeAgo(new Date(data.at).toISOString())}`}<button className="icon-btn" title="Atualizar" onClick={() => refetch()}><RefreshCw className={isFetching ? 'spin' : ''} /></button></span>
           </div>
           <div className="frame-grid">
@@ -193,13 +195,15 @@ function Result({ asset, onBack, onPick }: { asset: Asset; onBack: () => void; o
         </>
       )}
 
+      {isAdmin && (
       <div className="card" style={{ marginTop: 16 }}>
-        <div className="card-h"><h3>Gráfico TradingView</h3><span className="tiny faint">{asset.symbol}</span></div>
+        <div className="card-h"><h3>Gráfico TradingView <span className="pill" style={{ marginLeft: 6 }}>Somente admin</span></h3><span className="tiny faint">{asset.symbol}</span></div>
         <div style={{ height: 'min(70vh, 620px)', padding: '12px 24px 24px' }}>
           <TradingViewChart symbol={asset.symbol} interval="D" dark={dark} />
         </div>
       </div>
-      <p className="tiny faint" style={{ marginTop: 16 }}>Dados e indicadores do TradingView. Conteúdo informativo, não constitui recomendação de investimento.</p>
+      )}
+      <p className="tiny faint" style={{ marginTop: 16 }}>Conteúdo informativo, não constitui recomendação de investimento.</p>
     </>
   )
 }
