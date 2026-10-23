@@ -1,47 +1,29 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { ArrowRight, Lock, LogOut } from 'lucide-react'
-import { TreendLogo, Toaster, toast } from '../components/ui'
+import { ArrowRight, QrCode } from 'lucide-react'
+import PurchaseShell from '../components/PurchaseShell'
+import { toast } from '../components/ui'
 import { PLANS, startCheckout, useSubscription } from '../lib/subscription'
-import { useAuth } from '../lib/auth'
 
+/* Same plans and AbacatePay checkout as the classic /planos (PIX or card). */
 export default function Planos() {
-  const { session, signOut } = useAuth()
   const { data: sub } = useSubscription()
-  const nav = useNavigate()
   const [busy, setBusy] = useState<string | null>(null)
   const go = async (k: string) => {
     setBusy(k)
     try { await startCheckout(k) } catch (e) { toast((e as Error).message); setBusy(null) }
   }
   return (
-    <div className="plans-page">
-      <header className="row between" style={{ padding: '22px 40px' }}>
-        <TreendLogo size={30} />
-        {session && <button className="btn ghost sm" onClick={() => signOut().then(() => nav('/login'))}><LogOut /> Sair</button>}
-      </header>
-      <div className="plans-wrap">
-        {sub?.expired && (
-          <div className="banner" style={{ marginBottom: 24 }}><Lock size={18} /> Seu acesso {sub.status === 'trial' ? 'de teste terminou' : 'expirou'}. Escolha um plano para continuar usando a Treend.</div>
-        )}
-        <h1 className="plans-title">Escolha seu <span className="serif">plano.</span></h1>
-        <p className="muted" style={{ fontSize: 16, margin: '0 0 36px' }}>Assine a Treend e transforme dados cambiais em decisões de compra mais claras. Pague com cartão de crédito ou PIX.</p>
-        <div className="plans-grid">
-          {PLANS.map((p) => (
-            <div key={p.key} className={`plan ${'highlight' in p && p.highlight ? 'hl' : ''}`}>
-              {'highlight' in p && p.highlight && <span className="plan-tag">Mais escolhido</span>}
-              <div className="plan-name">{p.name}</div>
-              <div className="plan-price">{p.price}<small>/mês</small></div>
-              <div className="small muted" style={{ flex: 1 }}>Acesso imediato à plataforma Treend.</div>
-              <button className={`btn lg ${'highlight' in p && p.highlight ? 'primary' : ''}`} style={{ width: '100%' }} disabled={busy !== null} onClick={() => go(p.key)}>
-                {busy === p.key ? 'Abrindo checkout…' : <>Assinar {p.name} <ArrowRight /></>}
-              </button>
-            </div>
-          ))}
-        </div>
-        <p className="tiny faint" style={{ marginTop: 28, textAlign: 'center' }}>Pagamento processado com segurança. Após a confirmação, você recebe os dados de acesso por e-mail.</p>
+    <PurchaseShell eyebrow="Planos Treend" title="Escolha seu" accent="plano." description="Pague com cartão de crédito ou PIX para ter acesso imediato à plataforma." payment="Pagamento seguro com PIX ou cartão">
+      {sub?.expired && <div className="banner" style={{ marginBottom: 20 }}>Seu acesso {sub.status === 'trial' ? 'de teste terminou' : 'expirou'}. Escolha um plano para continuar.</div>}
+      <div className="plan-list">
+        {PLANS.map((p) => (
+          <button key={p.key} className="plan-row" disabled={busy !== null} onClick={() => go(p.key)}>
+            <span className="plan-row-ico"><QrCode size={18} /></span>
+            <span style={{ flex: 1, textAlign: 'left' }}><b>{p.name}</b><div className="small muted">{p.price}/mês</div></span>
+            <span className="plan-row-go">{busy === p.key ? 'Abrindo…' : <ArrowRight size={18} />}</span>
+          </button>
+        ))}
       </div>
-      <Toaster />
-    </div>
+    </PurchaseShell>
   )
 }

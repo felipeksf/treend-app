@@ -981,3 +981,19 @@ h1, h2, h3, .big-px, .px, .score, .wordmark { letter-spacing: -0.03em; }
 .plan li svg { color: var(--brand); flex: none; margin-top: 3px; }
 @media (max-width: 900px) { .plans-grid { grid-template-columns: 1fr; } .plans-title { font-size: 32px; } }
 .plans-title .serif { background: linear-gradient(90deg, #2453e0, #5a8cf5) !important; -webkit-background-clip: text !important; background-clip: text !important; color: transparent !important; -webkit-text-fill-color: transparent; }
+
+/* Purchase pages */
+.purchase-body { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 32px 0; animation: slideStep 0.45s var(--ease); }
+.plan-list { display: flex; flex-direction: column; gap: 12px; max-width: 520px; }
+.plan-row { display: flex; align-items: center; gap: 14px; padding: 18px 20px; border-radius: 20px; border: 2px solid transparent; background: var(--surface); text-align: left; transition: border-color 0.15s, transform 0.15s; }
+.plan-row:hover:not(:disabled) { border-color: var(--line-3); }
+.plan-row.hl, .plan-row.on { border-color: var(--brand); }
+.plan-row b { font-size: 16px; }
+.plan-row-ico { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand); flex: none; }
+.plan-row-go { color: var(--brand); font-weight: 600; font-size: 13px; }
+.plan-chip { margin-left: 8px; font-size: 11px; font-weight: 700; color: #fff; background: linear-gradient(90deg, #2453e0, #5a8cf5); padding: 3px 9px; border-radius: 999px; vertical-align: 2px; }
+.plan-price-sm { font-family: var(--display); font-weight: 700; font-size: 22px; letter-spacing: -0.02em; white-space: nowrap; }
+.plan-price-sm small { font-size: 13px; color: var(--text-3); font-weight: 600; }
+.radio { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line-3); display: grid; place-items: center; flex: none; color: #fff; }
+.radio.on { background: var(--brand); border-color: var(--brand); }
+.onb-side .input { background: var(--surface); }

@@ -30,6 +30,8 @@ const Admin = lazy(() => import('./pages/Admin'))
 const Mcp = lazy(() => import('./pages/Mcp'))
 const Onboarding = lazy(() => import('./pages/Onboarding'))
 const Planos = lazy(() => import('./pages/Planos'))
+const Assinatura = lazy(() => import('./pages/Assinatura'))
+const Pricing = lazy(() => import('./pages/Pricing'))
 const Conta = lazy(() => import('./pages/Conta'))
 
 function Guard({ children }: { children: ReactNode }) {
@@ -62,6 +64,9 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/planos" element={<Suspense fallback={<Fallback />}><Planos /></Suspense>} />
+      <Route path="/assinatura" element={<Suspense fallback={<Fallback />}><Assinatura /></Suspense>} />
+      <Route path="/pricing" element={<Suspense fallback={<Fallback />}><Pricing /></Suspense>} />
+      <Route path="/dashboard" element={<Navigate to="/" replace />} />
       <Route path="/onboarding" element={<Suspense fallback={<Fallback />}><Onboarding /></Suspense>} />
       <Route
         element={
