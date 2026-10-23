@@ -1,9 +1,9 @@
 import { useState, type ReactNode } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   Activity, BarChart3, Bell, BookOpen, Bot, Building2, CalendarDays, CheckCircle2, ClipboardCheck, Eye, EyeOff, FileText, Grid3x3,
   LineChart, Mail, Megaphone, MessageCircle, PanelLeft, Receipt, RefreshCw, ScanSearch, Send, Sparkles, Tags, Target, Timer, Users,
-  Video, XCircle, Copy, Search, type LucideIcon,
+  Video, XCircle, Copy, Search, Trash2, type LucideIcon,
 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { CURRENCIES, FREQUENCIES, PROFILES, signal, useHeatmap, pick } from '../../lib/heatmap'
@@ -628,6 +628,15 @@ function CopyCell({ value, what }: { value?: string | null; what: string }) {
 
 function StripeLeads() {
   const [q, setQ] = useState('')
+  const qc = useQueryClient()
+  const remove = async (r: Row) => {
+    if (!confirm(`Excluir o lead ${r.email}? Essa ação não pode ser desfeita.`)) return
+    const { data, error } = await supabase.from('stripe_leads').delete().eq('id', r.id as string).select('id')
+    if (error) return toast(`Erro: ${error.message}`)
+    if (!data?.length) return toast('Sem permissão para excluir — falta liberar a exclusão para admins no Lovable.')
+    toast('Lead excluído')
+    qc.invalidateQueries({ queryKey: ['admin', 'stripe-leads'] })
+  }
   const { data, isLoading, error } = useQuery({
     queryKey: ['admin', 'stripe-leads'],
     refetchInterval: 60_000,
@@ -663,7 +672,7 @@ function StripeLeads() {
       {!rows.length ? <Empty icon={<Mail size={20} />} title="Nenhum lead ainda">Os leads aparecem aqui quando alguém preenche nome e e-mail no /pricing.</Empty> : (
         <div style={{ overflowX: 'auto', marginTop: 12 }}>
           <table className="tbl">
-            <thead><tr><th>Nome</th><th>E-mail</th><th>Plano</th><th className="r">Preenchido em</th></tr></thead>
+            <thead><tr><th>Nome</th><th>E-mail</th><th>Plano</th><th className="r">Preenchido em</th><th /></tr></thead>
             <tbody>
               {rows.map((r) => (
                 <tr key={r.id as string}>
@@ -671,6 +680,7 @@ function StripeLeads() {
                   <td><CopyCell value={r.email as string} what="E-mail" /></td>
                   <td className="muted">{r.plan === 'annual' ? 'Anual' : r.plan === 'monthly' ? 'Mensal' : String(r.plan ?? '—')}</td>
                   <td className="r muted">{r.created_at ? dateBR(r.created_at as string, true) : '—'}</td>
+                  <td className="r"><button className="icon-btn" title="Excluir lead" aria-label="Excluir lead" onClick={() => remove(r)}><Trash2 /></button></td>
                 </tr>
               ))}
             </tbody>
