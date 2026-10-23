@@ -852,3 +852,19 @@ h1, h2, h3, .big-px, .px, .score, .wordmark { letter-spacing: -0.03em; }
   .onb-art { aspect-ratio: 16 / 9; border-radius: 28px; }
   .onb-copy h1 { font-size: 32px; }
 }
+
+/* Onboarding v2 — fixed navy panel, only the right side moves */
+.onb2 { height: 100vh; min-height: 0; }
+.onb2 .auth-art { position: sticky; top: 0; height: 100vh; }
+.onb-side { display: flex; flex-direction: column; padding: 32px 56px 40px; background: var(--bg); overflow-y: auto; }
+.onb-side-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.onb2 .onb-progress { padding: 0; }
+.onb2 .onb-copy { flex: 1; display: flex; flex-direction: column; justify-content: center; max-width: 560px; padding: 40px 0 24px; animation: slideStep 0.45s var(--ease); }
+@keyframes slideStep { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+.onb-step-icon { width: 56px; height: 56px; border-radius: 18px; display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, #2453e0, #5a8cf5); margin-bottom: 22px; box-shadow: 0 14px 30px -12px rgba(36, 83, 224, 0.6); }
+.onb2 .onb-actions { margin-top: 0; }
+@media (max-width: 900px) {
+  .onb2 { height: auto; }
+  .onb2 .auth-art { position: relative; height: auto; min-height: 220px; }
+  .onb-side { padding: 20px 16px 32px; }
+}

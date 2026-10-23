@@ -68,23 +68,39 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="onb">
-      <header className="onb-top">
-        <TreendLogo size={30} />
-        <button className="btn ghost sm" onClick={finish}>Pular por agora</button>
-      </header>
+    <div className="auth onb2">
+      <section className="auth-art">
+        <TreendLogo size={36} light />
+        <svg className="orbit hide-m" viewBox="0 0 560 560" fill="none" aria-hidden>
+          {[260, 200, 140, 80].map((r, n) => (
+            <circle key={r} cx="280" cy="280" r={r} stroke="rgba(255,255,255,0.07)" strokeDasharray={n % 2 ? '2 6' : undefined} />
+          ))}
+          <circle cx="280" cy="280" r="6" fill="#8aa2ff" />
+          {[0, 1, 2].map((n) => (
+            <g key={n} style={{ transformOrigin: '280px 280px', animation: `spin ${24 + n * 14}s linear infinite` }}>
+              <circle cx={280 + [260, 200, 140][n]} cy="280" r="4" fill={['#8aa2ff', '#ffffff', '#c9d5ff'][n]} />
+            </g>
+          ))}
+          <style>{'@keyframes spin{to{transform:rotate(360deg)}}'}</style>
+        </svg>
+        <div style={{ maxWidth: 520 }}>
+          <h2>Mais contexto, <span className="serif">desde o primeiro passo.</span></h2>
+          <p style={{ color: '#c3cfe6', fontSize: 16, maxWidth: 420, marginTop: 20 }}>Conheça as ferramentas que apoiam suas decisões de câmbio — em menos de dois minutos.</p>
+        </div>
+        <div className="tiny" style={{ color: '#8fa3c7' }}>A Treend não faz recomendação cambial ou financeira.</div>
+      </section>
 
-      <div className="onb-progress" aria-label={`Passo ${i + 1} de ${STEPS.length}`}>
-        {STEPS.map((_, n) => <i key={n} className={n <= i ? 'on' : ''} />)}
-      </div>
+      <section className="onb-side">
+        <div className="onb-side-top">
+          <span className="small muted mono">{String(i + 1).padStart(2, '0')} / {STEPS.length}</span>
+          <button className="btn ghost sm" onClick={finish}>Pular por agora</button>
+        </div>
+        <div className="onb-progress" aria-label={`Passo ${i + 1} de ${STEPS.length}`}>
+          {STEPS.map((_, n) => <i key={n} className={n <= i ? 'on' : ''} />)}
+        </div>
 
-      <main className="onb-main" key={i}>
-        <section className="onb-art">
-          <div className="onb-icon"><step.icon size={44} strokeWidth={1.6} /></div>
-          <div className="onb-count mono">{String(i + 1).padStart(2, '0')}<span>/{STEPS.length}</span></div>
-        </section>
-
-        <section className="onb-copy">
+        <div className="onb-copy" key={i}>
+          <div className="onb-step-icon"><step.icon size={26} strokeWidth={1.8} /></div>
           <div className="onb-kicker">{i === 0 ? 'Seus primeiros passos' : 'Conheça a Treend'}</div>
           <h1>{step.title}</h1>
           {step.body.split('\n\n').map((p, n) => <p key={n}>{p}</p>)}
@@ -110,20 +126,20 @@ export default function Onboarding() {
               <span className="tiny faint">Brasil = +55. Para outros países, informe o DDI correspondente.</span>
             </div>
           )}
+        </div>
 
-          <div className="onb-actions">
-            {i > 0 && <button className="btn" onClick={() => setI(i - 1)}><ArrowLeft /> Voltar</button>}
-            {last ? (
-              <>
-                <button className="btn ghost" onClick={finish}>Pular por agora</button>
-                <button className="btn primary lg" disabled={saving} onClick={saveWhatsapp}>{saving ? 'Salvando…' : 'Concluir'} <ArrowRight /></button>
-              </>
-            ) : (
-              <button className="btn primary lg" onClick={() => setI(i + 1)}>{i === 0 ? 'Começar' : 'Próximo'} <ArrowRight /></button>
-            )}
-          </div>
-        </section>
-      </main>
+        <div className="onb-actions">
+          {i > 0 && <button className="btn" onClick={() => setI(i - 1)}><ArrowLeft /> Voltar</button>}
+          {last ? (
+            <>
+              <button className="btn ghost" onClick={finish}>Pular por agora</button>
+              <button className="btn primary lg" disabled={saving} onClick={saveWhatsapp}>{saving ? 'Salvando…' : 'Concluir'} <ArrowRight /></button>
+            </>
+          ) : (
+            <button className="btn primary lg" onClick={() => setI(i + 1)}>{i === 0 ? 'Começar' : 'Próximo'} <ArrowRight /></button>
+          )}
+        </div>
+      </section>
       <Toaster />
     </div>
   )
