@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { Download, History as HistoryIcon } from 'lucide-react'
-import { useDecisions } from '../lib/decisions'
+import { Download, History as HistoryIcon, Mail } from 'lucide-react'
+import { emailDecision, useDecisions, type Decision } from '../lib/decisions'
 import { useQuotes } from '../lib/rates'
-import { Empty, PageHeader, Seg, Skel } from '../components/ui'
+import { Empty, PageHeader, Seg, Skel, toast } from '../components/ui'
 import Gate from '../components/Gate'
 import { compact, dateBR, money, num } from '../lib/format'
 
@@ -11,6 +11,11 @@ export default function History() {
   const { data, isLoading } = useDecisions()
   const { data: quotes } = useQuotes()
   const [ccy, setCcy] = useState('all')
+  const [sending, setSending] = useState<string | null>(null)
+  const send = async (d: Decision) => {
+    setSending(d.id)
+    try { await emailDecision(d); toast('Relatório enviado para o seu e-mail') } catch (e) { toast(`Não foi possível enviar: ${(e as Error).message}`) } finally { setSending(null) }
+  }
 
   const list = useMemo(() => (data ?? []).filter((d) => ccy === 'all' || d.currency === ccy), [data, ccy])
   const currencies = useMemo(() => [...new Set((data ?? []).map((d) => d.currency))], [data])
@@ -81,7 +86,7 @@ export default function History() {
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                 <thead>
                   <tr style={{ textAlign: 'left', color: 'var(--text-3)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                    {['Data', 'Moeda', 'Volume', 'Taxa', 'Spread', 'Economia'].map((h, i) => <th key={h} style={{ padding: '16px 20px', fontWeight: 500, textAlign: i > 1 ? 'right' : 'left' }}>{h}</th>)}
+                    {['Data', 'Moeda', 'Volume', 'Taxa', 'Spread', 'Economia', ''].map((h, i) => <th key={h} style={{ padding: '16px 20px', fontWeight: 500, textAlign: i > 1 ? 'right' : 'left' }}>{h}</th>)}
                   </tr>
                 </thead>
                 <tbody>
@@ -93,6 +98,7 @@ export default function History() {
                       <td className="mono" style={{ padding: '14px 20px', textAlign: 'right' }}>{num(d.rate, 4)}</td>
                       <td className="mono muted" style={{ padding: '14px 20px', textAlign: 'right' }}>{d.spread != null ? `${num(d.spread, 2)}%` : '—'}</td>
                       <td className="mono up" style={{ padding: '14px 20px', textAlign: 'right', fontWeight: 550 }}>+{money(d.savings, d.currency)}</td>
+                      <td style={{ padding: '8px 16px', textAlign: 'right' }}><button className="btn sm ghost" disabled={sending === d.id} onClick={() => send(d)}><Mail /> {sending === d.id ? 'Enviando…' : 'E-mail'}</button></td>
                     </tr>
                   ))}
                 </tbody>

@@ -35,8 +35,10 @@ export default function Support() {
 
   const send = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from('support_tickets').insert({ user_id: session!.user.id, user_email: session!.user.email ?? '', title: title.trim(), subject: subject.trim() })
+      const { data: t, error } = await supabase.from('support_tickets').insert({ user_id: session!.user.id, user_email: session!.user.email ?? '', title: title.trim(), subject: subject.trim() }).select().single()
       if (error) throw error
+      // Confirmation e-mail (Resend), same call as the classic app; failure doesn't block the ticket.
+      supabase.functions.invoke('send-support-ticket-confirmation', { body: { ticket_number: t?.ticket_number, ticket_title: t?.title, ticket_subject: t?.subject, user_email: session!.user.email } }).catch(() => {})
     },
     onSuccess: () => { setTitle(''); setSubject(''); qc.invalidateQueries({ queryKey: ['tickets'] }); toast('Chamado enviado — respondemos em breve') },
     onError: (e) => toast((e as Error).message),

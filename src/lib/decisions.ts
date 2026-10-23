@@ -54,3 +54,20 @@ export const useTreendRate = () => {
     },
   })
 }
+
+/** Same payload the classic Simulador sends to `send-simulation-email` (Resend). */
+export async function emailDecision(d: Decision) {
+  const savings = Number(d.savings) || 0
+  const { data, error } = await supabase.functions.invoke('send-simulation-email', {
+    body: {
+      currency: d.currency, volume: Number(d.amount) || 0, currentRate: Number(d.rate) || 0,
+      treendRate: Number(d.treend_rate) || Number(d.rate) || 0, profile: d.profile || 'importador',
+      netMonth: savings, netYear: savings * 12, grossMonth: savings, spreadCost: Number(d.spread) || 0,
+      effectiveRate: Number(d.rate) || 0, rateDiffPct: 0, netPct: 0, economiaMinusSpread: savings,
+      overallHealth: d.zone || 'Saudável', zone: d.zone || '', bankSpread: Number(d.spread) || 0,
+      opsPerMonth: 1, opsFrequency: 'month', projectionMonths: 12,
+    },
+  })
+  if (error) throw error
+  if (data?.error) throw new Error(data.error)
+}
