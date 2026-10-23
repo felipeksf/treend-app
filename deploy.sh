@@ -3,6 +3,7 @@
 set -e
 cd "$(dirname "$0")"
 npm run build
+node scripts/fetch-news.mjs dist/news.json || echo 'aviso: feed de notícias não atualizado'
 cp dist/index.html dist/404.html   # SPA deep links on GitHub Pages
 touch dist/.nojekyll
 cd dist

@@ -3,19 +3,23 @@ import { ArrowUpRight, Newspaper, Search, Sparkles } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { Empty, Modal, PageHeader, Seg, Skel } from '../components/ui'
 import { timeAgo } from '../lib/format'
-import { useNews } from './Dashboard'
+import { useNewsFeed } from './Dashboard'
 
 const FILTERS = [
   { value: 'all', label: 'Tudo' },
   { value: 'USD', label: '🇺🇸 Dólar' },
   { value: 'EUR', label: '🇪🇺 Euro' },
   { value: 'GBP', label: '🇬🇧 Libra' },
+  { value: 'CNY', label: '🇨🇳 Yuan' },
+  { value: 'JPY', label: '🇯🇵 Iene' },
+  { value: 'CRYPTO', label: '₿ Cripto' },
 ]
 
 const initials = (s: string) => s.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase()
 
 export default function News() {
-  const { data, isLoading } = useNews()
+  const { data: feed, isLoading, dataUpdatedAt } = useNewsFeed()
+  const data = feed?.news
   const [f, setF] = useState('all')
   const [q, setQ] = useState('')
   const [summary, setSummary] = useState<{ title: string; text?: string; link: string } | null>(null)
@@ -24,9 +28,7 @@ export default function News() {
     () =>
       (data ?? []).filter((n) => {
         if (f !== 'all') {
-          const t = n.title.toLowerCase()
-          const hit = n.currency === f || (f === 'USD' && t.includes('dólar')) || (f === 'EUR' && t.includes('euro')) || (f === 'GBP' && t.includes('libra'))
-          if (!hit) return false
+          if (n.currency !== f) return false
         }
         return !q || n.title.toLowerCase().includes(q.toLowerCase())
       }),
@@ -47,7 +49,7 @@ export default function News() {
 
   return (
     <div className="page">
-      <PageHeader eyebrow={<><Newspaper size={13} /> Notícias</>} title="O que move o câmbio," accent="agora." sub="Manchetes em tempo real sobre dólar, euro e libra — com resumo por IA em um clique." />
+      <PageHeader eyebrow={<><Newspaper size={13} /> Notícias</>} title="O que move o câmbio," accent="agora." sub={<>Manchetes de dólar, euro, libra, yuan, iene e cripto, atualizadas continuamente. {feed?.updatedAt && <span className="faint">Feed atualizado há {timeAgo(feed.updatedAt)} · verificado há {timeAgo(new Date(dataUpdatedAt).toISOString())}.</span>}</>} />
 
       <div className="row between wrap" style={{ marginBottom: 20, gap: 12 }}>
         <Seg value={f} onChange={setF} options={FILTERS} />

@@ -32,15 +32,33 @@ export const useProfile = () => {
   return [p, set] as const
 }
 
-export const useNews = () =>
+export type NewsItem = { title: string; link: string; pubDate: string; source: string; currency?: string }
+
+/** Aggregated RSS feed (scripts/fetch-news.mjs, refreshed every ~10 min); falls back to the backend function. */
+export const useNewsFeed = () =>
   useQuery({
     queryKey: ['news'],
-    staleTime: 5 * 60_000,
-    queryFn: async () => {
+    refetchInterval: 2 * 60_000,
+    staleTime: 60_000,
+    queryFn: async (): Promise<{ updatedAt: string | null; news: NewsItem[] }> => {
+      try {
+        const r = await fetch(`/news.json?t=${Math.floor(Date.now() / 60_000)}`)
+        if (r.ok) {
+          const j = await r.json()
+          if (j.news?.length) return j
+        }
+      } catch {
+        /* fall through */
+      }
       const { data } = await supabase.functions.invoke('fetch-news', { body: { locale: 'pt' } })
-      return (data?.news ?? []) as { title: string; link: string; pubDate: string; source: string; currency?: string }[]
+      return { updatedAt: null, news: (data?.news ?? []) as NewsItem[] }
     },
   })
+
+export const useNews = () => {
+  const q = useNewsFeed()
+  return { ...q, data: q.data?.news }
+}
 
 const greeting = () => {
   const h = new Date().getHours()
