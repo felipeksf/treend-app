@@ -3,6 +3,7 @@ import { ArrowDownRight, ArrowUpRight, Minus } from 'lucide-react'
 import { Area, AreaChart, ResponsiveContainer, YAxis } from 'recharts'
 import { useLocation } from 'react-router-dom'
 import { PAGE_HELP } from '../lib/help'
+import HowTo, { HOWTO_TERMS } from './HowTo'
 import { num } from '../lib/format'
 
 export const Logo = ({ size = 16 }: { size?: number }) => (
@@ -35,6 +36,7 @@ export function PageHeader({ eyebrow, title, accent, sub, actions, help }: { eye
           {tip && <Hint text={tip} side="bottom" />}
         </h1>
         {sub && <p>{sub}</p>}
+        {HOWTO_TERMS[pathname] && <div style={{ marginTop: 14 }}><HowTo term={HOWTO_TERMS[pathname]} /></div>}
       </div>
       {actions && <div className="ph-actions">{actions}</div>}
     </div>

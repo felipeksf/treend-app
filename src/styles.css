@@ -944,3 +944,8 @@ h1, h2, h3, .big-px, .px, .score, .wordmark { letter-spacing: -0.03em; }
 .slide.brand img, .brand-dot { flex: none; }
 .slide b { min-width: 74px; }
 @media (prefers-reduced-motion: reduce) { .slider-track { animation-duration: 240s; } }
+.player-cc { background: rgba(255, 255, 255, 0.12); border-radius: 999px; padding: 3px 4px 3px 10px; }
+.player-cc button { border: 0; background: transparent; color: #d6dbe4; font-size: 12px; font-weight: 600; height: 26px; padding: 0 10px; border-radius: 999px; }
+.player-cc button.on { background: #fff; color: #111827; }
+.howto { display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 14px; border-radius: 999px; border: 0; background: var(--brand-soft); color: var(--brand); font-size: 13px; font-weight: 600; }
+.howto:hover { background: var(--brand); color: #fff; }
