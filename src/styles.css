@@ -933,3 +933,14 @@ h1, h2, h3, .big-px, .px, .score, .wordmark { letter-spacing: -0.03em; }
   .ph-actions .seg, .card-h .seg, .field .seg, .seg { overflow: visible; flex-wrap: wrap; border-radius: 18px; row-gap: 2px; }
 }
 .slider-label { background: var(--surface); padding: 0 14px 0 18px; box-shadow: 16px 0 16px -4px var(--surface); }
+
+/* Smoother sliders: GPU-composited transform, no per-frame mask repaint, stable widths */
+@keyframes marquee3d { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
+.slider { mask-image: none; -webkit-mask-image: none; contain: layout paint; }
+.slider::before, .slider::after { content: ''; position: absolute; top: 0; bottom: 0; width: 40px; z-index: 1; pointer-events: none; }
+.slider::before { left: 0; background: linear-gradient(90deg, var(--surface), transparent); }
+.slider::after { right: 0; background: linear-gradient(270deg, var(--surface), transparent); }
+.slider-track { animation-name: marquee3d; will-change: transform; backface-visibility: hidden; transform: translateZ(0); }
+.slide.brand img, .brand-dot { flex: none; }
+.slide b { min-width: 74px; }
+@media (prefers-reduced-motion: reduce) { .slider-track { animation-duration: 240s; } }

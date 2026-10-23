@@ -87,7 +87,6 @@ export function BrandsSlider() {
   ))
   return (
     <div className="slider slow" aria-label="Marcas">
-      <span className="slider-label">Marcas</span>
       <div className="slider-track">{row}{row.map((r, i) => <span key={i} style={{ display: 'contents' }}>{r}</span>)}</div>
     </div>
   )
