@@ -10,7 +10,7 @@ export default function StocksB3() {
         eyebrow={<><Boxes size={13} /> Treend Ações B3</>}
         title="Zonas de compra"
         accent="na bolsa brasileira."
-        sub="O mesmo índice Treend das ações americanas, aplicado às ações mais negociadas da B3, em cinco janelas."
+        sub="O índice Treend sobre os dados oficiais do TradingView para as 50 ações mais negociadas da B3, em cinco tempos gráficos."
       />
       <Gate what="as Ações B3">
         <Access market="b3" />

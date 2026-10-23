@@ -1,6 +1,6 @@
 import {
   BarChart3, BookOpen, Calculator, CalendarDays, Compass, FlaskConical, Gauge, Grid3x3, History, LifeBuoy,
-  MessagesSquare, Newspaper, Radar, Cpu, ScrollText, Sparkles, LineChart, Shield, Boxes, PlayCircle,
+  MessagesSquare, Newspaper, Radar, Cpu, Search, ScrollText, Sparkles, LineChart, Shield, Boxes, PlayCircle,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -30,6 +30,7 @@ export const NAV: { group: string; items: NavItem[] }[] = [
   {
     group: 'Mercado',
     items: [
+      { to: '/mercado', label: 'Analisar ativo', icon: Search, desc: 'Busque qualquer ativo e veja o índice Treend por tempo gráfico' },
       { to: '/noticias', label: 'Notícias', icon: Newspaper, kbd: '9', desc: 'Feed de câmbio em tempo real' },
       { to: '/reports', label: 'Reports', icon: ScrollText, desc: 'Análises semanais da Treend' },
       { to: '/agenda', label: 'Agenda', icon: CalendarDays, desc: 'Eventos, reports e mentorias' },

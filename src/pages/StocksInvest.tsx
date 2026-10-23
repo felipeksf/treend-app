@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { BellRing, Boxes, Lock, RefreshCw, Search, Trash2, TriangleAlert } from 'lucide-react'
 import { supabase, CLASSIC_URL } from '../lib/supabase'
 import { signal } from '../lib/heatmap'
+import { indexFromRsi } from '../lib/market'
 import { useRoles } from '../lib/roles'
 import { Delta, Empty, Gauge, Modal, PageHeader, Seg, Skel, toast, Hint } from '../components/ui'
 import Gate from '../components/Gate'
@@ -16,9 +17,11 @@ type Stock = { ticker: string; name?: string | null; sector?: string | null; log
 export type Market = 'us' | 'b3'
 
 const NAMES: Record<string, string> = { AMZN: 'Amazon', AAPL: 'Apple', GOOGL: 'Alphabet', META: 'Meta', MSFT: 'Microsoft', NVDA: 'NVIDIA', TSLA: 'Tesla' }
-const FREQ = [
+const FREQ_US = [
   { key: 'h1', label: '1h' }, { key: 'h4', label: '4h' }, { key: 'h12', label: '12h' }, { key: 'd1', label: 'Diário' }, { key: 'w1', label: 'Semanal' },
 ]
+const FREQ_B3 = [{ key: 'h1', label: '1h' }, { key: 'h4', label: '4h' }, { key: 'd1', label: 'Diário' }, { key: 'w1', label: 'Semanal' }, { key: 'm1', label: 'Mensal' }]
+let FREQ = FREQ_US
 const CACHE = 'treend-v2-stocks-invest'
 const ALERTS = 'treend-v2-stock-alerts'
 
@@ -73,17 +76,35 @@ const useStocks = (enabled: boolean) =>
     },
   })
 
-/** B3 scores: static b3.json produced every 15 min by scripts/fetch-b3.mjs (same RSI 70/30 → index mapping). */
+/** B3 scores straight from the TradingView scanner (official base): top 50 stocks by volume, TradingView RSI(14) per timeframe → Treend index. */
+const B3_COLS = [['h1', 'RSI|60'], ['h4', 'RSI|240'], ['d1', 'RSI'], ['w1', 'RSI|1W'], ['m1', 'RSI|1M']] as const
 const useB3 = () =>
   useQuery({
     queryKey: ['stocks-b3'],
-    staleTime: 5 * 60_000,
-    refetchInterval: 5 * 60_000,
+    staleTime: 60_000,
+    refetchInterval: 2 * 60_000,
     queryFn: async () => {
-      const r = await fetch(`/b3.json?t=${Math.floor(Date.now() / 300_000)}`)
-      if (!r.ok) throw new Error('Dados da B3 indisponíveis no momento.')
-      const j = await r.json()
-      return { at: Date.now(), stocks: (j.stocks ?? []) as Stock[], updated: j.updated_at as string | undefined }
+      const r = await fetch('https://scanner.tradingview.com/brazil/scan', {
+        method: 'POST',
+        headers: { 'content-type': 'text/plain;charset=UTF-8' },
+        body: JSON.stringify({
+          filter: [{ left: 'type', operation: 'equal', right: 'stock' }, { left: 'is_primary', operation: 'equal', right: true }],
+          columns: ['name', 'description', 'logoid', 'close', 'change', 'sector', ...B3_COLS.map((c) => c[1])],
+          sort: { sortBy: 'Value.Traded', sortOrder: 'desc' },
+          range: [0, 50],
+        }),
+      })
+      if (!r.ok) throw new Error('TradingView indisponível no momento.')
+      const j: { data: { s: string; d: (string | number | null)[] }[] } = await r.json()
+      const stocks: Stock[] = j.data.map(({ d }) => ({
+        ticker: String(d[0]), name: String(d[1] ?? d[0]), logo: d[2] ? `https://s3-symbol-logo.tradingview.com/${d[2]}.svg` : null,
+        price: d[3] as number | null, change_pct: d[4] == null ? null : Math.round((d[4] as number) * 100) / 100, sector: (d[5] as string) ?? null,
+        scores: B3_COLS.map(([f], i) => {
+          const rsi = d[6 + i] as number | null
+          return { frequency: f, rsi: rsi == null ? null : Math.round(rsi * 10) / 10, heat_x: indexFromRsi(rsi) ?? 50, heat_y: 55, change_pct: 0, volatility_pct: 0, momentum: 0 }
+        }),
+      }))
+      return { at: Date.now(), stocks, updated: new Date().toISOString() }
     },
   })
 
@@ -135,6 +156,7 @@ function Board({ market }: { market: Market }) {
   const all = useMemo(() => data?.stocks ?? [], [data])
   const stocks = useMemo(() => all.filter((s) => !query || `${s.ticker} ${s.name ?? ''}`.toLowerCase().includes(query.toLowerCase())), [all, query])
   const cur = market === 'b3' ? 'R$' : 'US$'
+  FREQ = market === 'b3' ? FREQ_B3 : FREQ_US
   const nameOf = (s?: Stock) => (s ? s.name || NAMES[s.ticker] || s.ticker : '')
   const [sel, setSel] = useState<{ t: string; f: string }>({ t: market === 'b3' ? 'PETR4' : 'AAPL', f: 'd1' })
   const [alertFor, setAlertFor] = useState<{ t: string; f: string } | null>(null)
@@ -193,7 +215,7 @@ function Board({ market }: { market: Market }) {
             <span><Search size={15} /></span>
             <input className="input" style={{ fontFamily: 'var(--font)' }} placeholder="Buscar ticker ou empresa (ex.: PETR4, Vale)" value={query} onChange={(e) => setQuery(e.target.value)} />
           </div>
-          <span className="tiny faint">{all.length} ações mais negociadas da B3 · dados com atraso de ~15 min</span>
+          <span className="tiny faint">{all.length} ações mais negociadas da B3 · base TradingView</span>
         </div>
       )}
       {market === 'us' && <div className="stock-chips">

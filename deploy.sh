@@ -3,7 +3,6 @@
 set -e
 cd "$(dirname "$0")"
 npm run build
-curl -sf https://novo.treend.com.br/b3.json -o dist/b3.json || echo 'aviso: b3.json ainda não publicado'
 node scripts/fetch-news.mjs dist/news.json || echo 'aviso: feed de notícias não atualizado'
 cp dist/index.html dist/404.html   # SPA deep links on GitHub Pages
 touch dist/.nojekyll
