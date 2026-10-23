@@ -9,6 +9,8 @@ import { supabase } from '../../lib/supabase'
 import { CURRENCIES, FREQUENCIES, PROFILES, signal, useHeatmap, pick } from '../../lib/heatmap'
 import Select from '../../components/Select'
 import TradingViewChart from '../../components/TradingViewChart'
+import { NAV } from '../../components/nav'
+import { navKey, useSidebarVisibility, useToggleSidebarItem } from '../../lib/sidebar'
 import Resource, { fmt, type ResourceProps, type Row } from '../../components/admin/Resource'
 import { Empty, Modal, Seg, Skel, toast } from '../../components/ui'
 import { dateBR, money, num } from '../../lib/format'
@@ -257,10 +259,7 @@ export const TOOLS: Tool[] = [
 
   /* ── Sistema ── */
   { path: 'live', label: 'Acessos Live', icon: Video, group: 'Sistema', desc: 'Quem pode abrir as páginas Live com senha.', element: <LiveAccess /> },
-  {
-    path: 'sidebar', label: 'Menu por usuário', icon: PanelLeft, group: 'Sistema', desc: 'Itens e ordem do menu de cada usuário.',
-    element: <R table="sidebar_settings" order={{ col: 'sort_order', asc: true }} canCreate={false} />,
-  },
+  { path: 'sidebar', label: 'Menu lateral', icon: PanelLeft, group: 'Sistema', desc: 'Habilite ou desabilite itens do menu para todos os usuários.', element: <SidebarManager /> },
 ]
 
 /* ── CRM ─────────────────────────────────────────────────────── */
@@ -555,6 +554,46 @@ function Chart() {
       <div className="card-b" style={{ height: 'min(72vh, 680px)' }}>
         <TradingViewChart symbol={symbol} interval={interval} dark={dark} candles={candles} />
       </div>
+    </div>
+  )
+}
+
+/* ── Menu lateral ───────────────────────────────────────────── */
+
+function SidebarManager() {
+  const { data: menu, isLoading } = useSidebarVisibility()
+  const toggle = useToggleSidebarItem()
+  if (isLoading) return <Skel h={360} />
+  return (
+    <div className="stack gap-16">
+      {NAV.map((g) => (
+        <div key={g.group} className="card">
+          <div className="card-h"><h3>{g.group}</h3></div>
+          <div style={{ marginTop: 8 }}>
+            {g.items.map((i) => {
+              const locked = !!i.adminOnly
+              const on = locked || menu?.[navKey(i.to)] !== false
+              return (
+                <div key={i.to} className="list-row" style={{ opacity: on ? 1 : 0.55 }}>
+                  <span className="flag" style={{ width: 36, height: 36, borderRadius: 11 }}><i.icon size={17} /></span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 600 }}>{i.label}</div>
+                    <div className="tiny faint">{locked ? 'Sempre visível para administradores' : i.desc}</div>
+                  </div>
+                  <span className="small muted hide-m">{on ? 'Visível' : 'Oculto'}</span>
+                  <button
+                    type="button"
+                    className={`toggle ${on ? 'on' : ''}`}
+                    disabled={locked}
+                    aria-label={`${on ? 'Ocultar' : 'Exibir'} ${i.label}`}
+                    onClick={() => toggle.mutate({ key: navKey(i.to), visible: !on }, { onSuccess: () => toast(on ? `"${i.label}" ocultado do menu` : `"${i.label}" exibido no menu`), onError: (e) => toast(`Erro: ${(e as Error).message}`) })}
+                  ><i /></button>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      ))}
     </div>
   )
 }

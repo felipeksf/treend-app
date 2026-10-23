@@ -7,6 +7,7 @@ import Ticker from './Ticker'
 import { useAuth } from '../lib/auth'
 import { CLASSIC_URL } from '../lib/supabase'
 import { useQuotes } from '../lib/rates'
+import { navKey, useSidebarVisibility } from '../lib/sidebar'
 import { useRoles } from '../lib/roles'
 
 const getTheme = () => {
@@ -26,7 +27,9 @@ export default function Shell() {
   const loc = useLocation()
   const { session, signOut } = useAuth()
   const { isAdmin } = useRoles()
-  const visible = (i: { adminOnly?: boolean }) => !i.adminOnly || isAdmin
+  const { data: menu } = useSidebarVisibility()
+  // Admin-only items follow roles; any other item can be hidden from Admin → Menu lateral (Admin itself is never hidden).
+  const visible = (i: { to: string; adminOnly?: boolean }) => (i.adminOnly ? isAdmin : menu?.[navKey(i.to)] !== false)
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -65,8 +68,8 @@ export default function Shell() {
 
   const current = ALL.find((i) => (i.to === '/' ? loc.pathname === '/' : loc.pathname.startsWith(i.to)))
   const group = NAV.find((g) => g.items.includes(current!))?.group
-  const email = session?.user.email ?? 'modo visitante'
-  const name = (session?.user.user_metadata?.full_name as string) || (session ? email.split('@')[0] : 'Visitante')
+  const email = session?.user.email ?? ''
+  const name = (session?.user.user_metadata?.full_name as string) || (session ? email.split('@')[0] : 'Usuário')
 
   return (
     <div className={`shell ${collapsed ? 'collapsed' : ''}`}>
@@ -75,7 +78,7 @@ export default function Shell() {
           <TreendLogo size={30} />
         </div>
         <div style={{ overflowY: 'auto', flex: 1, marginRight: -6, paddingRight: 6 }}>
-          {NAV.map((g) => (
+          {NAV.filter((g) => g.items.some(visible)).map((g) => (
             <div key={g.group}>
               <div className="nav-label">{g.group}</div>
               {g.items.filter(visible).map((i) => (
