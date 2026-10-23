@@ -91,7 +91,7 @@ const useB3 = () =>
           filter: [{ left: 'type', operation: 'equal', right: 'stock' }, { left: 'is_primary', operation: 'equal', right: true }],
           columns: ['name', 'description', 'logoid', 'close', 'change', 'sector', ...B3_COLS.map((c) => c[1])],
           sort: { sortBy: 'Value.Traded', sortOrder: 'desc' },
-          range: [0, 50],
+          range: [0, 400],
         }),
       })
       if (!r.ok) throw new Error('Dados de mercado indisponíveis no momento.')
@@ -215,7 +215,7 @@ function Board({ market }: { market: Market }) {
             <span><Search size={15} /></span>
             <input className="input" style={{ fontFamily: 'var(--font)' }} placeholder="Buscar ticker ou empresa (ex.: PETR4, Vale)" value={query} onChange={(e) => setQuery(e.target.value)} />
           </div>
-          <span className="tiny faint">{all.length} ações mais negociadas da B3 · atualização a cada 2 min</span>
+          <span className="tiny faint">{all.length} ações da B3 · ordenadas por volume · atualização a cada 2 min</span>
         </div>
       )}
       {market === 'us' && <div className="stock-chips">
