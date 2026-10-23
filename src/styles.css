@@ -997,3 +997,8 @@ h1, h2, h3, .big-px, .px, .score, .wordmark { letter-spacing: -0.03em; }
 .radio { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line-3); display: grid; place-items: center; flex: none; color: #fff; }
 .radio.on { background: var(--brand); border-color: var(--brand); }
 .onb-side .input { background: var(--surface); }
+.copy-cell { display: inline-flex; align-items: center; gap: 8px; border: 0; background: transparent; padding: 6px 10px; margin: -6px -10px; border-radius: 8px; color: var(--text); font: inherit; cursor: copy; }
+.copy-cell svg { color: var(--text-3); opacity: 0; transition: opacity 0.15s; }
+.copy-cell:hover { background: var(--brand-soft); }
+.copy-cell:hover svg { opacity: 1; color: var(--brand); }
+@media (hover: none) { .copy-cell svg { opacity: 1; } }

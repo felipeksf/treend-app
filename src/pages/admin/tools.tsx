@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import {
   Activity, BarChart3, Bell, BookOpen, Bot, Building2, CalendarDays, CheckCircle2, ClipboardCheck, Eye, EyeOff, FileText, Grid3x3,
   LineChart, Mail, Megaphone, MessageCircle, PanelLeft, Receipt, RefreshCw, ScanSearch, Send, Sparkles, Tags, Target, Timer, Users,
-  Video, XCircle, type LucideIcon,
+  Video, XCircle, Copy, Search, type LucideIcon,
 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { CURRENCIES, FREQUENCIES, PROFILES, signal, useHeatmap, pick } from '../../lib/heatmap'
@@ -125,6 +125,8 @@ export const TOOLS: Tool[] = [
       </div>
     ),
   },
+
+  { path: 'leads-stripe', label: 'Leads Stripe', icon: Mail, group: 'Comercial', desc: 'Nome e e-mail de quem preencheu os dados antes do checkout Stripe.', element: <StripeLeads /> },
 
   /* ── Conteúdo ── */
   {
@@ -605,6 +607,76 @@ function SidebarManager() {
           </div>
         </div>
       ))}
+    </div>
+  )
+}
+
+/* ── Leads Stripe ───────────────────────────────────────────── */
+
+const copy = async (text: string, what: string) => {
+  try { await navigator.clipboard.writeText(text); toast(`${what} copiado`) } catch { toast('Não foi possível copiar') }
+}
+
+function CopyCell({ value, what }: { value?: string | null; what: string }) {
+  if (!value) return <span className="faint">—</span>
+  return (
+    <button className="copy-cell" title={`Copiar ${what.toLowerCase()}`} onClick={() => copy(value, what)}>
+      <span>{value}</span><Copy size={13} />
+    </button>
+  )
+}
+
+function StripeLeads() {
+  const [q, setQ] = useState('')
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['admin', 'stripe-leads'],
+    refetchInterval: 60_000,
+    queryFn: async () => {
+      const { data, error } = await supabase.from('stripe_leads').select('*').order('created_at', { ascending: false }).limit(2000)
+      if (error) throw error
+      return (data ?? []) as Row[]
+    },
+  })
+  const rows = (data ?? []).filter((r) => !q || `${r.name ?? ''} ${r.email ?? ''}`.toLowerCase().includes(q.toLowerCase()))
+  const missing = !!error && /stripe_leads|does not exist|schema cache/i.test((error as Error).message)
+
+  if (isLoading) return <Skel h={300} />
+  if (missing)
+    return (
+      <div className="card"><Empty icon={<Mail size={20} />} title="Tabela de leads ainda não criada">
+        A captura já está ativa na página /pricing, mas o banco ainda precisa da tabela <b>stripe_leads</b>. Peça ao Lovable para criá-la (o prompt está no README do projeto) e os leads passam a aparecer aqui automaticamente.
+      </Empty></div>
+    )
+  return (
+    <div className="card">
+      <div className="card-h wrap" style={{ gap: 12 }}>
+        <div className="input-affix" style={{ flex: '1 1 240px', maxWidth: 380 }}>
+          <span><Search size={15} /></span>
+          <input className="input" style={{ height: 40, fontFamily: 'var(--font)' }} placeholder="Buscar nome ou e-mail" value={q} onChange={(e) => setQ(e.target.value)} />
+        </div>
+        <div className="row gap-8 wrap">
+          <span className="tiny faint">{rows.length} lead(s)</span>
+          <button className="btn sm" disabled={!rows.length} onClick={() => copy(rows.map((r) => r.email).filter(Boolean).join(', '), 'Lista de e-mails')}><Copy size={14} /> Copiar e-mails</button>
+          <button className="btn sm" disabled={!rows.length} onClick={() => copy(['nome;email;data', ...rows.map((r) => `${r.name ?? ''};${r.email ?? ''};${r.created_at ?? ''}`)].join('\n'), 'Lista (CSV)')}><Copy size={14} /> Copiar lista</button>
+        </div>
+      </div>
+      {!rows.length ? <Empty icon={<Mail size={20} />} title="Nenhum lead ainda">Os leads aparecem aqui quando alguém preenche nome e e-mail no /pricing.</Empty> : (
+        <div style={{ overflowX: 'auto', marginTop: 12 }}>
+          <table className="tbl">
+            <thead><tr><th>Nome</th><th>E-mail</th><th>Plano</th><th className="r">Preenchido em</th></tr></thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr key={r.id as string}>
+                  <td><CopyCell value={r.name as string} what="Nome" /></td>
+                  <td><CopyCell value={r.email as string} what="E-mail" /></td>
+                  <td className="muted">{r.plan === 'annual' ? 'Anual' : r.plan === 'monthly' ? 'Mensal' : String(r.plan ?? '—')}</td>
+                  <td className="r muted">{r.created_at ? dateBR(r.created_at as string, true) : '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
 }

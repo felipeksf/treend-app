@@ -66,3 +66,15 @@ Hospedagem: GitHub Pages (mesmo esquema do `links.treend.com.br`), domínio `nov
 - Lovable → Settings → Domains: trocar `app.treend.com.br` por `legado.treend.com.br` (Umbler: `A legado → 185.158.133.1`).
 - Umbler: `app` passa a ser `CNAME → felipeksf.github.io`; `public/CNAME` vira `app.treend.com.br`; build com `VITE_CLASSIC_URL=https://legado.treend.com.br ./deploy.sh`.
 - Supabase Redirect URLs: incluir `https://legado.treend.com.br/**`.
+
+## Leads Stripe (Admin → Comercial → Leads Stripe)
+
+A página `/pricing` grava nome e e-mail em `stripe_leads` antes de abrir o checkout Stripe.
+A tabela precisa existir no backend (Lovable Cloud). Prompt para o Lovable:
+
+> Crie a tabela `public.stripe_leads` com as colunas: `id uuid primary key default gen_random_uuid()`, `name text`, `email text not null`, `plan text`, `coupon text`, `created_at timestamptz not null default now()`. Ative RLS. Crie uma policy que permita INSERT para os papéis `anon` e `authenticated` (with check true) e uma policy de SELECT apenas para usuários com papel `admin` na tabela `user_roles` (usando a função has_role já existente, se houver). Garanta GRANT INSERT para anon e authenticated e GRANT SELECT para authenticated. Não altere nenhuma outra tabela nem tela.
+
+## Logo do checkout Stripe
+
+Arquivos em `brand/`: `treend-icon-512.png` (ícone) e `treend-logo-horizontal.png` (logo).
+Stripe Dashboard → Configurações → Marca (Branding) → enviar ícone e logo → Salvar.

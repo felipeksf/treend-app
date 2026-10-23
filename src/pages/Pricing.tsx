@@ -23,8 +23,17 @@ export default function Pricing() {
   const checkout = async () => {
     if (!session && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return toast('Informe um e-mail válido para receber seus dados de acesso.')
     setBusy(true)
+    const p = STRIPE_PLANS.find((x) => x.key === plan)!
+    // Capture the lead before leaving for Stripe (Admin → Leads Stripe). Never blocks the checkout.
+    if (!session) {
+      try {
+        await Promise.race([
+          supabase.from('stripe_leads').insert({ name: name.trim() || null, email: email.trim().toLowerCase(), plan: p.key, coupon: params.get('coupon') || null }),
+          new Promise((r) => setTimeout(r, 2500)),
+        ])
+      } catch { /* ignore */ }
+    }
     try {
-      const p = STRIPE_PLANS.find((x) => x.key === plan)!
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: { priceId: p.priceId, coupon: params.get('coupon') || undefined, ...(session ? {} : { guestEmail: email.trim(), guestName: name.trim() || undefined }) },
       })
@@ -38,7 +47,7 @@ export default function Pricing() {
   }
 
   return (
-    <PurchaseShell eyebrow="Assinatura Treend" title="Acesso completo" accent="à Treend." description="Todas as ferramentas de inteligência cambial em um só lugar. Cancele quando quiser." payment="Pagamento seguro processado pelo Stripe">
+    <PurchaseShell eyebrow="" title="Acesso completo" accent="à Treend." description="Todas as ferramentas de inteligência cambial em um só lugar. Cancele quando quiser." payment="Pagamento seguro processado pelo Stripe">
       <div className="plan-list">
         {STRIPE_PLANS.map((p) => (
           <button key={p.key} className={`plan-row selectable ${plan === p.key ? 'on' : ''}`} onClick={() => setPlan(p.key)}>

@@ -24,7 +24,7 @@ export default function PurchaseShell({ eyebrow, title, accent, description, pay
       </section>
       <section className="onb-side">
         <div className="onb-side-top">
-          <span className="small" style={{ color: 'var(--brand)', fontWeight: 650 }}>{eyebrow}</span>
+          <span className="small" style={{ color: 'var(--brand)', fontWeight: 650 }}>{eyebrow || '\u00a0'}</span>
           {session && <button className="btn ghost sm" onClick={() => signOut().then(() => nav('/login'))}><LogOut /> Sair</button>}
         </div>
         <div className="purchase-body">
