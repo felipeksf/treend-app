@@ -1,0 +1,40 @@
+name: Atualizar Ações B3
+
+on:
+  schedule:
+    - cron: '*/15 12-21 * * 1-5'   # 09h–18h45 BRT, pregão B3
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['scripts/fetch-b3.mjs', '.github/workflows/b3.yml']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: b3
+  cancel-in-progress: false
+
+jobs:
+  b3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/fetch-b3.mjs /tmp/b3.json 50
+      - name: Publicar b3.json no gh-pages
+        run: |
+          COUNT=$(node -e "console.log(require('/tmp/b3.json').stocks.length)")
+          if [ "$COUNT" -lt 10 ]; then echo "Poucos ativos ($COUNT), mantendo versão anterior"; exit 0; fi
+          git fetch origin gh-pages --depth=1
+          git worktree add /tmp/site gh-pages
+          cp /tmp/b3.json /tmp/site/b3.json
+          cd /tmp/site
+          git config user.name "treend-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add b3.json
+          git commit -m "b3: $(date -u '+%Y-%m-%d %H:%M')" || exit 0
+          git push origin gh-pages

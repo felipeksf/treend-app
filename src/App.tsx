@@ -28,6 +28,7 @@ const Chat = lazy(() => import('./pages/Chat'))
 const StocksInvest = lazy(() => import('./pages/StocksInvest'))
 const Admin = lazy(() => import('./pages/Admin'))
 const Mcp = lazy(() => import('./pages/Mcp'))
+const StocksB3 = lazy(() => import('./pages/StocksB3'))
 const Onboarding = lazy(() => import('./pages/Onboarding'))
 const Planos = lazy(() => import('./pages/Planos'))
 const Assinatura = lazy(() => import('./pages/Assinatura'))
@@ -80,7 +81,7 @@ export default function App() {
             ['/', Dashboard], ['/concierge', Concierge], ['/projecoes', Projections], ['/mapa', Heatmap], ['/radar', RadarPage],
             ['/calculadora', CalculatorPage], ['/simulador', Simulator], ['/historico', HistoryPage], ['/noticias', News],
             ['/reports', Reports], ['/agenda', Agenda], ['/academy', Academy], ['/tutoriais', Tutorials], ['/suporte', Support],
-            ['/cmp', Cmp], ['/chat', Chat], ['/stocks-invest', StocksInvest], ['/admin/*', Admin], ['/mcp', Mcp], ['/conta', Conta],
+            ['/cmp', Cmp], ['/chat', Chat], ['/stocks-invest', StocksInvest], ['/admin/*', Admin], ['/mcp', Mcp], ['/acoes-b3', StocksB3], ['/conta', Conta],
           ] as const
         ).map(([p, C]) => (
           <Route key={p} path={p} element={<Suspense fallback={<Fallback />}><C /></Suspense>} />

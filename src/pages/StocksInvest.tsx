@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { BellRing, Boxes, Lock, RefreshCw, Trash2, TriangleAlert } from 'lucide-react'
+import { BellRing, Boxes, Lock, RefreshCw, Search, Trash2, TriangleAlert } from 'lucide-react'
 import { supabase, CLASSIC_URL } from '../lib/supabase'
 import { signal } from '../lib/heatmap'
 import { useRoles } from '../lib/roles'
@@ -12,7 +12,8 @@ import { HELP } from '../lib/help'
 /* Same source as the classic Stocks Invest: edge function `stocks-heatmap` with
    { mode: 'invest' } — buy-zone scores. */
 type Score = { frequency: string; rsi: number | null; heat_x: number; heat_y: number; change_pct: number; volatility_pct: number; momentum: number }
-type Stock = { ticker: string; price: number | null; change_pct: number | null; scores: Score[] }
+type Stock = { ticker: string; name?: string | null; sector?: string | null; logo?: string | null; price: number | null; change_pct: number | null; scores: Score[] }
+export type Market = 'us' | 'b3'
 
 const NAMES: Record<string, string> = { AMZN: 'Amazon', AAPL: 'Apple', GOOGL: 'Alphabet', META: 'Meta', MSFT: 'Microsoft', NVDA: 'NVIDIA', TSLA: 'Tesla' }
 const FREQ = [
@@ -72,11 +73,25 @@ const useStocks = (enabled: boolean) =>
     },
   })
 
-export function StockLogo({ t, size = 28 }: { t: string; size?: number }) {
+/** B3 scores: static b3.json produced every 15 min by scripts/fetch-b3.mjs (same RSI 70/30 → index mapping). */
+const useB3 = () =>
+  useQuery({
+    queryKey: ['stocks-b3'],
+    staleTime: 5 * 60_000,
+    refetchInterval: 5 * 60_000,
+    queryFn: async () => {
+      const r = await fetch(`/b3.json?t=${Math.floor(Date.now() / 300_000)}`)
+      if (!r.ok) throw new Error('Dados da B3 indisponíveis no momento.')
+      const j = await r.json()
+      return { at: Date.now(), stocks: (j.stocks ?? []) as Stock[], updated: j.updated_at as string | undefined }
+    },
+  })
+
+export function StockLogo({ t, size = 28, src }: { t: string; size?: number; src?: string | null }) {
   const [err, setErr] = useState(false)
   return (
     <span className="stock-logo" style={{ width: size, height: size }}>
-      {err ? <b style={{ fontSize: size * 0.36 }}>{t.slice(0, 2)}</b> : <img src={`${CLASSIC_URL}/stocks/${t}.svg`} alt="" onError={() => setErr(true)} />}
+      {err ? <b style={{ fontSize: size * 0.36 }}>{t.slice(0, 2)}</b> : <img src={src || `${CLASSIC_URL}/stocks/${t}.svg`} alt="" onError={() => setErr(true)} />}
     </span>
   )
 }
@@ -97,7 +112,7 @@ export default function StocksInvest() {
   )
 }
 
-function Access() {
+export function Access({ market = 'us' }: { market?: Market }) {
   const { hasStocksAccess, loading } = useRoles()
   if (loading) return <Skel h={420} />
   if (!hasStocksAccess)
@@ -108,14 +123,20 @@ function Access() {
         </Empty>
       </div>
     )
-  return <Board />
+  return <Board market={market} />
 }
 
-function Board() {
+function Board({ market }: { market: Market }) {
   const qc = useQueryClient()
-  const { data, isLoading, isError, isFetching } = useStocks(true)
-  const stocks = useMemo(() => data?.stocks ?? [], [data])
-  const [sel, setSel] = useState<{ t: string; f: string }>({ t: 'AAPL', f: 'd1' })
+  const us = useStocks(market === 'us')
+  const b3 = useB3()
+  const { data, isLoading, isError, isFetching } = market === 'us' ? us : b3
+  const [query, setQuery] = useState('')
+  const all = useMemo(() => data?.stocks ?? [], [data])
+  const stocks = useMemo(() => all.filter((s) => !query || `${s.ticker} ${s.name ?? ''}`.toLowerCase().includes(query.toLowerCase())), [all, query])
+  const cur = market === 'b3' ? 'R$' : 'US$'
+  const nameOf = (s?: Stock) => (s ? s.name || NAMES[s.ticker] || s.ticker : '')
+  const [sel, setSel] = useState<{ t: string; f: string }>({ t: market === 'b3' ? 'PETR4' : 'AAPL', f: 'd1' })
   const [alertFor, setAlertFor] = useState<{ t: string; f: string } | null>(null)
   const [alerts, setAlerts] = useState<StockAlert[]>(loadAlerts)
   const updateAlerts = (a: StockAlert[]) => { setAlerts(a); saveAlerts(a) }
@@ -143,7 +164,7 @@ function Board() {
     } catch {
       /* ignore */
     }
-    qc.invalidateQueries({ queryKey: ['stocks-invest'] })
+    qc.invalidateQueries({ queryKey: [market === 'us' ? 'stocks-invest' : 'stocks-b3'] })
   }
 
   const stock = stocks.find((s) => s.ticker === sel.t) ?? stocks[0]
@@ -166,18 +187,27 @@ function Board() {
 
   return (
     <>
-      <div className="stock-chips">
+      {market === 'b3' && (
+        <div className="row between wrap" style={{ gap: 12, marginBottom: 16 }}>
+          <div className="input-affix" style={{ width: 320, maxWidth: '100%' }}>
+            <span><Search size={15} /></span>
+            <input className="input" style={{ fontFamily: 'var(--font)' }} placeholder="Buscar ticker ou empresa (ex.: PETR4, Vale)" value={query} onChange={(e) => setQuery(e.target.value)} />
+          </div>
+          <span className="tiny faint">{all.length} ações mais negociadas da B3 · dados com atraso de ~15 min</span>
+        </div>
+      )}
+      {market === 'us' && <div className="stock-chips">
         {stocks.map((s) => (
           <button key={s.ticker} className={`card stock-chip ${stock?.ticker === s.ticker ? 'on' : ''}`} onClick={() => setSel({ t: s.ticker, f: sel.f })}>
-            <StockLogo t={s.ticker} />
+            <StockLogo src={s.logo} t={s.ticker} />
             <div style={{ minWidth: 0, textAlign: 'left' }}>
               <b>{s.ticker}</b>
-              <div className="tiny faint mono">{s.price != null ? `US$ ${num(s.price, 2)}` : NAMES[s.ticker]}</div>
+              <div className="tiny faint mono">{s.price != null ? `${cur} ${num(s.price, 2)}` : nameOf(s)}</div>
             </div>
             {s.change_pct != null && <span style={{ marginLeft: 'auto' }}><Delta v={s.change_pct} /></span>}
           </button>
         ))}
-      </div>
+      </div>}
 
       <div className="grid g-main" style={{ alignItems: 'start' }}>
         <div className="card" style={{ overflowX: 'auto' }}>
@@ -196,7 +226,7 @@ function Board() {
               <tbody>
                 {stocks.map((s) => (
                   <tr key={s.ticker}>
-                    <td className="lbl"><span className="row gap-8"><StockLogo t={s.ticker} size={22} />{s.ticker}</span></td>
+                    <td className="lbl"><span className="row gap-8"><StockLogo src={s.logo} t={s.ticker} size={22} />{s.ticker}</span></td>
                     {FREQ.map((f) => {
                       const x = s.scores.find((y) => y.frequency === f.key)
                       if (!x) return <td key={f.key} />
@@ -227,7 +257,7 @@ function Board() {
             <div className="card feature" style={{ ['--c' as string]: sg.color }}>
               <div className="card-b stack gap-12">
                 <div className="row between">
-                  <span className="row gap-8"><StockLogo t={stock.ticker} size={32} /><span><b>{stock.ticker}</b><div className="tiny faint">{NAMES[stock.ticker]} · {FREQ.find((f) => f.key === score.frequency)?.label}</div></span></span>
+                  <span className="row gap-8"><StockLogo src={stock.logo} t={stock.ticker} size={32} /><span><b>{stock.ticker}</b><div className="tiny faint">{nameOf(stock)} · {FREQ.find((f) => f.key === score.frequency)?.label}</div></span></span>
                   <span className="pill tone"><span className="d" />{sg.label}</span>
                 </div>
                 <div style={{ display: 'grid', placeItems: 'center' }}><Gauge value={score.heat_x} color={sg.color} size={168} label={sg.summary.toUpperCase()} /></div>
@@ -236,7 +266,7 @@ function Board() {
                   <div className="kv"><span>Variação na janela</span><b className={`mono ${score.change_pct >= 0 ? 'up' : 'down'}`}>{score.change_pct >= 0 ? '+' : ''}{num(score.change_pct, 2)}%</b></div>
                   <div className="kv"><span>Volatilidade<Hint text={HELP.volatility} /></span><b className="mono">{num(score.volatility_pct, 1)}%</b></div>
                   <div className="kv"><span>Momentum<Hint text={HELP.momentum} /></span><b className={`mono ${score.momentum >= 0 ? 'up' : 'down'}`}>{score.momentum >= 0 ? '+' : ''}{num(score.momentum, 1)}</b></div>
-                  {stock.price != null && <div className="kv"><span>Preço</span><b className="mono">US$ {num(stock.price, 2)}</b></div>}
+                  {stock.price != null && <div className="kv"><span>Preço</span><b className="mono">{cur} {num(stock.price, 2)}</b></div>}
                 </div>
               </div>
             </div>
@@ -262,7 +292,7 @@ function Board() {
                 const c = signal(x.heat_x)
                 return (
                   <button key={s.ticker + x.frequency} className="list-row" style={{ width: '100%', background: 'none', border: 0, borderTop: '1px solid var(--line)', textAlign: 'left' }} onClick={() => setSel({ t: s.ticker, f: x.frequency })}>
-                    <StockLogo t={s.ticker} size={26} />
+                    <StockLogo src={s.logo} t={s.ticker} size={26} />
                     <div style={{ flex: 1 }}><b>{s.ticker}</b> <span className="tiny faint">· {FREQ.find((f) => f.key === x.frequency)?.label} </span></div>
                     <b className="mono" style={{ color: c.color, fontSize: 18 }}>{Math.round(x.heat_x)}</b>
                   </button>

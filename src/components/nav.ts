@@ -34,6 +34,7 @@ export const NAV: { group: string; items: NavItem[] }[] = [
       { to: '/reports', label: 'Reports', icon: ScrollText, desc: 'Análises semanais da Treend' },
       { to: '/agenda', label: 'Agenda', icon: CalendarDays, desc: 'Eventos, reports e mentorias' },
       { to: '/stocks-invest', label: 'Stocks Invest', icon: Boxes, desc: 'Zonas de compra de ações' },
+      { to: '/acoes-b3', label: 'Ações B3', icon: Boxes, desc: 'Índice Treend para a bolsa brasileira' },
     ],
   },
   {
