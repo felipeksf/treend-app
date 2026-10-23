@@ -896,3 +896,40 @@ h1, h2, h3, .big-px, .px, .score, .wordmark { letter-spacing: -0.03em; }
 .chip:hover { color: var(--text); background: var(--surface-3); }
 .chip.on { background: var(--brand); color: #fff; }
 .brand-dot { width: 18px; height: 18px; border-radius: 5px; display: grid; place-items: center; color: #fff; font-size: 10px; font-weight: 700; }
+
+/* ── Mobile typesetting fixes ─────────────────────────────── */
+.seg button { white-space: nowrap; flex: none; }
+.heat-cell span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.card-h { flex-wrap: wrap; row-gap: 8px; }
+.card-h h3 { min-width: 0; }
+.ph h1 { overflow-wrap: anywhere; }
+.pill { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+
+/* Sliders move in opposite directions */
+.slider.slow .slider-track { animation-direction: reverse; }
+
+@media (max-width: 900px) {
+  /* closed drawer must not cast a shadow over the page */
+  .sidebar { box-shadow: none; }
+  .sidebar.open { box-shadow: 30px 0 60px rgba(0, 0, 0, 0.35); }
+  .ph { flex-direction: column; align-items: stretch; gap: 14px; margin-bottom: 22px; }
+  .ph-actions { width: 100%; }
+  .ph-actions .seg, .card-h .seg, .field .seg { max-width: 100%; overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .ph-actions .seg::-webkit-scrollbar { display: none; }
+  .seg button { padding: 0 13px; font-size: 13px; }
+  .heat-cell { min-width: 74px; height: 58px; padding: 8px 10px; }
+  .heat-cell b { font-size: 18px; }
+  .heat-cell span { font-size: 9.5px; }
+  .heat-table th { font-size: 9.5px; white-space: nowrap; }
+  .insights .ins-v { font-size: 22px; }
+  .slide { padding: 0 16px; font-size: 13px; }
+  .slider { height: 46px; } .slide { height: 46px; }
+  .kv { gap: 12px; } .kv b { text-align: right; }
+  .list-row { padding: 14px 16px; }
+  .signal-card .score { font-size: 32px; }
+  .tbl td, .tbl th { padding: 12px 14px; }
+}
+@media (max-width: 900px) {
+  .ph-actions .seg, .card-h .seg, .field .seg, .seg { overflow: visible; flex-wrap: wrap; border-radius: 18px; row-gap: 2px; }
+}
+.slider-label { background: var(--surface); padding: 0 14px 0 18px; box-shadow: 16px 0 16px -4px var(--surface); }
