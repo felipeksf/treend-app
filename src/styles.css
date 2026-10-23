@@ -876,3 +876,23 @@ h1, h2, h3, .big-px, .px, .score, .wordmark { letter-spacing: -0.03em; }
 .login-quotes .mono:nth-child(3) { font-size: 12px !important; }
 @media (max-width: 900px) { .login-quotes { grid-template-columns: repeat(3, auto); row-gap: 14px; } }
 .toggle:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Dashboard sliders (quotes + brands) */
+.sliders { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.slider { position: relative; overflow: hidden; background: var(--surface); border-radius: 18px; height: 52px; display: flex; align-items: center; mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
+.slider-track { display: flex; width: max-content; animation: marquee 70s linear infinite; }
+.slider.slow .slider-track { animation-duration: 110s; }
+.slider:hover .slider-track { animation-play-state: paused; }
+.slide { display: inline-flex; align-items: center; gap: 9px; padding: 0 22px; height: 52px; border-right: 1px solid var(--line); font-size: 13.5px; white-space: nowrap; }
+.slide-flag { font-size: 16px; }
+.slide-name { color: var(--text-2); font-weight: 550; }
+.slide b { font-weight: 650; }
+.slide-d { font-size: 12.5px; font-weight: 600; }
+.slide.brand { color: var(--text); transition: background 0.15s; }
+.slide.brand:hover { background: var(--surface-2); }
+.slide.brand img { width: 18px; height: 18px; object-fit: contain; border-radius: 4px; }
+.slider-label { position: absolute; left: 0; top: 0; bottom: 0; z-index: 2; display: grid; place-items: center; padding: 0 16px 0 18px; font-size: 12px; font-weight: 600; color: var(--brand); background: linear-gradient(90deg, var(--surface) 70%, transparent); }
+.chip { height: 32px; padding: 0 14px; border-radius: 999px; border: 0; background: var(--surface-2); color: var(--text-2); font-size: 13px; font-weight: 600; transition: background 0.15s, color 0.15s; }
+.chip:hover { color: var(--text); background: var(--surface-3); }
+.chip.on { background: var(--brand); color: #fff; }
+.brand-dot { width: 18px; height: 18px; border-radius: 5px; display: grid; place-items: center; color: #fff; font-size: 10px; font-weight: 700; }

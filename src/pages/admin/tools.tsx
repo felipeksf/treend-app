@@ -7,7 +7,6 @@ import {
 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { CURRENCIES, FREQUENCIES, PROFILES, signal, useHeatmap, pick } from '../../lib/heatmap'
-import Select from '../../components/Select'
 import TradingViewChart from '../../components/TradingViewChart'
 import { NAV } from '../../components/nav'
 import { navKey, useSidebarVisibility, useToggleSidebarItem } from '../../lib/sidebar'
@@ -528,31 +527,43 @@ function LiveAccess() {
 
 /* ── Gráfico ────────────────────────────────────────────────── */
 
-const SYMBOLS = [
+const FX = [
   { value: 'FX_IDC:USDBRL', label: 'USD/BRL' }, { value: 'FX_IDC:EURBRL', label: 'EUR/BRL' }, { value: 'FX_IDC:GBPBRL', label: 'GBP/BRL' },
-  { value: 'FX_IDC:CNYBRL', label: 'CNY/BRL' }, { value: 'BINANCE:USDTBRL', label: 'USDT/BRL' }, { value: 'BINANCE:BTCUSDT', label: 'BTC/USDT' },
-  { value: 'OANDA:XAUUSD', label: 'Ouro' }, { value: 'NASDAQ:AAPL', label: 'AAPL' }, { value: 'NASDAQ:AMZN', label: 'AMZN' },
-  { value: 'NASDAQ:GOOGL', label: 'GOOGL' }, { value: 'NASDAQ:META', label: 'META' }, { value: 'NASDAQ:MSFT', label: 'MSFT' },
-  { value: 'NASDAQ:NVDA', label: 'NVDA' }, { value: 'NASDAQ:TSLA', label: 'TSLA' },
+  { value: 'FX_IDC:CNYBRL', label: 'CNY/BRL' }, { value: 'BINANCE:USDTBRL', label: 'USDT/BRL' }, { value: 'BINANCE:BTCUSDT', label: 'BTC/USD' },
+  { value: 'OANDA:XAUUSD', label: 'XAU/USD' }, { value: 'TVC:KC1!', label: 'Coffee' },
 ]
-const INTERVALS = [{ value: '15', label: '15m' }, { value: '60', label: '1h' }, { value: '240', label: '4h' }, { value: 'D', label: '1D' }, { value: 'W', label: '1S' }]
+const STOCKS = ['AMZN', 'AAPL', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA'].map((t) => ({ value: `NASDAQ:${t}`, label: t }))
+const INTERVALS = [
+  { value: '1', label: '1m' }, { value: '5', label: '5m' }, { value: '15', label: '15m' }, { value: '30', label: '30m' },
+  { value: '60', label: '1h' }, { value: '240', label: '4h' }, { value: '720', label: '12h' }, { value: 'D', label: '1D' },
+]
 
 function Chart() {
   const [symbol, setSymbol] = useState('FX_IDC:USDBRL')
-  const [interval, setInterval] = useState('60')
+  const [interval, setInterval] = useState('5')
   const [candles, setCandles] = useState(true)
+  const [grid, setGrid] = useState(true)
+  const [logo, setLogo] = useState(true)
   const dark = document.documentElement.dataset.theme === 'dark'
+  const pill = (o: { value: string; label: string }) => (
+    <button key={o.value} className={`chip ${symbol === o.value ? 'on' : ''}`} onClick={() => setSymbol(o.value)}>{o.label}</button>
+  )
   return (
     <div className="card">
-      <div className="card-h wrap" style={{ gap: 12 }}>
-        <div style={{ width: 180 }}><Select value={symbol} onChange={setSymbol} options={SYMBOLS} /></div>
-        <div className="row gap-8 wrap">
+      <div className="card-b stack gap-12">
+        <div className="row gap-8 wrap"><span className="tiny faint" style={{ width: 70 }}>Câmbio</span>{FX.map(pill)}</div>
+        <div className="row gap-8 wrap"><span className="tiny faint" style={{ width: 70 }}>Stocks</span>{STOCKS.map(pill)}</div>
+        <div className="row between wrap" style={{ gap: 10 }}>
           <Seg value={interval} onChange={setInterval} options={INTERVALS} />
-          <Seg value={candles ? 'c' : 'l'} onChange={(v) => setCandles(v === 'c')} options={[{ value: 'c', label: 'Candles' }, { value: 'l', label: 'Linha' }]} />
+          <div className="row gap-8 wrap">
+            <Seg value={candles ? 'c' : 'l'} onChange={(v) => setCandles(v === 'c')} options={[{ value: 'c', label: 'Candles' }, { value: 'l', label: 'Linha' }]} />
+            <button className={`chip ${grid ? 'on' : ''}`} onClick={() => setGrid(!grid)}>Grade</button>
+            <button className={`chip ${logo ? 'on' : ''}`} onClick={() => setLogo(!logo)}>Logo</button>
+          </div>
         </div>
       </div>
-      <div className="card-b" style={{ height: 'min(72vh, 680px)' }}>
-        <TradingViewChart symbol={symbol} interval={interval} dark={dark} candles={candles} />
+      <div style={{ height: 'min(74vh, 720px)', padding: '0 24px 24px' }}>
+        <TradingViewChart symbol={symbol} interval={interval} dark={dark} candles={candles} grid={grid} logo={logo} />
       </div>
     </div>
   )

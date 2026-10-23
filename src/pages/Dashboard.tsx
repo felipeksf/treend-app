@@ -9,6 +9,7 @@ import { Delta, Gauge, Meter, PageHeader, Seg, Skel, Sparkline, Hint } from '../
 import { num, timeAgo } from '../lib/format'
 import { supabase } from '../lib/supabase'
 import AlertModal from '../components/AlertModal'
+import { BrandsSlider, QuotesSlider } from '../components/Sliders'
 import { useAuth } from '../lib/auth'
 import { HELP } from '../lib/help'
 
@@ -110,6 +111,8 @@ export default function Dashboard() {
         }
       />
 
+
+      <div className="sliders"><QuotesSlider /><BrandsSlider /></div>
 
       <div className="insights" style={{ marginBottom: 20 }}>
         {best && (
