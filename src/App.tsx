@@ -6,6 +6,8 @@ import Login from './pages/Login'
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from './lib/supabase'
 import { ONBOARDED_KEY } from './pages/Onboarding'
+import { useSubscription } from './lib/subscription'
+import { useRoles } from './lib/roles'
 
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const Concierge = lazy(() => import('./pages/Concierge'))
@@ -27,9 +29,15 @@ const StocksInvest = lazy(() => import('./pages/StocksInvest'))
 const Admin = lazy(() => import('./pages/Admin'))
 const Mcp = lazy(() => import('./pages/Mcp'))
 const Onboarding = lazy(() => import('./pages/Onboarding'))
+const Planos = lazy(() => import('./pages/Planos'))
+const Conta = lazy(() => import('./pages/Conta'))
 
 function Guard({ children }: { children: ReactNode }) {
   const { session, loading } = useAuth()
+  const sub = useSubscription()
+  const roles = useRoles()
+  // Same rule as the classic app: expired users go to the plans page (staff is never blocked).
+  const isStaff = roles.isAdmin || roles.isEditor
   const preview = import.meta.env.DEV && localStorage.getItem('treend-v2-preview-admin') === '1'
   const uid = session?.user.id
   // New subscribers (no WhatsApp yet, onboarding never seen) start at /onboarding — same trigger as the classic flow.
@@ -40,8 +48,9 @@ function Guard({ children }: { children: ReactNode }) {
     staleTime: Infinity,
     queryFn: async () => (await supabase.from('profiles').select('whatsapp_phone, subscription_status').eq('user_id', uid!).maybeSingle()).data,
   })
-  if (loading) return null
+  if (loading || (uid && (sub.isLoading || roles.loading))) return null
   if (!session && !preview) return <Navigate to="/login" replace />
+  if (uid && !isStaff && sub.data?.expired) return <Navigate to="/planos" replace />
   if (uid && !seen && profile.data && !profile.data.whatsapp_phone && profile.data.subscription_status === 'active') return <Navigate to="/onboarding" replace />
   return <>{children}</>
 }
@@ -52,6 +61,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/planos" element={<Suspense fallback={<Fallback />}><Planos /></Suspense>} />
       <Route path="/onboarding" element={<Suspense fallback={<Fallback />}><Onboarding /></Suspense>} />
       <Route
         element={
@@ -65,7 +75,7 @@ export default function App() {
             ['/', Dashboard], ['/concierge', Concierge], ['/projecoes', Projections], ['/mapa', Heatmap], ['/radar', RadarPage],
             ['/calculadora', CalculatorPage], ['/simulador', Simulator], ['/historico', HistoryPage], ['/noticias', News],
             ['/reports', Reports], ['/agenda', Agenda], ['/academy', Academy], ['/tutoriais', Tutorials], ['/suporte', Support],
-            ['/cmp', Cmp], ['/chat', Chat], ['/stocks-invest', StocksInvest], ['/admin/*', Admin], ['/mcp', Mcp],
+            ['/cmp', Cmp], ['/chat', Chat], ['/stocks-invest', StocksInvest], ['/admin/*', Admin], ['/mcp', Mcp], ['/conta', Conta],
           ] as const
         ).map(([p, C]) => (
           <Route key={p} path={p} element={<Suspense fallback={<Fallback />}><C /></Suspense>} />

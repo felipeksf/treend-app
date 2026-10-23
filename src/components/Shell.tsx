@@ -106,12 +106,12 @@ export default function Shell() {
           </button>
           <div className="user-chip">
             <div className="avatar">{name.slice(0, 1).toUpperCase()}</div>
-            <div className="side-foot-text" style={{ minWidth: 0, flex: 1 }}>
+            <NavLink to="/conta" className="side-foot-text" style={{ minWidth: 0, flex: 1 }} title="Minha conta">
               <div style={{ fontWeight: 550, fontSize: 13 }}>{name}</div>
               <div className="tiny faint" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {email}
               </div>
-            </div>
+            </NavLink>
             <button className="icon-btn side-foot-text" title="Sair" onClick={() => signOut().then(() => nav('/login'))}>
               <LogOut />
             </button>

@@ -963,3 +963,21 @@ h1, h2, h3, .big-px, .px, .score, .wordmark { letter-spacing: -0.03em; }
 .hint-tip.portal.below::after { top: auto; bottom: 100%; border-top-color: transparent !important; border-bottom-color: #ffffff !important; filter: drop-shadow(0 -1px 0 #e2e5ea); }
 :root[data-theme='dark'] .hint-tip.portal.below::after { border-bottom-color: #1a2030 !important; filter: none; }
 .hint-q.on { background: var(--brand); color: #fff; }
+
+/* Plans */
+.plans-page { min-height: 100vh; background: var(--bg); }
+.plans-wrap { max-width: 1080px; margin: 0 auto; padding: 24px 24px 64px; }
+.plans-title { font-family: var(--display); font-size: 44px; letter-spacing: -0.04em; font-weight: 700; margin: 0 0 10px; }
+.plans-title .serif { background: linear-gradient(90deg, #2453e0, #5a8cf5); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.plans-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.plan { position: relative; background: var(--surface); border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 14px; }
+.plan.hl { box-shadow: inset 0 0 0 2px var(--brand); }
+.plan-tag { position: absolute; top: -12px; left: 28px; background: linear-gradient(90deg, #2453e0, #5a8cf5); color: #fff; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; }
+.plan-name { font-weight: 700; font-size: 18px; }
+.plan-price { font-family: var(--display); font-size: 36px; font-weight: 700; letter-spacing: -0.03em; }
+.plan-price small { font-size: 15px; color: var(--text-3); font-weight: 600; margin-left: 4px; }
+.plan ul { list-style: none; margin: 4px 0 10px; padding: 0; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.plan li { display: flex; gap: 9px; align-items: flex-start; color: var(--text-2); font-size: 14.5px; }
+.plan li svg { color: var(--brand); flex: none; margin-top: 3px; }
+@media (max-width: 900px) { .plans-grid { grid-template-columns: 1fr; } .plans-title { font-size: 32px; } }
+.plans-title .serif { background: linear-gradient(90deg, #2453e0, #5a8cf5) !important; -webkit-background-clip: text !important; background-clip: text !important; color: transparent !important; -webkit-text-fill-color: transparent; }
