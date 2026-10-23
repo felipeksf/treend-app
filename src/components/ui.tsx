@@ -1,4 +1,5 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { ArrowDownRight, ArrowUpRight, Minus } from 'lucide-react'
 import { Area, AreaChart, ResponsiveContainer, YAxis } from 'recharts'
 import { useLocation } from 'react-router-dom'
@@ -193,13 +194,29 @@ export const TreendLogo = ({ size = 30, light = false }: { size?: number; light?
   </span>
 )
 
-/** "?" help bubble with an accessible tooltip (hover, focus or tap). */
+/** "?" help bubble. The tooltip is portaled to <body> with fixed positioning so no card can clip it. */
 export function Hint({ text, side = 'top' }: { text: ReactNode; side?: 'top' | 'bottom' }) {
-  const [open, setOpen] = useState(false)
+  const [pos, setPos] = useState<{ x: number; y: number; below: boolean } | null>(null)
+  const ref = useRef<HTMLButtonElement>(null)
+  const show = () => {
+    const r = ref.current?.getBoundingClientRect()
+    if (!r) return
+    const below = side === 'bottom' || r.top < 140
+    setPos({ x: Math.min(Math.max(r.left + r.width / 2, 150), window.innerWidth - 150), y: below ? r.bottom + 10 : r.top - 10, below })
+  }
+  const hide = () => setPos(null)
+  useEffect(() => {
+    if (!pos) return
+    window.addEventListener('scroll', hide, true)
+    return () => window.removeEventListener('scroll', hide, true)
+  }, [pos])
   return (
-    <span className={`hint ${open ? 'open' : ''} ${side}`} onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
-      <button type="button" className="hint-q" aria-label="Ajuda" onFocus={() => setOpen(true)} onBlur={() => setOpen(false)} onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOpen(!open) }}>?</button>
-      {open && <span className="hint-tip" role="tooltip">{text}</span>}
+    <span className="hint" onMouseEnter={show} onMouseLeave={hide}>
+      <button ref={ref} type="button" className={`hint-q ${pos ? 'on' : ''}`} aria-label="Ajuda" onFocus={show} onBlur={hide} onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (pos) hide(); else show() }}>?</button>
+      {pos && createPortal(
+        <span className={`hint-tip portal ${pos.below ? 'below' : 'above'}`} role="tooltip" style={{ left: pos.x, top: pos.y }}>{text}</span>,
+        document.body,
+      )}
     </span>
   )
 }
