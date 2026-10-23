@@ -4,8 +4,9 @@ import { ArrowRight, CheckCircle2, CornerDownLeft, Sparkles, Target, TrendingUp 
 import { useQuotes } from '../lib/rates'
 import { FREQUENCIES, PROFILES, momentum, pick, signal, useHeatmap, volatility } from '../lib/heatmap'
 import { useTreendRate } from '../lib/decisions'
-import { Gauge, PageHeader } from '../components/ui'
+import { Gauge, PageHeader, Hint } from '../components/ui'
 import { compact, money, num } from '../lib/format'
+import { HELP } from '../lib/help'
 
 const EXAMPLES = [
   'Sou importador e preciso pagar US$ 80 mil a um fornecedor na China até o fim do mês.',
@@ -63,7 +64,7 @@ export default function Concierge() {
 
   return (
     <div className="page" style={{ maxWidth: 1080 }}>
-      <PageHeader eyebrow={<><Sparkles size={13} /> Concierge</>} title="Descreva sua operação." accent="Nós lemos o mercado." sub="Cenário, plano de ação e estimativa de retorno — gerados a partir dos sinais Treend em tempo real." />
+      <PageHeader eyebrow={<><Sparkles size={13} /> Concierge</>} title="Descreva sua operação." accent="Nós lemos o mercado." sub="Cenário, plano de ação e estimativa de retorno — gerados a partir dos índices Treend em tempo real." />
 
       <div className="card feature" style={{ marginBottom: 16 }}>
         <div className="card-b">
@@ -103,7 +104,7 @@ export default function Concierge() {
         <div className="stack gap-16" style={{ animation: 'rise .5s var(--ease)' }}>
           <div className="grid g-main">
             <div className="card">
-              <div className="card-h"><h3><Target /> Leitura da operação</h3><span className="pill">{a.p.label} · {asked.ccy} · {FREQUENCIES.find((f) => f.key === asked.freq)?.label}</span></div>
+              <div className="card-h"><h3><Target /> Leitura da operação<Hint text={HELP.index} /></h3><span className="pill">{a.p.label} · {asked.ccy} · {FREQUENCIES.find((f) => f.key === asked.freq)?.label}</span></div>
               <div className="card-b">
                 <p style={{ fontSize: 16, lineHeight: 1.65, margin: 0 }}>
                   Você quer {a.p.buys ? 'comprar' : 'vender'} <b className="mono">{asked.ccy} {compact(asked.amount)}</b> — cerca de <b className="mono">{money(a.brl, 'BRL', 0)}</b> à cotação atual de <b className="mono">R$ {num(a.q?.bid ?? 0, 4)}</b>.
@@ -119,7 +120,7 @@ export default function Concierge() {
           </div>
 
           <div className="card">
-            <div className="card-h"><h3><CheckCircle2 /> Plano de ação sugerido</h3></div>
+            <div className="card-h"><h3><CheckCircle2 /> Plano de ação sugerido<Hint text="Divisão sugerida do volume em parcelas, conforme a força do índice. Índice alto: executar mais agora; baixo: escalonar." /></h3></div>
             <div className="card-b stack gap-12">
               {a.tranches.map((p, i) => (
                 <div key={i} className="row" style={{ gap: 16 }}>
@@ -144,7 +145,7 @@ export default function Concierge() {
             <Link to={`/projecoes?ccy=${asked.ccy}`} className="btn"><TrendingUp /> Ver zonas de preço</Link>
             <Link to="/radar" className="btn primary">Criar alerta para esta operação <ArrowRight /></Link>
           </div>
-          <p className="tiny faint">Análise indicativa gerada a partir dos sinais Treend. Não é recomendação financeira.</p>
+          <p className="tiny faint">Análise indicativa gerada a partir dos índices Treend. Não é recomendação financeira.</p>
         </div>
       )}
     </div>

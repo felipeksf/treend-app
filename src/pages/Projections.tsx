@@ -5,9 +5,10 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/auth'
 import { CURRENCIES, FREQUENCIES, PROFILES } from '../lib/heatmap'
 import { useQuotes } from '../lib/rates'
-import { PageHeader, Seg, Skel } from '../components/ui'
+import { PageHeader, Seg, Skel, Hint } from '../components/ui'
 import Gate from '../components/Gate'
 import { num, timeAgo } from '../lib/format'
+import { HELP } from '../lib/help'
 
 type Proj = { id: string; profile_type: string; currency: string; frequency: string; current_price: number; projected_price: number; rsi_level: number; direction: string; updated_at: string }
 
@@ -64,7 +65,7 @@ export default function Projections() {
               <div key={p.key} className="card">
                 <div className="card-h">
                   <h3>{buys ? <TrendingDown style={{ color: 'var(--up)' }} /> : <TrendingUp style={{ color: 'var(--up)' }} />}{p.label}</h3>
-                  <span className="pill tone" style={{ ['--c' as string]: 'var(--up)' }}><span className="d" />Cenário otimista</span>
+                  <span className="pill tone" style={{ ['--c' as string]: 'var(--up)' }}><span className="d" />Cenário otimista</span><Hint text={HELP.zones} />
                 </div>
                 <div className="card-b">
                   <div className="small faint" style={{ marginBottom: 14 }}>{buys ? 'Quanto menor, melhor para comprar.' : 'Quanto maior, melhor para vender.'}</div>

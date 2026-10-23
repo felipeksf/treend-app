@@ -1,6 +1,6 @@
 import {
   BarChart3, BookOpen, Calculator, CalendarDays, Compass, FlaskConical, Gauge, Grid3x3, History, LifeBuoy,
-  MessagesSquare, Newspaper, Radar, ScrollText, Sparkles, LineChart, Shield, Boxes, PlayCircle,
+  MessagesSquare, Newspaper, Radar, Cpu, ScrollText, Sparkles, LineChart, Shield, Boxes, PlayCircle,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -10,11 +10,12 @@ export const NAV: { group: string; items: NavItem[] }[] = [
   {
     group: 'Inteligência',
     items: [
-      { to: '/', label: 'Visão geral', icon: Gauge, kbd: '1', desc: 'Cotações, sinais e contexto do dia' },
+      { to: '/', label: 'Visão geral', icon: Gauge, kbd: '1', desc: 'Cotações, índices e contexto do dia' },
       { to: '/concierge', label: 'Concierge', icon: Sparkles, kbd: '2', desc: 'Análise guiada da sua operação' },
       { to: '/projecoes', label: 'Projeções', icon: LineChart, kbd: '3', desc: 'Zonas de preço por perfil' },
-      { to: '/mapa', label: 'Mapa de calor', icon: Grid3x3, kbd: '4', desc: 'Sinal de todas as moedas e janelas' },
+      { to: '/mapa', label: 'Mapa de calor', icon: Grid3x3, kbd: '4', desc: 'Índice de todas as moedas e janelas' },
       { to: '/radar', label: 'Radar', icon: Radar, kbd: '5', desc: 'Alertas automáticos de cenário' },
+      { to: '/mcp', label: 'MCP', icon: Cpu, desc: 'A inteligência Treend dentro da sua IA' },
     ],
   },
   {

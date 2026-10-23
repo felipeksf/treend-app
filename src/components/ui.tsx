@@ -1,6 +1,8 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { ArrowDownRight, ArrowUpRight, Minus } from 'lucide-react'
 import { Area, AreaChart, ResponsiveContainer, YAxis } from 'recharts'
+import { useLocation } from 'react-router-dom'
+import { PAGE_HELP } from '../lib/help'
 import { num } from '../lib/format'
 
 export const Logo = ({ size = 16 }: { size?: number }) => (
@@ -21,13 +23,16 @@ export function Delta({ v, digits = 2 }: { v: number; digits?: number }) {
   )
 }
 
-export function PageHeader({ eyebrow, title, accent, sub, actions }: { eyebrow?: ReactNode; title: string; accent?: string; sub?: ReactNode; actions?: ReactNode }) {
+export function PageHeader({ eyebrow, title, accent, sub, actions, help }: { eyebrow?: ReactNode; title: string; accent?: string; sub?: ReactNode; actions?: ReactNode; help?: string }) {
+  const { pathname } = useLocation()
+  const tip = help ?? PAGE_HELP[pathname] ?? PAGE_HELP[`/${pathname.split('/')[1]}`]
   return (
     <div className="ph">
       <div>
         {eyebrow && <div className="eyebrow">{eyebrow}</div>}
         <h1>
           {title} {accent && <span className="serif">{accent}</span>}
+          {tip && <Hint text={tip} side="bottom" />}
         </h1>
         {sub && <p>{sub}</p>}
       </div>
@@ -185,3 +190,14 @@ export const TreendLogo = ({ size = 30, light = false }: { size?: number; light?
     <span className={`wordmark ${light ? 'on-dark' : ''}`} style={{ fontSize: size * 0.82 }}>treend</span>
   </span>
 )
+
+/** "?" help bubble with an accessible tooltip (hover, focus or tap). */
+export function Hint({ text, side = 'top' }: { text: ReactNode; side?: 'top' | 'bottom' }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <span className={`hint ${open ? 'open' : ''} ${side}`} onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <button type="button" className="hint-q" aria-label="Ajuda" onFocus={() => setOpen(true)} onBlur={() => setOpen(false)} onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOpen(!open) }}>?</button>
+      {open && <span className="hint-tip" role="tooltip">{text}</span>}
+    </span>
+  )
+}

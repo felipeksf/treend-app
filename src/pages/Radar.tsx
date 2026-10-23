@@ -4,10 +4,11 @@ import { BellRing, Plus, Radar as RadarIcon, Trash2, Zap, Mail, Crosshair } from
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/auth'
 import { CURRENCIES, FREQUENCIES, PROFILES, pick, signal, useHeatmap } from '../lib/heatmap'
-import { Empty, Modal, PageHeader, Seg, Skel, toast } from '../components/ui'
+import { Empty, Modal, PageHeader, Seg, Skel, toast, Hint } from '../components/ui'
 import Gate from '../components/Gate'
 import { dateBR } from '../lib/format'
 import Select from '../components/Select'
+import { HELP } from '../lib/help'
 
 type Alert = { id: string; profile_type: string; currency: string; frequency: string; target_zone: string; enabled: boolean; max_alerts_per_day: number; created_at: string }
 
@@ -98,10 +99,10 @@ export default function Radar() {
         <h3>Novo alerta</h3>
         <p className="small muted" style={{ marginTop: 0 }}>Você será notificado quando a cotação atingir a zona escolhida.</p>
         <div className="stack gap-16" style={{ marginTop: 18 }}>
-          <div className="field"><label>Perfil</label><Select value={form.profile_type} onChange={(v) => setForm({ ...form, profile_type: v })} options={PROFILES.map((p) => ({ value: p.key, label: p.label }))} /></div>
+          <div className="field"><label>Perfil<Hint text={HELP.profile} /></label><Select value={form.profile_type} onChange={(v) => setForm({ ...form, profile_type: v })} options={PROFILES.map((p) => ({ value: p.key, label: p.label }))} /></div>
           <div className="field"><label>Moeda</label><Seg value={form.currency} onChange={(v) => setForm({ ...form, currency: v })} options={CURRENCIES.map((c) => ({ value: c, label: c }))} /></div>
-          <div className="field"><label>Janela</label><Select value={form.frequency} onChange={(v) => setForm({ ...form, frequency: v })} options={FREQUENCIES.map((f) => ({ value: f.key, label: f.label }))} /></div>
-          <div className="field"><label>Zona alvo</label><Seg value={form.zone} onChange={(v) => setForm({ ...form, zone: v })} options={['1', '2', '3', '4', '5', '6'].map((z) => ({ value: z, label: `Z${z}` }))} /><span className="tiny faint">Zonas mais altas são mais raras e mais vantajosas.</span></div>
+          <div className="field"><label>Janela<Hint text={HELP.frequency} /></label><Select value={form.frequency} onChange={(v) => setForm({ ...form, frequency: v })} options={FREQUENCIES.map((f) => ({ value: f.key, label: f.label }))} /></div>
+          <div className="field"><label>Zona alvo<Hint text={HELP.zones} /></label><Seg value={form.zone} onChange={(v) => setForm({ ...form, zone: v })} options={['1', '2', '3', '4', '5', '6'].map((z) => ({ value: z, label: `Z${z}` }))} /><span className="tiny faint">Zonas mais altas são mais raras e mais vantajosas.</span></div>
           <div className="field"><div className="row between"><label>Máximo de alertas por dia</label><b className="mono">{form.max}</b></div><input type="range" min={1} max={10} value={form.max} onChange={(e) => setForm({ ...form, max: +e.target.value })} /></div>
           <div className="row gap-8" style={{ justifyContent: 'flex-end' }}>
             <button className="btn ghost" onClick={() => setOpen(false)}>Cancelar</button>

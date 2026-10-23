@@ -3,9 +3,10 @@ import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis
 import { Calculator as CalcIcon, CheckCircle2, AlertTriangle, XCircle, Save } from 'lucide-react'
 import { useQuotes } from '../lib/rates'
 import { useAddDecision, useTreendRate } from '../lib/decisions'
-import { PageHeader, Seg, toast } from '../components/ui'
+import { PageHeader, Seg, toast, Hint } from '../components/ui'
 import { compact, money, num } from '../lib/format'
 import { useProfile } from './Dashboard'
+import { HELP } from '../lib/help'
 
 const CCYS = ['USD', 'EUR', 'GBP', 'CNY']
 const FREQ = [
@@ -77,7 +78,7 @@ export default function Calculator() {
               <div className="row gap-4 wrap">{[5000, 20000, 50000, 100000].map((v) => <button key={v} className="btn sm ghost" onClick={() => setVolume(v)}>{compact(v)}</button>)}</div>
             </div>
             <div className="field">
-              <div className="row between"><label>Spread que você paga hoje</label><b className="mono">{num(spread, 2)}%</b></div>
+              <div className="row between"><label>Spread que você paga hoje<Hint text={HELP.spread} /></label><b className="mono">{num(spread, 2)}%</b></div>
               <input type="range" min={0} max={5} step={0.05} value={spread} onChange={(e) => setSpread(+e.target.value)} />
               <div className="row between tiny faint"><span>0%</span><span>Referência Treend {num(treendPct, 2)}%</span><span>5%</span></div>
             </div>
@@ -100,7 +101,7 @@ export default function Calculator() {
             <div className="card-b">
               <div className="row between wrap" style={{ gap: 16 }}>
                 <div>
-                  <div className="small muted">Você pode economizar por mês</div>
+                  <div className="small muted">Você pode economizar por mês<Hint text="Diferença entre o que você paga hoje e a taxa de referência Treend, multiplicada pelo seu volume e frequência." /></div>
                   <div className="big-px mono" style={{ marginTop: 10, color: r.month > 0 ? 'var(--text)' : 'var(--down)' }}><small>R$</small>{num(Math.max(0, r.month), 2)}</div>
                   <div className="small faint" style={{ marginTop: 8 }}>{num(r.diffPct, 2)} p.p. acima da referência · {money(r.perOpBRL)} por operação</div>
                 </div>
@@ -143,7 +144,7 @@ export default function Calculator() {
           </div>
 
           <div className="card">
-            <div className="card-h"><h3>E se o câmbio mudar?</h3><span className="mono small" style={{ color: shock > 0 ? 'var(--down)' : shock < 0 ? 'var(--up)' : 'var(--text-2)' }}>{shock > 0 ? '+' : ''}{num(shock, 1)}%</span></div>
+            <div className="card-h"><h3>E se o câmbio mudar?<Hint text="Arraste para simular uma alta ou queda da moeda e ver o impacto no custo mensal em reais." /></h3><span className="mono small" style={{ color: shock > 0 ? 'var(--down)' : shock < 0 ? 'var(--up)' : 'var(--text-2)' }}>{shock > 0 ? '+' : ''}{num(shock, 1)}%</span></div>
             <div className="card-b stack gap-12">
               <input type="range" min={-10} max={10} step={0.5} value={shock} onChange={(e) => setShock(+e.target.value)} />
               <div className="row between tiny faint"><span>−10%</span><span>atual R$ {num(spot, 4)}</span><span>+10%</span></div>

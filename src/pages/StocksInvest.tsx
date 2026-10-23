@@ -4,9 +4,10 @@ import { BellRing, Boxes, Lock, RefreshCw, Trash2, TriangleAlert } from 'lucide-
 import { supabase, CLASSIC_URL } from '../lib/supabase'
 import { signal } from '../lib/heatmap'
 import { useRoles } from '../lib/roles'
-import { Delta, Empty, Gauge, Modal, PageHeader, Seg, Skel, toast } from '../components/ui'
+import { Delta, Empty, Gauge, Modal, PageHeader, Seg, Skel, toast, Hint } from '../components/ui'
 import Gate from '../components/Gate'
 import { num, timeAgo } from '../lib/format'
+import { HELP } from '../lib/help'
 
 /* Same source as the classic Stocks Invest: edge function `stocks-heatmap` with
    { mode: 'invest' } — buy-zone scores. */
@@ -233,8 +234,8 @@ function Board() {
                 <RsiBar rsi={score.rsi} />
                 <div>
                   <div className="kv"><span>Variação na janela</span><b className={`mono ${score.change_pct >= 0 ? 'up' : 'down'}`}>{score.change_pct >= 0 ? '+' : ''}{num(score.change_pct, 2)}%</b></div>
-                  <div className="kv"><span>Volatilidade</span><b className="mono">{num(score.volatility_pct, 1)}%</b></div>
-                  <div className="kv"><span>Momentum</span><b className={`mono ${score.momentum >= 0 ? 'up' : 'down'}`}>{score.momentum >= 0 ? '+' : ''}{num(score.momentum, 1)}</b></div>
+                  <div className="kv"><span>Volatilidade<Hint text={HELP.volatility} /></span><b className="mono">{num(score.volatility_pct, 1)}%</b></div>
+                  <div className="kv"><span>Momentum<Hint text={HELP.momentum} /></span><b className={`mono ${score.momentum >= 0 ? 'up' : 'down'}`}>{score.momentum >= 0 ? '+' : ''}{num(score.momentum, 1)}</b></div>
                   {stock.price != null && <div className="kv"><span>Preço</span><b className="mono">US$ {num(stock.price, 2)}</b></div>}
                 </div>
               </div>
@@ -255,7 +256,7 @@ function Board() {
             </div>
           )}
           <div className="card">
-            <div className="card-h"><h3>Zonas mais fortes agora</h3></div>
+            <div className="card-h"><h3>Zonas mais fortes agora<Hint text="As três combinações de ação e janela com maior índice de oportunidade neste momento." /></h3></div>
             <div style={{ marginTop: 8 }}>
               {ranked.map(({ s, x }) => {
                 const c = signal(x.heat_x)
@@ -290,7 +291,7 @@ function RsiBar({ rsi }: { rsi: number | null }) {
   const v = Math.max(0, Math.min(100, rsi ?? 50))
   return (
     <div>
-      <div className="row between tiny faint" style={{ marginBottom: 8 }}><span>Pressão de preço</span><b className="mono" style={{ color: 'var(--text)' }}>{rsi != null ? num(rsi, 1) : '—'}</b></div>
+      <div className="row between tiny faint" style={{ marginBottom: 8 }}><span>Pressão de preço<Hint text="Quanto o preço já subiu ou caiu na janela. À esquerda: espaço para compra; à direita: preço esticado." /></span><b className="mono" style={{ color: 'var(--text)' }}>{rsi != null ? num(rsi, 1) : '—'}</b></div>
       <div className="rsi-bar">
         <i style={{ left: '30%' }} /><i style={{ left: '70%' }} />
         <div className="knob" style={{ left: `${v}%` }} />
@@ -323,7 +324,7 @@ function StockAlertModal({ ticker, frequency, current, onClose, onCreate }: { ti
         </div>
       </div>
       <div className="stack gap-16" style={{ marginTop: 18 }}>
-        <div className="field"><label>Janela</label><Seg value={freq} onChange={setFreq} options={FREQ.map((f) => ({ value: f.key, label: f.label }))} /></div>
+        <div className="field"><label>Janela<Hint text={HELP.frequency} /></label><Seg value={freq} onChange={setFreq} options={FREQ.map((f) => ({ value: f.key, label: f.label }))} /></div>
         <div className="field">
           <div className="row between"><label>Avise quando o índice chegar a</label><b className="mono" style={{ fontSize: 18 }}>{target}</b></div>
           <input type="range" min={50} max={100} step={5} value={target} onChange={(e) => setTarget(+e.target.value)} />

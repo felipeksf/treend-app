@@ -3,7 +3,7 @@ import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YA
 import { Download, History as HistoryIcon, Mail } from 'lucide-react'
 import { emailDecision, useDecisions, type Decision } from '../lib/decisions'
 import { useQuotes } from '../lib/rates'
-import { Empty, PageHeader, Seg, Skel, toast } from '../components/ui'
+import { Empty, PageHeader, Seg, Skel, toast, Hint } from '../components/ui'
 import Gate from '../components/Gate'
 import { compact, dateBR, money, num } from '../lib/format'
 
@@ -55,7 +55,7 @@ export default function History() {
                 <div className="card-b">
                   <div className="row between wrap gap-12">
                     <div>
-                      <div className="small muted">Economia acumulada (em R$)</div>
+                      <div className="small muted">Economia acumulada (em R$)<Hint text="Soma da economia de todas as decisões salvas, convertida para reais pela cotação atual." /></div>
                       <div className="big-px mono" style={{ marginTop: 10 }}><small>R$</small>{compact(brlTotal)}</div>
                     </div>
                     <Seg value={ccy} onChange={setCcy} options={[{ value: 'all', label: 'Todas' }, ...currencies.map((c) => ({ value: c, label: c }))]} />

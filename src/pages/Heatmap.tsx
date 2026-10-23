@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { Grid3x3 } from 'lucide-react'
 import { CURRENCIES, FREQUENCIES, PROFILES, pick, signal, useHeatmap, volatility, momentum, type HeatScore } from '../lib/heatmap'
 import { useQuotes } from '../lib/rates'
-import { Gauge, PageHeader, Seg, Skel } from '../components/ui'
+import { Gauge, PageHeader, Seg, Skel, Hint } from '../components/ui'
 import { num, timeAgo } from '../lib/format'
 import { useProfile } from './Dashboard'
+import AlertModal from '../components/AlertModal'
+import { HELP } from '../lib/help'
 
 const LEGEND = [
   { t: 'Crítica', c: 'var(--down)', r: '0–19' },
@@ -21,6 +23,7 @@ export default function Heatmap() {
   const { data: q } = useQuotes()
   const nav = useNavigate()
   const [focus, setFocus] = useState<HeatScore | null>(null)
+  const [alertFor, setAlertFor] = useState<HeatScore | null>(null)
 
   const updated = data?.length ? data.reduce((a, b) => (a.published_at > b.published_at ? a : b)).published_at : null
   const sel = focus && focus.profile_type === profile ? focus : pick(data, profile, 'USD', 'daily')
@@ -64,7 +67,7 @@ export default function Heatmap() {
                               <div
                                 className="heat-cell"
                                 style={{ ['--c' as string]: g.color, ['--a' as string]: `${10 + Math.abs(x - 50) * 0.5}%`, outline: on ? '2px solid var(--text)' : undefined, outlineOffset: 2 }}
-                                onClick={() => setFocus(s)}
+                                onClick={() => { setFocus(s); setAlertFor(s) }}
                               >
                                 <b>{Math.round(x)}</b>
                                 <span>{g.label}</span>
@@ -99,14 +102,15 @@ export default function Heatmap() {
             <div style={{ display: 'grid', placeItems: 'center' }}><Gauge value={sel?.heat_x ?? 50} color={sg.color} size={200} label="CONFIANÇA" /></div>
             <div style={{ textAlign: 'center', fontSize: 18, fontWeight: 600, letterSpacing: '-0.02em', marginTop: -8 }}>{sg.summary}</div>
             <div>
-              <div className="kv"><span>Volatilidade</span><b className="mono">{num(volatility(sel), 1)}%</b></div>
-              <div className="kv"><span>Momentum</span><b className="mono">{num(momentum(sel), 1)}</b></div>
+              <div className="kv"><span>Volatilidade<Hint text={HELP.volatility} /></span><b className="mono">{num(volatility(sel), 1)}%</b></div>
+              <div className="kv"><span>Momentum<Hint text={HELP.momentum} /></span><b className="mono">{num(momentum(sel), 1)}</b></div>
               <div className="kv"><span>Cotação</span><b className="mono">R$ {sel && q?.[sel.currency] ? num(q[sel.currency].bid, 4) : '—'}</b></div>
             </div>
             <button className="btn primary" onClick={() => nav(`/projecoes?ccy=${sel?.currency ?? 'USD'}&f=${sel?.frequency ?? 'daily'}`)}>Ver projeções</button>
           </div>
         </div>
       </div>
+      {alertFor && <AlertModal currency={alertFor.currency} frequency={alertFor.frequency} profile={profile} onClose={() => setAlertFor(null)} />}
     </div>
   )
 }

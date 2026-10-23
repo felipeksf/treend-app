@@ -148,7 +148,7 @@ export default function Shell() {
             <div className="banner" style={{ margin: 0 }}>
               <Coins />
               <span>
-                Você está no <b>modo visitante</b>: cotações, sinais e notícias são reais. Entre na sua conta para ver projeções, histórico, alertas e reports.
+                Você está no <b>modo visitante</b>: cotações, índices e notícias são reais. Entre na sua conta para ver projeções, histórico, alertas e reports.
               </span>
               <button className="btn sm" style={{ marginLeft: 'auto' }} onClick={() => signOut().then(() => nav('/login'))}>
                 Entrar

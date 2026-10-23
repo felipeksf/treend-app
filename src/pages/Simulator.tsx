@@ -4,11 +4,12 @@ import { FlaskConical, ArrowRight, Save } from 'lucide-react'
 import { useQuotes } from '../lib/rates'
 import { pick, useHeatmap, volatility, PROFILES } from '../lib/heatmap'
 import { useAddDecision, useDecisions, useTreendRate } from '../lib/decisions'
-import { PageHeader, Seg, toast } from '../components/ui'
+import { PageHeader, Seg, toast, Hint } from '../components/ui'
 import { compact, dateBR, money, num } from '../lib/format'
 import { useProfile } from './Dashboard'
 import { useAuth } from '../lib/auth'
 import Select from '../components/Select'
+import { HELP } from '../lib/help'
 
 const CCYS = ['USD', 'EUR', 'GBP', 'CNY']
 const PERIODS = [
@@ -56,12 +57,12 @@ export default function Simulator() {
       <div className="grid g-side" style={{ alignItems: 'start' }}>
         <div className="card">
           <div className="card-b stack gap-16">
-            <div className="field"><label>Perfil</label>
+            <div className="field"><label>Perfil<Hint text={HELP.profile} /></label>
               <Select value={profile} onChange={setProfile} options={PROFILES.map((p) => ({ value: p.key, label: p.label }))} />
             </div>
             <div className="field"><label>Moeda</label><Seg value={ccy} onChange={setCcy} options={CCYS.map((c) => ({ value: c, label: <>{quotes?.[c]?.flag} {c}</> }))} /></div>
             <div className="field"><label>Volume por operação ({ccy})</label><div className="input-affix"><span>{ccy}</span><input className="input" type="number" min={0} value={volume} onChange={(e) => setVolume(+e.target.value)} /></div></div>
-            <div className="field"><div className="row between"><label>Spread pago hoje</label><b className="mono">{num(spread, 2)}%</b></div><input type="range" min={0} max={5} step={0.05} value={spread} onChange={(e) => setSpread(+e.target.value)} /></div>
+            <div className="field"><div className="row between"><label>Spread pago hoje<Hint text={HELP.spread} /></label><b className="mono">{num(spread, 2)}%</b></div><input type="range" min={0} max={5} step={0.05} value={spread} onChange={(e) => setSpread(+e.target.value)} /></div>
             <div className="field"><div className="row between"><label>Operações por mês</label><b className="mono">{times}x</b></div><input type="range" min={1} max={30} value={times} onChange={(e) => setTimes(+e.target.value)} /></div>
             <button className="btn primary" onClick={save} disabled={add.isPending}><Save /> Registrar simulação</button>
           </div>
@@ -70,7 +71,7 @@ export default function Simulator() {
         <div className="stack gap-16">
           <div className="card feature">
             <div className="card-b">
-              <div className="small muted">Perda estimada por mês</div>
+              <div className="small muted">Perda estimada por mês<Hint text="Soma do spread acima da referência com o custo médio de operar fora da melhor janela de preço." /></div>
               <div className="big-px mono" style={{ marginTop: 10, color: 'var(--down)' }}><small>R$</small>{num(r.month, 2)}</div>
               <div className="small faint" style={{ marginTop: 8 }}>{money(r.year)} por ano · {times} operação(ões) de {ccy} {compact(volume)}</div>
 

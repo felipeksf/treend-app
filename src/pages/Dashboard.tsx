@@ -5,10 +5,12 @@ import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YA
 import { Activity, ArrowRight, ChevronRight, Clock, Newspaper } from 'lucide-react'
 import { useHistory, useQuotes, type Quote } from '../lib/rates'
 import { FREQUENCIES, PROFILES, momentum, pick, signal, useHeatmap, volatility } from '../lib/heatmap'
-import { Delta, Gauge, Meter, PageHeader, Seg, Skel, Sparkline } from '../components/ui'
+import { Delta, Gauge, Meter, PageHeader, Seg, Skel, Sparkline, Hint } from '../components/ui'
 import { num, timeAgo } from '../lib/format'
 import { supabase } from '../lib/supabase'
+import AlertModal from '../components/AlertModal'
 import { useAuth } from '../lib/auth'
+import { HELP } from '../lib/help'
 
 const HERO_CCY = ['USD', 'EUR', 'GBP', 'CNY']
 const GRID_CCY = ['USD', 'EUR', 'GBP', 'CNY', 'JPY', 'PTAX', 'USDT', 'BTC']
@@ -71,6 +73,7 @@ export default function Dashboard() {
   const setCcy = (c: string) => setParams({ ccy: c }, { replace: true })
   const [profile, setProfile] = useProfile()
   const [range, setRange] = useState<'7' | '30' | '90'>('30')
+  const [alertFor, setAlertFor] = useState<{ c: string; f?: string } | null>(null)
   const { data: quotes } = useQuotes()
   const { data: heat } = useHeatmap()
   const { data: hist } = useHistory(ccy, +range)
@@ -101,7 +104,7 @@ export default function Dashboard() {
         title={`${greeting()}${name ? `, ${name}` : ''}.`}
         accent="Seu mercado hoje."
         
-        sub={<>Sinais calibrados para o perfil <b style={{ color: 'var(--text)' }}>{prof.label}</b>. {updated && <span className="faint">Atualizado há {timeAgo(updated)}.</span>}</>}
+        sub={<>Leitura calibrada para o perfil <b style={{ color: 'var(--text)' }}>{prof.label}</b>. {updated && <span className="faint">Atualizado há {timeAgo(updated)}.</span>}</>}
         actions={
           <Seg value={profile} onChange={setProfile} options={PROFILES.map((p) => ({ value: p.key, label: p.label }))} />
         }
@@ -111,14 +114,14 @@ export default function Dashboard() {
       <div className="insights" style={{ marginBottom: 20 }}>
         {best && (
           <Link to={`/mapa`} className="ins">
-            <span className="ins-k">Melhor janela agora</span>
+            <span className="ins-k">Melhor janela agora<Hint text="A combinação de moeda e janela com o maior índice Treend agora, para o seu perfil." /></span>
             <span className="ins-v">{best.currency} <em>· {FREQUENCIES.find((f) => f.key === best.frequency)?.label}</em></span>
             <span className="ins-s"><i style={{ background: signal(best.heat_x).color }} />{signal(best.heat_x).label} · {Math.round(best.heat_x)}/100</span>
             <ChevronRight className="ins-go" />
           </Link>
         )}
         <Link to="/projecoes" className="ins">
-          <span className="ins-k">PTAX · Banco Central</span>
+          <span className="ins-k">PTAX · Banco Central<Hint text={HELP.ptax} /></span>
           <span className="ins-v">R$ {quotes?.PTAX ? num(quotes.PTAX.bid, 4) : '—'}</span>
           <span className="ins-s">spread vs. comercial {quotes?.PTAX && quotes?.USD ? num(((quotes.USD.bid - quotes.PTAX.bid) / quotes.PTAX.bid) * 100, 2) : '—'}%</span>
           <ChevronRight className="ins-go" />
@@ -198,7 +201,7 @@ export default function Dashboard() {
         </div>
         <div className="r">
           <div className="row between">
-            <span className="small muted">Sinal Treend · 1x ao dia</span>
+            <span className="small muted">Índice Treend · 1x ao dia<Hint text={HELP.index} /></span>
             <span className="pill tone" style={{ ['--c' as string]: sig.color }}><span className="d" />{sig.label}</span>
           </div>
           <div style={{ display: 'grid', placeItems: 'center', padding: '4px 0' }}>
@@ -210,8 +213,8 @@ export default function Dashboard() {
           </div>
           <Meter value={daily?.heat_x ?? 50} />
           <div>
-            <div className="kv"><span>Volatilidade</span><b className="mono">{num(volatility(daily), 1)}%</b></div>
-            <div className="kv"><span>Momentum</span><b className="mono">{momentum(daily) >= 0 ? '+' : ''}{num(momentum(daily), 1)}</b></div>
+            <div className="kv"><span>Volatilidade<Hint text={HELP.volatility} /></span><b className="mono">{num(volatility(daily), 1)}%</b></div>
+            <div className="kv"><span>Momentum<Hint text={HELP.momentum} /></span><b className="mono">{momentum(daily) >= 0 ? '+' : ''}{num(momentum(daily), 1)}</b></div>
             {stats && <div className="kv"><span>Faixa {range}D</span><b className="mono">{num(stats.min, 4)} – {num(stats.max, 4)}</b></div>}
           </div>
           <Link to={`/projecoes?ccy=${ccy}`} className="btn primary" style={{ marginTop: 'auto' }}>
@@ -223,7 +226,7 @@ export default function Dashboard() {
       {/* Timeframes */}
       <div className="card" style={{ marginBottom: 16 }}>
         <div className="card-h">
-          <h3><Clock /> Leitura por janela de operação</h3>
+          <h3><Clock /> Leitura por janela de operação<Hint text={HELP.frequency} /></h3>
           <Link to="/mapa" className="btn ghost sm">Mapa completo <ArrowRight /></Link>
         </div>
         <div className="card-b">
@@ -232,7 +235,7 @@ export default function Dashboard() {
               const s = pick(heat, profile, ccy, f.key)
               const g = signal(s?.heat_x ?? 50)
               return (
-                <div key={f.key} className="card signal-card" style={{ ['--c' as string]: g.color, boxShadow: 'none', background: 'var(--surface-2)' }}>
+                <div key={f.key} className="card signal-card" role="button" title="Criar alerta para esta janela" onClick={() => setAlertFor({ c: ccy, f: f.key })} style={{ ['--c' as string]: g.color, boxShadow: 'none', background: 'var(--surface-2)', cursor: 'pointer' }}>
                   <div className="row between">
                     <span className="small muted">{f.label}</span>
                     <span className="kbd">{f.short}</span>
@@ -256,7 +259,7 @@ export default function Dashboard() {
         <div className="stack gap-16">
           {/* Quotes */}
           <div className="grid g-4">
-            {GRID_CCY.map((c) => (quotes?.[c] ? <QuoteCard key={c} q={quotes[c]} selected={c === ccy} onClick={() => HERO_CCY.includes(c) && setCcy(c)} /> : <div key={c} className="card quote-card"><Skel h={80} /></div>))}
+            {GRID_CCY.map((c) => (quotes?.[c] ? <QuoteCard key={c} q={quotes[c]} selected={c === ccy} onClick={() => { if (HERO_CCY.includes(c)) setCcy(c); setAlertFor({ c }) }} /> : <div key={c} className="card quote-card"><Skel h={80} /></div>))}
           </div>
         </div>
 
@@ -281,6 +284,7 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {alertFor && <AlertModal currency={alertFor.c} frequency={alertFor.f} profile={profile} onClose={() => setAlertFor(null)} />}
       <p className="tiny faint" style={{ marginTop: 32, maxWidth: 760 }}>
         A Treend não faz recomendação cambial ou financeira. As informações são indicativas e a decisão final é de responsabilidade do usuário.
       </p>

@@ -11,7 +11,7 @@ type Ticket = { id: string; title: string; subject: string; status?: string | nu
 
 const FAQ = [
   ['O que é o índice de confiança?', 'Uma nota de 0 a 100 que resume o quão favorável está o momento para o seu perfil. Acima de 50 o cenário é interessante; abaixo de 20, crítico.'],
-  ['A Treend faz recomendação de investimento?', 'Não. Os sinais são indicativos e a decisão final é sempre sua.'],
+  ['A Treend faz recomendação de investimento?', 'Não. As leituras são indicativas e a decisão final é sempre sua.'],
   ['Com que frequência os dados são atualizados?', 'Cotações a cada 30 segundos e o mapa de calor a cada minuto.'],
   ['Como funcionam os alertas do Radar?', 'Você escolhe perfil, moeda, janela e zona alvo. Nosso agente monitora 24/7 e envia e-mail e push quando o cenário aparece.'],
 ]
