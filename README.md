@@ -51,3 +51,18 @@ CMP, Chat, Stocks e Admin continuam no app clássico, com link na barra lateral.
 
 - Login com Google em `localhost` só funciona se `http://localhost:5199` estiver nas Redirect URLs do Supabase Auth. Login com e-mail e senha funciona direto.
 - O Concierge gera a análise no navegador, cruzando cotação, mapa de calor e spread de referência.
+
+## Publicação
+
+Hospedagem: GitHub Pages (mesmo esquema do `links.treend.com.br`), domínio `novo.treend.com.br`.
+
+1. Criar o repositório vazio `felipeksf/treend-app` no GitHub (público, sem README).
+2. Publicar: `./deploy.sh` (gera o build e envia para o branch `gh-pages`); depois `git push -u origin main` para o código.
+3. GitHub → Settings → Pages → Branch `gh-pages` / root. Custom domain `novo.treend.com.br`, Enforce HTTPS.
+4. Umbler DNS: `CNAME novo → felipeksf.github.io`.
+5. Supabase → Authentication → URL Configuration → Redirect URLs: adicionar `https://novo.treend.com.br/**`.
+
+### Virada oficial (quando aprovar)
+- Lovable → Settings → Domains: trocar `app.treend.com.br` por `legado.treend.com.br` (Umbler: `A legado → 185.158.133.1`).
+- Umbler: `app` passa a ser `CNAME → felipeksf.github.io`; `public/CNAME` vira `app.treend.com.br`; build com `VITE_CLASSIC_URL=https://legado.treend.com.br ./deploy.sh`.
+- Supabase Redirect URLs: incluir `https://legado.treend.com.br/**`.
