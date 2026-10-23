@@ -60,8 +60,8 @@ export default function Login() {
           </p>
         </div>
 
-        <div className="row gap-24 wrap" style={{ fontSize: 13 }}>
-          {['USD', 'EUR', 'GBP', 'USDT', 'BTC'].map((c) =>
+        <div className="login-quotes">
+          {['USD', 'EUR', 'GBP', 'CNY', 'USDT', 'BTC'].map((c) =>
             q?.[c] ? (
               <div key={c} className="stack gap-4">
                 <span style={{ color: '#8fa3c7', fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{q[c].short}</span>

@@ -868,3 +868,10 @@ h1, h2, h3, .big-px, .px, .score, .wordmark { letter-spacing: -0.03em; }
   .onb2 .auth-art { position: relative; height: auto; min-height: 220px; }
   .onb-side { padding: 20px 16px 32px; }
 }
+
+/* Login quotes — six in one row */
+.login-quotes { display: grid; grid-template-columns: repeat(6, minmax(0, auto)); justify-content: start; column-gap: clamp(14px, 2vw, 28px); font-size: 13px; }
+.login-quotes > div { white-space: nowrap; }
+.login-quotes .mono:nth-child(2) { font-size: clamp(13px, 1.15vw, 17px) !important; }
+.login-quotes .mono:nth-child(3) { font-size: 12px !important; }
+@media (max-width: 900px) { .login-quotes { grid-template-columns: repeat(3, auto); row-gap: 14px; } }
