@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Lock } from 'lucide-react'
 import { useAuth } from '../lib/auth'
 
-/** Renders children only for signed-in users; guests get a polished prompt. */
+/** Renders children only for signed-in users; signed-out visitors get a sign-in prompt. */
 export default function Gate({ children, what }: { children: ReactNode; what: string }) {
   const { session, signOut } = useAuth()
   const nav = useNavigate()

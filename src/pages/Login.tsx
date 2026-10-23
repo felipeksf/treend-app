@@ -4,18 +4,15 @@ import { ArrowRight, Eye, EyeOff, Lock, Mail } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/auth'
 import { TreendLogo } from '../components/ui'
-import { useQuotes } from '../lib/rates'
-import { num } from '../lib/format'
 
 export default function Login() {
-  const { session, enterGuest } = useAuth()
+  const { session } = useAuth()
   const nav = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [show, setShow] = useState(false)
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
-  const { data: q } = useQuotes()
 
   if (session) return <Navigate to="/" replace />
 
@@ -59,23 +56,7 @@ export default function Login() {
             Leituras em tempo real, projeções por perfil e alertas automáticos — o aliado que importadores, exportadores e viajantes usam para escolher o momento certo.
           </p>
         </div>
-
-        <div className="row gap-24 wrap" style={{ fontSize: 13 }}>
-          {['USD', 'EUR', 'GBP', 'BTC'].map((c) =>
-            q?.[c] ? (
-              <div key={c} className="stack gap-4">
-                <span style={{ color: '#8fa3c7', fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{q[c].short}</span>
-                <span className="mono" style={{ fontSize: 17 }}>
-                  {q[c].prefix} {num(q[c].bid, c === 'BTC' ? 0 : 4)}
-                </span>
-                <span className="mono" style={{ color: q[c].pctChange >= 0 ? '#7ff0c6' : '#ff8a96', fontSize: 12 }}>
-                  {q[c].pctChange >= 0 ? '+' : ''}
-                  {num(q[c].pctChange, 2)}%
-                </span>
-              </div>
-            ) : null,
-          )}
-        </div>
+        <div className="tiny" style={{ color: '#8fa3c7' }}>A Treend não faz recomendação cambial ou financeira.</div>
       </section>
 
       <section className="auth-form">
@@ -125,10 +106,6 @@ export default function Login() {
               {busy ? 'Entrando…' : 'Entrar na plataforma'} <ArrowRight />
             </button>
           </form>
-
-          <button className="btn ghost" style={{ width: '100%', marginTop: 14 }} onClick={() => { enterGuest(); nav('/') }}>
-            Explorar como visitante
-          </button>
 
           <p className="tiny faint" style={{ marginTop: 32, textAlign: 'center' }}>
             Ainda não tem acesso? <a href="https://treend.com.br" style={{ color: 'var(--text)' }}>Fale com a Treend ↗</a>

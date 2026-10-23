@@ -24,7 +24,7 @@ export default function Shell() {
   const [palette, setPalette] = useState(false)
   const nav = useNavigate()
   const loc = useLocation()
-  const { session, guest, signOut } = useAuth()
+  const { session, signOut } = useAuth()
   const { isAdmin } = useRoles()
   const visible = (i: { adminOnly?: boolean }) => !i.adminOnly || isAdmin
 
@@ -143,19 +143,6 @@ export default function Shell() {
           </button>
         </header>
         <Ticker />
-        {guest && !session && (
-          <div className="guest-wrap" style={{ padding: '10px 28px 0' }}>
-            <div className="banner" style={{ margin: 0 }}>
-              <Coins />
-              <span>
-                Você está no <b>modo visitante</b>: cotações, índices e notícias são reais. Entre na sua conta para ver projeções, histórico, alertas e reports.
-              </span>
-              <button className="btn sm" style={{ marginLeft: 'auto' }} onClick={() => signOut().then(() => nav('/login'))}>
-                Entrar
-              </button>
-            </div>
-          </div>
-        )}
         <main>
           <Outlet />
         </main>

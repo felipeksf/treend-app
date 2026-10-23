@@ -41,7 +41,7 @@ export const useAddDecision = () => {
   })
 }
 
-/** Treend's published reference spread (%). Falls back to 0.5% for guests. */
+/** Treend's published reference spread (%). Falls back to 0.5% when unavailable. */
 export const useTreendRate = () => {
   const { session } = useAuth()
   return useQuery({

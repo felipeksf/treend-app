@@ -29,7 +29,8 @@ const Mcp = lazy(() => import('./pages/Mcp'))
 const Onboarding = lazy(() => import('./pages/Onboarding'))
 
 function Guard({ children }: { children: ReactNode }) {
-  const { session, loading, guest } = useAuth()
+  const { session, loading } = useAuth()
+  const preview = import.meta.env.DEV && localStorage.getItem('treend-v2-preview-admin') === '1'
   const uid = session?.user.id
   // New subscribers (no WhatsApp yet, onboarding never seen) start at /onboarding — same trigger as the classic flow.
   const seen = typeof localStorage !== 'undefined' && localStorage.getItem(ONBOARDED_KEY) === '1'
@@ -40,7 +41,7 @@ function Guard({ children }: { children: ReactNode }) {
     queryFn: async () => (await supabase.from('profiles').select('whatsapp_phone, subscription_status').eq('user_id', uid!).maybeSingle()).data,
   })
   if (loading) return null
-  if (!session && !guest) return <Navigate to="/login" replace />
+  if (!session && !preview) return <Navigate to="/login" replace />
   if (uid && !seen && profile.data && !profile.data.whatsapp_phone && profile.data.subscription_status === 'active') return <Navigate to="/onboarding" replace />
   return <>{children}</>
 }
