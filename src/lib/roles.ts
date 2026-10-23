@@ -15,7 +15,9 @@ export const useRoles = () => {
       return (data ?? []).map((r) => r.role as string)
     },
   })
-  const roles = q.data ?? []
+  // Local-only layout preview (never in production builds).
+  const preview = import.meta.env.DEV && typeof localStorage !== 'undefined' && localStorage.getItem('treend-v2-preview-admin') === '1'
+  const roles = preview ? ['admin'] : q.data ?? []
   const isAdmin = roles.includes('admin')
   return {
     roles,

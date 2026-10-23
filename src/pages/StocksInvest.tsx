@@ -173,7 +173,7 @@ function Board() {
               <b>{s.ticker}</b>
               <div className="tiny faint mono">{s.price != null ? `US$ ${num(s.price, 2)}` : NAMES[s.ticker]}</div>
             </div>
-            {s.change_pct != null && <Delta v={s.change_pct} />}
+            {s.change_pct != null && <span style={{ marginLeft: 'auto' }}><Delta v={s.change_pct} /></span>}
           </button>
         ))}
       </div>

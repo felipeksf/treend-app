@@ -1,0 +1,525 @@
+import { useState, type ReactNode } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import {
+  Activity, BarChart3, Bell, BookOpen, Bot, Building2, CalendarDays, CheckCircle2, ClipboardCheck, Eye, EyeOff, FileText, Grid3x3,
+  LineChart, Mail, Megaphone, MessageCircle, PanelLeft, Receipt, RefreshCw, ScanSearch, Send, Sparkles, Tags, Target, Timer, Users,
+  Video, XCircle, type LucideIcon,
+} from 'lucide-react'
+import { supabase } from '../../lib/supabase'
+import { CURRENCIES, FREQUENCIES, PROFILES, signal, useHeatmap, pick } from '../../lib/heatmap'
+import Resource, { fmt, type ResourceProps, type Row } from '../../components/admin/Resource'
+import { Empty, Modal, Seg, Skel, toast } from '../../components/ui'
+import { dateBR, money, num } from '../../lib/format'
+
+/* Every admin screen of the classic app, rebuilt on the shared Resource engine.
+   Writes go to the same tables / edge functions with the same payloads the classic admin uses. */
+
+const invoke = async (fn: string, body?: Record<string, unknown>) => {
+  const { data, error } = await supabase.functions.invoke(fn, body ? { body } : undefined)
+  if (error) throw error
+  if (data?.error) throw new Error(data.error)
+  return data
+}
+
+const STAGES = [
+  { value: 'lead', label: 'Oportunidades' }, { value: 'agendamento', label: 'Agendamento' }, { value: 'call', label: 'Call' },
+  { value: 'call_realizada', label: 'Call realizada' }, { value: 'followup', label: 'Follow-up' }, { value: 'fechamento', label: 'Fechamento' },
+]
+const TEMPS = [{ value: 'frio', label: 'Frio' }, { value: 'morno', label: 'Morno' }, { value: 'quente', label: 'Quente' }]
+const stagePill = (s: unknown) => {
+  const i = STAGES.findIndex((x) => x.value === s)
+  const c = ['var(--text-3)', 'var(--sky)', 'var(--violet)', 'var(--amber)', 'var(--orange)', 'var(--up)'][i] ?? 'var(--text-3)'
+  return <span className="pill tone" style={{ ['--c' as string]: c }}>{STAGES[i]?.label ?? String(s ?? '—')}</span>
+}
+const hiddenToggle = (table: string) => ({
+  label: 'Visibilidade',
+  icon: <Eye size={14} />,
+  run: async (r: Row, h: { refresh: () => void }) => {
+    const { error } = await supabase.from(table).update({ hidden: !r.hidden }).eq('id', r.id as string)
+    if (error) throw error
+    h.refresh()
+    return r.hidden ? 'Agora visível' : 'Ocultado'
+  },
+})
+const visCol = { key: 'hidden', label: 'Visível', render: (r: Row) => (r.hidden ? <EyeOff size={15} className="faint" /> : <Eye size={15} style={{ color: 'var(--up)' }} />) }
+
+export type Tool = { path: string; label: string; icon: LucideIcon; group: string; desc: string; element: ReactNode }
+
+const R = (p: ResourceProps) => <Resource {...p} />
+
+export const TOOLS: Tool[] = [
+  /* ── Comercial ── */
+  {
+    path: 'crm', label: 'CRM Power', icon: Target, group: 'Comercial', desc: 'Leads, etapas do funil, Meet e convites.',
+    element: <Crm />,
+  },
+  {
+    path: 'agendamento', label: 'Agenda de slots', icon: CalendarDays, group: 'Comercial', desc: 'Horários disponíveis para agendamento e metas do CRM.',
+    element: (
+      <div className="stack gap-16">
+        <R table="scheduling_slots" order={{ col: 'slot_date', asc: false }} columns={[{ key: 'slot_date' }, { key: 'slot_time' }, { key: 'is_available', label: 'Disponível' }, { key: 'is_collective', label: 'Coletivo' }]}
+          fields={[{ key: 'slot_date', type: 'date', required: true }, { key: 'slot_time', type: 'time', required: true }, { key: 'is_available', label: 'Disponível', type: 'bool' }]}
+          insertDefaults={(u) => ({ admin_id: u, is_available: true })} />
+        <div className="admin-title"><div><h2 style={{ fontSize: 18 }}>Metas do CRM</h2></div></div>
+        <R table="crm_goals" columns={[{ key: 'frequency', render: (r) => ({ weekly: 'Semanal', biweekly: 'Quinzenal', monthly: 'Mensal' } as Record<string, string>)[r.frequency as string] ?? String(r.frequency) }, { key: 'target_value', label: 'Meta', render: (r) => money(Number(r.target_value) || 0, 'BRL', 0) }]}
+          fields={[{ key: 'frequency', type: 'select', options: [{ value: 'weekly', label: 'Semanal' }, { value: 'biweekly', label: 'Quinzenal' }, { value: 'monthly', label: 'Mensal' }] }, { key: 'target_value', label: 'Meta (R$)', type: 'number' }]}
+          insertDefaults={(u) => ({ admin_id: u })} />
+      </div>
+    ),
+  },
+  {
+    path: 'treend-leads', label: 'Treend Leads', icon: Building2, group: 'Comercial', desc: 'Leads enviados a consultores e vendas com comissão.',
+    element: (
+      <div className="stack gap-16">
+        <R table="treend_leads" order={{ col: 'created_at' }} insertDefaults={(u) => ({ admin_id: u })} />
+        <div className="admin-title"><div><h2 style={{ fontSize: 18 }}>Vendas dos consultores</h2></div></div>
+        <R table="consultor_sales" order={{ col: 'created_at' }}
+          rowActions={[
+            { label: 'Notificar pagamento', icon: <Mail size={14} />, run: async (r) => { await invoke('notify-consultor-commission', { consultor_id: r.consultor_id, plan: r.plan, type: 'paid', date: new Date().toISOString().slice(0, 10), client_count: r.quantity || 1 }); return 'E-mail de pagamento enviado' } },
+            { label: 'Cancelar', icon: <XCircle size={14} />, hidden: (r) => !!r.cancelled_at, run: async (r, h) => { await supabase.from('consultor_sales').update({ cancelled_at: new Date().toISOString() }).eq('id', r.id as string); h.refresh(); return 'Venda cancelada' } },
+            { label: 'Reativar', hidden: (r) => !r.cancelled_at, run: async (r, h) => { await supabase.from('consultor_sales').update({ cancelled_at: null }).eq('id', r.id as string); h.refresh(); return 'Venda reativada' } },
+          ]} />
+      </div>
+    ),
+  },
+  { path: 'treend-calc', label: 'Treend CALC', icon: BarChart3, group: 'Comercial', desc: 'Metas de vendas e insight de IA.', element: <TreendCalc /> },
+  {
+    path: 'leads', label: 'Leads e parceiros', icon: Users, group: 'Comercial', desc: 'Leads da Academy, de parceiros e páginas de captação.',
+    element: (
+      <div className="stack gap-16">
+        <R table="academy_leads" order={{ col: 'created_at' }} canCreate={false} canEdit={false}
+          toolbar={[{ label: 'Enviar e-mail aos leads', icon: <Mail size={14} />, run: async (h) => {
+            const emails = h.rows.map((r) => r.email).filter(Boolean)
+            if (!emails.length) return 'Nenhum lead com e-mail'
+            if (!confirm(`Enviar o e-mail padrão da Academy para ${emails.length} leads?`)) return
+            await invoke('academy-send-leads-email', { emails, mode: 'default' })
+            return `E-mail enviado para ${emails.length} leads`
+          } }]} />
+        <div className="admin-title"><div><h2 style={{ fontSize: 18 }}>Páginas de parceiros</h2></div></div>
+        <R table="partner_pages" order={{ col: 'created_at' }} columns={[{ key: 'partner_name' }, { key: 'slug' }, { key: 'trial_days' }, { key: 'active' }, { key: 'created_at' }]}
+          fields={[{ key: 'partner_name', required: true }, { key: 'slug', required: true }, { key: 'trial_days', type: 'number' }, { key: 'active', type: 'bool' }]}
+          rowActions={[{ label: 'Ativar/pausar', run: async (r, h) => { await supabase.from('partner_pages').update({ active: !r.active }).eq('id', r.id as string); h.refresh() } }]} />
+        <div className="admin-title"><div><h2 style={{ fontSize: 18 }}>Leads de parceiros</h2></div></div>
+        <R table="partner_leads" order={{ col: 'created_at' }} />
+      </div>
+    ),
+  },
+  {
+    path: 'whatsapp', label: 'WhatsApp', icon: MessageCircle, group: 'Comercial', desc: 'Grupos de clientes, criticidade e responsáveis.',
+    element: <R table="whatsapp_groups" order={{ col: 'created_at' }}
+      columns={[{ key: 'name' }, { key: 'criticality', render: (r) => <span className="pill tone" style={{ ['--c' as string]: r.criticality === 'alta' || r.criticality === 'high' ? 'var(--down)' : r.criticality === 'media' || r.criticality === 'medium' ? 'var(--amber)' : 'var(--up)' }}>{String(r.criticality ?? '—')}</span> }, { key: 'responsible_name' }, { key: 'plan' }, { key: 'urgent' }, { key: 'whatsapp_link' }]}
+      fields={[{ key: 'name', required: true }, { key: 'whatsapp_link', type: 'url' }, { key: 'criticality', type: 'select', options: [{ value: 'baixa', label: 'Baixa' }, { value: 'media', label: 'Média' }, { value: 'alta', label: 'Alta' }] }, { key: 'responsible_name' }, { key: 'plan' }, { key: 'urgent', type: 'bool' }, { key: 'unread', type: 'bool' }, { key: 'group_created_at', label: 'Criado em', type: 'date' }, { key: 'notes', type: 'textarea' }]}
+      insertDefaults={(u) => ({ admin_id: u })} />,
+  },
+  {
+    path: 'recrutamento', label: 'Recrutamento', icon: ClipboardCheck, group: 'Comercial', desc: 'Candidatos a consultor e checklists.',
+    element: (
+      <div className="stack gap-16">
+        <R table="recruitment_checklists" order={{ col: 'updated_at' }} />
+        <div className="admin-title"><div><h2 style={{ fontSize: 18 }}>Candidatos</h2></div></div>
+        <R table="scheduling_leads" select="id, name, email, whatsapp, city, created_at, slot_date, slot_time, keywords" order={{ col: 'created_at' }} canCreate={false} canDelete={false}
+          filter={(r) => !!r.city} columns={[{ key: 'name' }, { key: 'email' }, { key: 'whatsapp' }, { key: 'city' }, { key: 'created_at' }]} />
+      </div>
+    ),
+  },
+
+  /* ── Conteúdo ── */
+  {
+    path: 'feed', label: 'Feed e reports', icon: Megaphone, group: 'Conteúdo', desc: 'Posts, relatórios mensais e envio por e-mail.',
+    element: (
+      <div className="stack gap-16">
+        <R table="feed_posts" order={{ col: 'created_at' }} columns={[{ key: 'body', label: 'Post', render: (r) => <span className="ellipsis" style={{ maxWidth: 420, display: 'inline-block' }}>{String(r.body ?? '')}</span> }, { key: 'currency' }, { key: 'report_email_sent' }, { key: 'created_at' }]}
+          fields={[{ key: 'body', type: 'textarea', required: true }, { key: 'currency', type: 'select', options: [{ value: 'general', label: 'Geral' }, { value: 'USD', label: 'Dólar' }, { value: 'EUR', label: 'Euro' }] }, { key: 'image_url', type: 'url' }]}
+          insertDefaults={(u) => ({ admin_id: u })}
+          toolbar={[{ label: 'Gerar relatório mensal', icon: <Sparkles size={14} />, run: async () => {
+            const d = await invoke('generate-monthly-report', { currency: 'USD', frequency: 'daily', locale: 'pt' })
+            const summary = String(d?.summary ?? '')
+            if (!summary) return 'Relatório gerado sem resumo'
+            if (confirm(`Resumo gerado:\n\n${summary.slice(0, 700)}${summary.length > 700 ? '…' : ''}\n\nPublicar como post no Feed?`)) {
+              const { data: s } = await supabase.auth.getSession()
+              await supabase.from('feed_posts').insert({ body: summary, currency: 'USD', admin_id: s.session?.user.id })
+              return 'Relatório publicado no Feed'
+            }
+          } }]}
+          rowActions={[{ label: 'Enviar e-mail', icon: <Send size={14} />, hidden: (r) => !!r.report_email_sent, run: async (r, h) => {
+            if (!confirm('Enviar este post por e-mail para toda a base?')) return
+            await invoke('send-weekly-report', { post_id: r.id, body: r.body, image_url: r.image_url ?? null, created_at: r.created_at, report_type: 'weekly' })
+            await supabase.from('feed_posts').update({ report_email_sent: true }).eq('id', r.id as string)
+            h.refresh()
+            return 'E-mail enviado à base'
+          } }]} />
+        <div className="admin-title"><div><h2 style={{ fontSize: 18 }}>Templates</h2></div></div>
+        <R table="feed_templates" order={{ col: 'created_at' }}
+          fields={[{ key: 'profile_type', type: 'select', options: PROFILES.map((p) => ({ value: p.key, label: p.label })) }, { key: 'currency', type: 'select', options: CURRENCIES.map((c) => ({ value: c, label: c })) }, { key: 'frequency', type: 'select', options: FREQUENCIES.map((f) => ({ value: f.key, label: f.label })) }, { key: 'body', type: 'textarea' }]}
+          insertDefaults={(u) => ({ admin_id: u })} />
+      </div>
+    ),
+  },
+  {
+    path: 'agenda', label: 'Agenda', icon: CalendarDays, group: 'Conteúdo', desc: 'Eventos, reports e mentorias.',
+    element: <R table="agenda_events" order={{ col: 'event_date', asc: false }} columns={[{ key: 'title' }, { key: 'event_date' }, { key: 'event_time' }, { key: 'category' }]}
+      fields={[{ key: 'title', required: true }, { key: 'event_date', type: 'date', required: true }, { key: 'event_time', type: 'time' }, { key: 'category', type: 'select', options: [{ value: 'report_semanal', label: 'Report semanal' }, { value: 'report_mensal', label: 'Report mensal' }, { value: 'macro', label: 'Evento macroeconômico' }, { value: 'mentoria', label: 'Mentoria' }] }, { key: 'description', type: 'textarea' }]}
+      insertDefaults={(u) => ({ admin_id: u })}
+      rowActions={[{ label: 'Enviar à base', icon: <Mail size={14} />, run: async (r) => {
+        if (!confirm('Enviar e-mail deste evento para toda a base?')) return
+        await invoke('send-event-email', { title: r.title, event_date: r.event_date, description: r.description })
+        return 'E-mail do evento enviado'
+      } }]} />,
+  },
+  {
+    path: 'tutoriais', label: 'Tutoriais', icon: Video, group: 'Conteúdo', desc: 'Vídeos por tela e legendas.',
+    element: <R table="tutorials" order={{ col: 'sort_order', asc: true }} columns={[{ key: 'title' }, { key: 'category' }, { key: 'sort_order' }, visCol]}
+      fields={[{ key: 'title', required: true }, { key: 'title_en', label: 'Título (EN)' }, { key: 'title_es', label: 'Título (ES)' }, { key: 'category' }, { key: 'description', type: 'textarea' }, { key: 'video_url', type: 'url' }, { key: 'youtube_url', type: 'url' }, { key: 'thumbnail_url', type: 'url' }, { key: 'sort_order', type: 'number' }]}
+      rowActions={[hiddenToggle('tutorials'), { label: 'Legendas', icon: <Sparkles size={14} />, run: async (r, h) => { await invoke('generate-subtitles', { tutorial_id: r.id }); h.refresh(); return 'Legendas EN e ES geradas' } }]} />,
+  },
+  {
+    path: 'academy', label: 'Academy', icon: BookOpen, group: 'Conteúdo', desc: 'Aulas, ordem e legendas.',
+    element: (
+      <div className="stack gap-16">
+        <R table="academy_lessons" order={{ col: 'sort_order', asc: true }} columns={[{ key: 'title' }, { key: 'category' }, { key: 'sort_order' }, visCol]}
+          fields={[{ key: 'title', required: true }, { key: 'category' }, { key: 'description', type: 'textarea' }, { key: 'video_url', type: 'url' }, { key: 'youtube_url', type: 'url' }, { key: 'thumbnail_url', type: 'url' }, { key: 'sort_order', type: 'number' }]}
+          rowActions={[hiddenToggle('academy_lessons'), { label: 'Legendas', icon: <Sparkles size={14} />, run: async (r, h) => { await invoke('generate-academy-subtitles', { lesson_id: r.id }); h.refresh(); return 'Legendas PT, EN e ES geradas' } }]} />
+        <div className="admin-title"><div><h2 style={{ fontSize: 18 }}>Configurações</h2></div></div>
+        <R table="academy_settings" canCreate={false} canDelete={false} />
+      </div>
+    ),
+  },
+  {
+    path: 'cases', label: 'Cases', icon: FileText, group: 'Conteúdo', desc: 'Cases publicados e envios para aprovação.',
+    element: (
+      <div className="stack gap-16">
+        <R table="case_submissions" order={{ col: 'created_at' }} canCreate={false}
+          rowActions={[
+            { label: 'Aprovar', icon: <CheckCircle2 size={14} />, tone: 'primary', hidden: (r) => r.status === 'approved', run: async (r, h) => { await supabase.from('case_submissions').update({ status: 'approved', reviewed_by: h.userId, reviewed_at: new Date().toISOString() }).eq('id', r.id as string); h.refresh(); return 'Case aprovado' } },
+            { label: 'Rejeitar', hidden: (r) => r.status === 'rejected', run: async (r, h) => { await supabase.from('case_submissions').update({ status: 'rejected', reviewed_by: h.userId, reviewed_at: new Date().toISOString() }).eq('id', r.id as string); h.refresh(); return 'Case rejeitado' } },
+          ]} />
+        <div className="admin-title"><div><h2 style={{ fontSize: 18 }}>Cases publicados</h2></div></div>
+        <R table="cases" order={{ col: 'created_at' }} rowActions={[hiddenToggle('cases')]} />
+      </div>
+    ),
+  },
+  {
+    path: 'vsl', label: 'VSL', icon: Video, group: 'Conteúdo', desc: 'Vídeos de vendas por página.',
+    element: <R table="vsl_videos" columns={[{ key: 'page_key', label: 'Página' }, { key: 'video_type', label: 'Tipo' }, { key: 'video_url' }, { key: 'updated_at' }]}
+      fields={[{ key: 'page_key', label: 'Página' }, { key: 'video_type', label: 'Tipo', type: 'select', options: [{ value: 'url', label: 'URL' }, { value: 'vturb', label: 'VTurb' }] }, { key: 'video_url', type: 'url' }, { key: 'vturb_embed_code', label: 'Embed VTurb', type: 'textarea' }]}
+      insertDefaults={(u) => ({ updated_by: u, updated_at: new Date().toISOString() })} />,
+  },
+  {
+    path: 'push', label: 'Push', icon: Bell, group: 'Conteúdo', desc: 'Notificações in-app e disparo por WhatsApp.',
+    element: <R table="notifications" order={{ col: 'created_at' }} columns={[{ key: 'title' }, { key: 'body' }, { key: 'created_at' }]}
+      fields={[{ key: 'title', required: true }, { key: 'body', type: 'textarea' }, { key: 'link', type: 'url' }]} canEdit={false}
+      insertDefaults={(u) => ({ admin_id: u })}
+      rowActions={[{ label: 'WhatsApp', icon: <MessageCircle size={14} />, run: async (r) => {
+        if (!confirm('Disparar esta mensagem no WhatsApp de todos os assinantes?')) return
+        await invoke('send-whatsapp', { broadcast: true, message: `${r.title}${r.body ? `\n\n${r.body}` : ''}` })
+        return 'WhatsApp enviado aos assinantes'
+      } }]} />,
+  },
+
+  /* ── Mercado ── */
+  { path: 'heatmap', label: 'Mapa de calor', icon: Grid3x3, group: 'Mercado', desc: 'Calibração manual dos índices.', element: <HeatmapEditor /> },
+  {
+    path: 'brands', label: 'Taxas das marcas', icon: Tags, group: 'Mercado', desc: 'Câmbio de lojas, bancos e fintechs.',
+    element: <R table="brands" order={{ col: 'name', asc: true }}
+      rowActions={[{ label: 'Atualizar taxa', icon: <RefreshCw size={14} />, run: async (r, h) => {
+        const d = await invoke('scrape-brand-rate', { brand_id: r.id, url: r.website_url, name: r.name })
+        h.refresh()
+        return d?.spread_rate_pct != null ? `Taxa atualizada: ${d.spread_rate_pct}%` : 'Taxa não encontrada — insira manualmente'
+      } }]} />,
+  },
+  { path: 'outros-mercados', label: 'Outros mercados', icon: Activity, group: 'Mercado', desc: 'Café, Bitcoin e ouro.', element: <OtherMarkets /> },
+  { path: 'analise', label: 'Análise de gráfico', icon: ScanSearch, group: 'Mercado', desc: 'Leitura de gráfico por IA a partir de uma imagem.', element: <ChartAnalysis /> },
+  { path: 'scores', label: 'Scores diários', icon: LineChart, group: 'Mercado', desc: 'Pontuações diárias registradas.', element: <R table="daily_scores" order={{ col: 'created_at' }} insertDefaults={(u) => ({ admin_id: u })} /> },
+  {
+    path: 'agente', label: 'Agente PY', icon: Bot, group: 'Mercado', desc: 'Taxa manual do dólar no Paraguai.',
+    element: <R table="py_manual_rate" order={{ col: 'published_at' }} columns={[{ key: 'rate', label: 'Taxa', render: (r) => <b className="mono">R$ {num(Number(r.rate), 4)}</b> }, { key: 'published_at' }]}
+      fields={[{ key: 'rate', label: 'Taxa (R$)', type: 'number', required: true }]} canEdit={false}
+      insertDefaults={(u) => ({ admin_id: u })} />,
+  },
+
+  /* ── Financeiro ── */
+  {
+    path: 'notas-fiscais', label: 'Notas fiscais', icon: Receipt, group: 'Financeiro', desc: 'Clientes e notas mensais.',
+    element: (
+      <div className="stack gap-16">
+        <R table="invoice_clients" order={{ col: 'created_at' }} />
+        <div className="admin-title"><div><h2 style={{ fontSize: 18 }}>Notas</h2></div></div>
+        <R table="invoice_records" order={{ col: 'created_at' }}
+          rowActions={[{ label: 'Marcar emitida', hidden: (r) => r.status === 'issued', run: async (r, h) => { await supabase.from('invoice_records').update({ status: 'issued', generated_at: new Date().toISOString() }).eq('id', r.id as string); h.refresh(); return 'Nota marcada como emitida' } }]} />
+      </div>
+    ),
+  },
+  { path: 'timeline', label: 'Timeline', icon: Timer, group: 'Financeiro', desc: 'Linha do tempo dos clientes.', element: <R table="client_timelines" order={{ col: 'created_at' }} insertDefaults={(u) => ({ admin_id: u })} /> },
+  { path: 'analytics', label: 'Analytics', icon: BarChart3, group: 'Financeiro', desc: 'Uso da plataforma por parceiro.', element: <Analytics /> },
+
+  /* ── Sistema ── */
+  { path: 'live', label: 'Acessos Live', icon: Video, group: 'Sistema', desc: 'Quem pode abrir as páginas Live com senha.', element: <LiveAccess /> },
+  {
+    path: 'sidebar', label: 'Menu por usuário', icon: PanelLeft, group: 'Sistema', desc: 'Itens e ordem do menu de cada usuário.',
+    element: <R table="sidebar_settings" order={{ col: 'sort_order', asc: true }} canCreate={false} />,
+  },
+]
+
+/* ── CRM ─────────────────────────────────────────────────────── */
+
+function Crm() {
+  const [stage, setStage] = useState('all')
+  return (
+    <div className="stack gap-16">
+      <Seg value={stage} onChange={setStage} options={[{ value: 'all', label: 'Todos' }, ...STAGES]} />
+      <Resource
+        key={stage}
+        table="scheduling_leads"
+        order={{ col: 'created_at' }}
+        filter={(r) => stage === 'all' || (r.pipeline_stage ?? 'lead') === stage}
+        searchKeys={['name', 'email', 'company', 'whatsapp']}
+        columns={[
+          { key: 'name', render: (r) => <span><b style={{ fontWeight: 600 }}>{String(r.name ?? '—')}</b><div className="tiny faint">{String(r.company ?? r.email ?? '')}</div></span> },
+          { key: 'pipeline_stage', render: (r) => stagePill(r.pipeline_stage ?? 'lead') },
+          { key: 'lead_temperature', label: 'Temperatura', render: (r) => fmt(TEMPS.find((t) => t.value === r.lead_temperature)?.label) },
+          { key: 'deal_value', align: 'right', render: (r) => (r.deal_value ? <b className="mono">{money(Number(r.deal_value), 'BRL', 0)}</b> : fmt(null)) },
+          { key: 'slot_date', label: 'Reunião', render: (r) => (r.slot_date ? `${dateBR(`${r.slot_date}T12:00`)} ${String(r.slot_time ?? '').slice(0, 5)}` : fmt(null)) },
+        ]}
+        fields={[
+          { key: 'name', required: true }, { key: 'email' }, { key: 'whatsapp' }, { key: 'company' },
+          { key: 'pipeline_stage', type: 'select', options: STAGES }, { key: 'lead_temperature', label: 'Temperatura', type: 'select', options: TEMPS },
+          { key: 'deal_value', label: 'Valor (R$)', type: 'number' }, { key: 'slot_date', type: 'date' }, { key: 'slot_time', type: 'time' }, { key: 'keywords', label: 'Palavras-chave' },
+        ]}
+        insertDefaults={() => ({ pipeline_stage: 'lead', status: 'confirmed', deal_value: 0 })}
+        rowActions={[
+          { label: 'Gerar Meet', icon: <Video size={14} />, hidden: (r) => !!r.meet_link, run: async (r, h) => { const d = await invoke('create-google-meet', { leadId: r.id, name: r.name, email: r.email, company: r.company }); h.refresh(); return d?.meetLink ? `Meet: ${d.meetLink}` : 'Link gerado' } },
+          { label: 'Enviar convite', icon: <Mail size={14} />, hidden: (r) => !r.email, run: async (r) => { await invoke('send-scheduling-invite', { name: r.name, email: r.email, company: r.company, slot_date: r.slot_date ?? null, slot_time: r.slot_time ?? null, meet_link: r.meet_link ?? null }); return `Convite enviado para ${r.email}` } },
+        ]}
+      />
+    </div>
+  )
+}
+
+/* ── Treend CALC ─────────────────────────────────────────────── */
+
+function TreendCalc() {
+  const year = new Date().getFullYear()
+  const [goal, setGoal] = useState(50000)
+  const [insight, setInsight] = useState('')
+  const [busy, setBusy] = useState(false)
+  const { data: sales } = useQuery({
+    queryKey: ['admin', 'calc-sales'],
+    queryFn: async () => (await supabase.from('consultor_sales').select('*')).data ?? [],
+  })
+  const active = (sales ?? []).filter((s: Row) => !s.cancelled_at)
+  const mrr = active.reduce((a: number, s: Row) => a + (Number(s.commission ?? s.value ?? s.amount ?? 0) || 0), 0)
+  const month = new Date().getMonth() + 1
+  const ask = async () => {
+    setBusy(true)
+    try {
+      const d = await invoke('sales-goal-insight', { year, monthlyGoal: goal, annualGoal: goal * 12, currentMonthlyCommission: mrr, annualizedProjection: mrr * 12, perPlan: {}, monthsRemaining: Math.max(1, 12 - month) })
+      setInsight(d?.insight || 'Sem insight disponível no momento.')
+    } catch (e) {
+      toast(`Erro: ${(e as Error).message}`)
+    } finally {
+      setBusy(false)
+    }
+  }
+  const pct = goal ? Math.min(100, (mrr / goal) * 100) : 0
+  return (
+    <div className="grid g-side" style={{ alignItems: 'start' }}>
+      <div className="card"><div className="card-b stack gap-16">
+        <div className="field"><label>Meta mensal (R$)</label><input className="input" type="number" value={goal} onChange={(e) => setGoal(+e.target.value)} /></div>
+        <div><div className="kv"><span>Vendas ativas</span><b className="mono">{active.length}</b></div><div className="kv"><span>Receita mensal atual</span><b className="mono">{money(mrr, 'BRL', 0)}</b></div><div className="kv"><span>Projeção anual</span><b className="mono">{money(mrr * 12, 'BRL', 0)}</b></div></div>
+        <button className="btn primary" onClick={ask} disabled={busy}><Sparkles /> {busy ? 'Analisando…' : 'Gerar insight'}</button>
+      </div></div>
+      <div className="card"><div className="card-b">
+        <div className="small muted">Progresso da meta mensal</div>
+        <div className="big-px mono" style={{ marginTop: 8 }}>{num(pct, 0)}<small>%</small></div>
+        <div style={{ height: 8, borderRadius: 99, background: 'var(--surface-3)', margin: '14px 0 20px', overflow: 'hidden' }}><div style={{ width: `${pct}%`, height: '100%', background: 'var(--brand)' }} /></div>
+        {insight ? <p style={{ whiteSpace: 'pre-wrap', lineHeight: 1.65, margin: 0 }}>{insight}</p> : <div className="small faint">Gere um insight para ver a leitura da IA sobre a meta.</div>}
+      </div></div>
+    </div>
+  )
+}
+
+/* ── Heatmap editor ──────────────────────────────────────────── */
+
+function HeatmapEditor() {
+  const { data, refetch } = useHeatmap()
+  const [profile, setProfile] = useState('importador')
+  const [edit, setEdit] = useState<{ c: string; f: string; x: number } | null>(null)
+  const save = async () => {
+    if (!edit) return
+    const { data: s } = await supabase.auth.getSession()
+    const row = { admin_id: s.session?.user.id, profile_type: profile, currency: edit.c, frequency: edit.f, heat_x: edit.x, heat_y: 50, volatility_pct: 0, momentum: 0, published_at: new Date().toISOString() }
+    const a = await supabase.from('heatmap_scores').upsert(row, { onConflict: 'profile_type,currency,frequency' })
+    if (a.error) return toast(`Erro: ${a.error.message}`)
+    await supabase.from('heatmap_history').insert(row)
+    toast('Índice publicado')
+    setEdit(null)
+    refetch()
+  }
+  return (
+    <div className="card">
+      <div className="card-h"><Seg value={profile} onChange={setProfile} options={PROFILES.map((p) => ({ value: p.key, label: p.label }))} /></div>
+      <div className="card-b" style={{ overflowX: 'auto' }}>
+        <table className="heat-table">
+          <thead><tr><th />{FREQUENCIES.map((f) => <th key={f.key}>{f.label}</th>)}</tr></thead>
+          <tbody>
+            {CURRENCIES.map((c) => (
+              <tr key={c}>
+                <td className="lbl">{c}</td>
+                {FREQUENCIES.map((f) => {
+                  const s = pick(data, profile, c, f.key)
+                  const g = signal(s?.heat_x ?? 50)
+                  return (
+                    <td key={f.key}>
+                      <div className="heat-cell" style={{ ['--c' as string]: g.color, ['--a' as string]: '18%' }} onClick={() => setEdit({ c, f: f.key, x: Math.round(s?.heat_x ?? 50) })}>
+                        <b>{s ? Math.round(s.heat_x) : '—'}</b><span>{g.label}</span>
+                      </div>
+                    </td>
+                  )
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <Modal open={!!edit} onClose={() => setEdit(null)}>
+        {edit && (
+          <div className="stack gap-16">
+            <h3>{edit.c} · {FREQUENCIES.find((f) => f.key === edit.f)?.label}</h3>
+            <div className="field"><div className="row between"><label>Índice de confiança</label><b className="mono" style={{ fontSize: 22, color: signal(edit.x).color }}>{edit.x}</b></div>
+              <input type="range" min={0} max={100} value={edit.x} onChange={(e) => setEdit({ ...edit, x: +e.target.value })} />
+              <div className="small" style={{ color: signal(edit.x).color }}>{signal(edit.x).label}</div>
+            </div>
+            <div className="row gap-8" style={{ justifyContent: 'flex-end' }}><button className="btn ghost" onClick={() => setEdit(null)}>Cancelar</button><button className="btn primary" onClick={save}>Publicar</button></div>
+          </div>
+        )}
+      </Modal>
+    </div>
+  )
+}
+
+/* ── Other markets ───────────────────────────────────────────── */
+
+function OtherMarkets() {
+  const [prices, setPrices] = useState<Record<string, unknown> | null>(null)
+  const [busy, setBusy] = useState(false)
+  const refresh = async () => {
+    setBusy(true)
+    try { const d = await invoke('fetch-other-markets'); setPrices(d?.prices ?? d ?? {}); toast('Scores de café, BTC e ouro recalculados') } catch (e) { toast(`Erro: ${(e as Error).message}`) } finally { setBusy(false) }
+  }
+  return (
+    <div className="card"><div className="card-b stack gap-16">
+      <div className="row between"><span className="muted">Atualiza preços e recalcula os scores de Coffee, BTC e XAU.</span><button className="btn primary" onClick={refresh} disabled={busy}><RefreshCw /> {busy ? 'Atualizando…' : 'Atualizar agora'}</button></div>
+      {prices ? <div className="grid g-3">{Object.entries(prices).map(([k, v]) => <div key={k} className="card pad" style={{ background: 'var(--surface-2)' }}><div className="small muted">{k}</div><div className="mono" style={{ fontSize: 22, fontWeight: 700 }}>{typeof v === 'number' ? num(v, 2) : typeof v === 'object' ? JSON.stringify(v).slice(0, 60) : String(v)}</div></div>)}</div> : <Empty icon={<Activity size={20} />} title="Clique em atualizar para buscar os preços" />}
+    </div></div>
+  )
+}
+
+/* ── Chart analysis ─────────────────────────────────────────── */
+
+function ChartAnalysis() {
+  const [url, setUrl] = useState('')
+  const [res, setRes] = useState<Record<string, unknown> | null>(null)
+  const [busy, setBusy] = useState(false)
+  const run = async () => {
+    setBusy(true)
+    try { setRes(await invoke('analyze-chart', { imageUrl: url })) } catch (e) { toast(`Erro: ${(e as Error).message}`) } finally { setBusy(false) }
+  }
+  return (
+    <div className="grid g-side" style={{ alignItems: 'start' }}>
+      <div className="card"><div className="card-b stack gap-16">
+        <div className="field"><label>URL da imagem do gráfico</label><input className="input" type="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://…" /></div>
+        {url && <img src={url} alt="" style={{ width: '100%', borderRadius: 14 }} />}
+        <button className="btn primary" onClick={run} disabled={!url || busy}><ScanSearch /> {busy ? 'Analisando…' : 'Analisar'}</button>
+      </div></div>
+      <div className="card"><div className="card-b">
+        {!res ? <Empty icon={<ScanSearch size={20} />} title="O resultado da análise aparece aqui" /> : (
+          <div>{Object.entries(res).map(([k, v]) => <div key={k} className="kv"><span>{k.replace(/_/g, ' ').replace(/\brsi\b/i, 'índice')}</span><b className="mono">{typeof v === 'object' ? JSON.stringify(v) : String(v)}</b></div>)}</div>
+        )}
+      </div></div>
+    </div>
+  )
+}
+
+/* ── Analytics ──────────────────────────────────────────────── */
+
+function Analytics() {
+  const { data, isLoading } = useQuery({
+    queryKey: ['admin', 'analytics'],
+    queryFn: async () => {
+      const [pages, profiles, leads] = await Promise.all([
+        supabase.from('partner_pages').select('id, partner_name'),
+        supabase.from('profiles').select('user_id, subscription_status, last_access_at, partner_page_id'),
+        supabase.from('partner_leads').select('partner_page_id, created_at'),
+      ])
+      return { pages: pages.data ?? [], profiles: profiles.data ?? [], leads: leads.data ?? [] }
+    },
+  })
+  if (isLoading) return <Skel h={300} />
+  const rows = (data?.pages ?? []).map((p: Row) => {
+    const users = (data?.profiles ?? []).filter((u: Row) => u.partner_page_id === p.id)
+    const active = users.filter((u: Row) => u.last_access_at && Date.now() - new Date(u.last_access_at as string).getTime() < 7 * 86400e3).length
+    return { name: p.partner_name as string, users: users.length, active, paid: users.filter((u: Row) => u.subscription_status === 'active').length, leads: (data?.leads ?? []).filter((l: Row) => l.partner_page_id === p.id).length }
+  }).sort((a, b) => b.users - a.users)
+  return (
+    <div className="card" style={{ overflowX: 'auto' }}>
+      {!rows.length ? <Empty icon={<BarChart3 size={20} />} title="Nenhum parceiro com dados" /> : (
+        <table className="tbl"><thead><tr><th>Parceiro</th><th className="r">Leads</th><th className="r">Usuários</th><th className="r">Ativos 7d</th><th className="r">Pagantes</th></tr></thead>
+          <tbody>{rows.map((r) => <tr key={r.name}><td><b style={{ fontWeight: 600 }}>{r.name}</b></td><td className="r mono">{r.leads}</td><td className="r mono">{r.users}</td><td className="r mono">{r.active}</td><td className="r mono">{r.paid}</td></tr>)}</tbody>
+        </table>
+      )}
+    </div>
+  )
+}
+
+/* ── Live access ────────────────────────────────────────────── */
+
+function LiveAccess() {
+  const [scope, setScope] = useState('fx')
+  const [form, setForm] = useState<{ name: string; email: string; password: string } | null>(null)
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ['admin', 'live', scope],
+    queryFn: async () => ((await invoke('live-access', { action: 'list', scope }))?.users ?? []) as Row[],
+  })
+  const act = async (body: Record<string, unknown>, msg: string) => {
+    try { await invoke('live-access', { ...body, scope }); toast(msg); refetch() } catch (e) { toast(`Erro: ${(e as Error).message}`) }
+  }
+  return (
+    <div className="card">
+      <div className="card-h">
+        <Seg value={scope} onChange={setScope} options={[{ value: 'fx', label: 'Live câmbio' }, { value: 'stocks', label: 'Live ações' }]} />
+        <button className="btn sm primary" onClick={() => setForm({ name: '', email: '', password: '' })}>Novo acesso</button>
+      </div>
+      {isLoading ? <div className="card-b"><Skel h={160} /></div> : !data?.length ? <Empty icon={<Video size={20} />} title="Nenhum acesso cadastrado" /> : (
+        <div style={{ overflowX: 'auto', marginTop: 12 }}>
+          <table className="tbl"><thead><tr><th>Nome</th><th>E-mail</th><th>Status</th><th>Último acesso</th><th /></tr></thead>
+            <tbody>{data.map((u) => (
+              <tr key={u.id as string}>
+                <td><b style={{ fontWeight: 600 }}>{String(u.name ?? '—')}</b></td><td className="muted">{String(u.email ?? '—')}</td>
+                <td>{fmt(!!u.active)}</td><td>{fmt(u.last_access_at)}</td>
+                <td className="r"><span className="row gap-4" style={{ justifyContent: 'flex-end' }}>
+                  {!u.active && <button className="btn sm ghost" onClick={() => act({ action: 'reactivate', id: u.id }, 'Acesso reativado')}>Reativar</button>}
+                  <button className="btn sm ghost" onClick={() => confirm('Remover este acesso?') && act({ action: 'delete', id: u.id }, 'Acesso removido')}>Remover</button>
+                </span></td>
+              </tr>
+            ))}</tbody>
+          </table>
+        </div>
+      )}
+      <Modal open={!!form} onClose={() => setForm(null)}>
+        {form && (
+          <div className="stack gap-16">
+            <h3>Novo acesso Live</h3>
+            <div className="field"><label>Nome</label><input className="input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
+            <div className="field"><label>E-mail</label><input className="input" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
+            <div className="field"><label>Senha de acesso</label><input className="input" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} /></div>
+            <div className="row gap-8" style={{ justifyContent: 'flex-end' }}>
+              <button className="btn ghost" onClick={() => setForm(null)}>Cancelar</button>
+              <button className="btn primary" disabled={!form.name || !form.password} onClick={() => { act({ action: 'create', name: form.name, email: form.email, password: form.password, slug: form.name.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') }, 'Acesso criado'); setForm(null) }}>Criar</button>
+            </div>
+          </div>
+        )}
+      </Modal>
+    </div>
+  )
+}
+

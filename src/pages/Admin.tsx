@@ -2,21 +2,25 @@ import { useMemo, useState, type ReactNode } from 'react'
 import { NavLink, Route, Routes } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import {
-  Activity, ArrowUpRight, BarChart3, Bell, BookOpen, Bot, Building2, CalendarDays, ClipboardCheck, FileSearch, FileText, Gauge,
-  Grid3x3, LifeBuoy, LineChart, Lock, Megaphone, MessageCircle, PanelLeft, Percent, Radar, Receipt, ScanSearch, Search, Shield, Tags,
-  Target, Timer, Users, Video,
-} from 'lucide-react'
-import { supabase, CLASSIC_URL } from '../lib/supabase'
+import { Activity, Bell, FileSearch, Gauge, LifeBuoy, Lock, Percent, Plus, Radar, RefreshCw, Search, Send, Shield, Trash2, Users } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
+import Resource from '../components/admin/Resource'
+import { supabase } from '../lib/supabase'
+
+const invoke = async (fn: string, body: Record<string, unknown>) => {
+  const { data, error } = await supabase.functions.invoke(fn, { body })
+  if (error) throw error
+  if (data?.error) throw new Error(data.error)
+  return data
+}
 import { useRoles } from '../lib/roles'
 import { CURRENCIES, FREQUENCIES, PROFILES } from '../lib/heatmap'
-import { Empty, PageHeader, Seg, Skel } from '../components/ui'
+import { Empty, Modal, PageHeader, Seg, Skel, toast } from '../components/ui'
+import { TOOLS } from './admin/tools'
 import Gate from '../components/Gate'
 import { compact, dateBR, num, timeAgo } from '../lib/format'
 
-/* Read-only admin console. Every query mirrors the classic Admin pages; anything that
-   writes to other users' records (roles, replies, deletes, sends) stays in the classic
-   admin and is linked from here. */
+/* Admin console. Queries and writes mirror the classic Admin pages (same tables, same edge functions). */
 
 const TABS = [
   { to: '', label: 'Visão geral', icon: Gauge },
@@ -25,47 +29,13 @@ const TABS = [
   { to: 'radar', label: 'Radar', icon: Radar },
   { to: 'audit', label: 'Auditoria', icon: FileSearch },
   { to: 'taxa', label: 'Taxa Treend', icon: Percent },
-  { to: 'classic', label: 'Mais ferramentas', icon: PanelLeft },
 ]
 
-const CLASSIC_TOOLS = [
-  { path: '/admin/crm-power', label: 'CRM Power', icon: Target, desc: 'Agendamentos, leads e reuniões' },
-  { path: '/admin/whatsapp', label: 'WhatsApp', icon: MessageCircle, desc: 'Grupos e disparos' },
-  { path: '/admin/heatmap', label: 'Heatmap', icon: Grid3x3, desc: 'Ajustes do mapa de calor' },
-  { path: '/admin/analise', label: 'Análise', icon: ScanSearch, desc: 'Leitura de gráfico com IA' },
-  { path: '/admin/outros-mercados', label: 'Outros mercados', icon: Activity, desc: 'Índices e commodities' },
-  { path: '/admin/brands', label: 'Taxas das marcas', icon: Tags, desc: 'Câmbio de lojas e bancos' },
-  { path: '/admin/feed', label: 'Feed', icon: Megaphone, desc: 'Reports e templates' },
-  { path: '/admin/agenda', label: 'Agenda', icon: CalendarDays, desc: 'Eventos e convites' },
-  { path: '/admin/tutorials', label: 'Tutoriais', icon: Video, desc: 'Vídeos e legendas' },
-  { path: '/admin/academy', label: 'Academy', icon: BookOpen, desc: 'Aulas e configurações' },
-  { path: '/admin/leads', label: 'Leads', icon: Users, desc: 'Parceiros e Academy' },
-  { path: '/admin/treend-leads', label: 'Treend Leads', icon: Building2, desc: 'Vendas e comissões' },
-  { path: '/admin/treend-calc', label: 'Treend CALC', icon: BarChart3, desc: 'Metas de vendas' },
-  { path: '/admin/agente', label: 'Agente', icon: Bot, desc: 'Taxa manual PY' },
-  { path: '/admin/push', label: 'Push', icon: Bell, desc: 'Notificações' },
-  { path: '/admin/analytics', label: 'Analytics', icon: LineChart, desc: 'Uso por parceiro' },
-  { path: '/admin/grafico', label: 'Gráfico', icon: LineChart, desc: 'Gráfico interno' },
-  { path: '/admin/projections', label: 'Projeções', icon: LineChart, desc: 'Projeções de preço' },
-  { path: '/admin/cases', label: 'Cases', icon: FileText, desc: 'Cases e envios' },
-  { path: '/admin/timeline', label: 'Timeline', icon: Timer, desc: 'Linha do tempo de clientes' },
-  { path: '/admin/notas-fiscais', label: 'Notas fiscais', icon: Receipt, desc: 'Clientes e notas' },
-  { path: '/admin/vsl', label: 'VSL', icon: Video, desc: 'Vídeos de vendas' },
-  { path: '/admin/recrutamento', label: 'Recrutamento', icon: ClipboardCheck, desc: 'Checklists' },
-  { path: '/admin/live', label: 'Live', icon: Video, desc: 'Painel ao vivo' },
-  { path: '/admin/stocks-live', label: 'Stocks Live', icon: Video, desc: 'Painel ao vivo de ações' },
-  { path: '/admin/sidebar', label: 'Sidebar', icon: PanelLeft, desc: 'Menu por usuário' },
-]
-
-const classic = (path: string) => `${CLASSIC_URL}${path}`
-const ClassicBtn = ({ path, children }: { path: string; children: ReactNode }) => (
-  <a className="btn sm" href={classic(path)} target="_blank" rel="noreferrer">{children}<ArrowUpRight /></a>
-)
 
 export default function Admin() {
   return (
     <div className="page">
-      <PageHeader eyebrow={<><Shield size={13} /> Admin</>} title="Painel" accent="administrativo." sub="Usuários, chamados, alertas e acessos em um só lugar. Ações de escrita abrem no admin clássico." />
+      <PageHeader eyebrow={<><Shield size={13} /> Admin</>} title="Painel" accent="administrativo." sub="Toda a operação da Treend em um só lugar." />
       <Gate what="o painel administrativo">
         <AdminGuard />
       </Gate>
@@ -76,35 +46,48 @@ export default function Admin() {
 function AdminGuard() {
   const { isAdmin, isEditor, loading } = useRoles()
   if (loading) return <Skel h={360} />
+  if (!isAdmin && isEditor) return <>{TOOLS.find((t) => t.path === 'heatmap')?.element}</>
   if (!isAdmin)
     return (
       <div className="card feature" style={{ padding: '56px 24px' }}>
         <Empty icon={<Lock size={20} />} title="Acesso restrito">
           Este painel é exclusivo para administradores.
-          {isEditor && <div style={{ marginTop: 12 }}><ClassicBtn path="/admin/heatmap">Abrir ferramentas de editor</ClassicBtn></div>}
+
         </Empty>
       </div>
     )
+  const groups = ['Comercial', 'Conteúdo', 'Mercado', 'Financeiro', 'Sistema']
   return (
-    <>
-      <nav className="subnav">
+    <div className="admin-shell">
+      <nav className="admin-nav">
+        <div className="grp">Geral</div>
         {TABS.map((t) => (
-          <NavLink key={t.to} to={t.to} end className={({ isActive }) => (isActive ? 'on' : '')}>
-            <t.icon />{t.label}
-          </NavLink>
+          <NavLink key={t.to} to={t.to} end className={({ isActive }) => (isActive ? 'on' : '')}><t.icon />{t.label}</NavLink>
+        ))}
+        {groups.map((g) => (
+          <div key={g} style={{ display: 'contents' }}>
+            <div className="grp">{g}</div>
+            {TOOLS.filter((t) => t.group === g).map((t) => (
+              <NavLink key={t.path} to={t.path} className={({ isActive }) => (isActive ? 'on' : '')}><t.icon />{t.label}</NavLink>
+            ))}
+          </div>
         ))}
       </nav>
-      <Routes>
-        <Route index element={<Overview />} />
-        <Route path="users" element={<UsersTab />} />
-        <Route path="support" element={<SupportTab />} />
-        <Route path="radar" element={<RadarTab />} />
-        <Route path="audit" element={<AuditTab />} />
-        <Route path="taxa" element={<TaxaTab />} />
-        <Route path="classic" element={<ClassicTab />} />
-        <Route path="*" element={<Overview />} />
-      </Routes>
-    </>
+      <div style={{ minWidth: 0 }}>
+        <Routes>
+          <Route index element={<Overview />} />
+          <Route path="users" element={<UsersTab />} />
+          <Route path="support" element={<SupportTab />} />
+          <Route path="radar" element={<RadarTab />} />
+          <Route path="audit" element={<AuditTab />} />
+          <Route path="taxa" element={<TaxaTab />} />
+          {TOOLS.map((t) => (
+            <Route key={t.path} path={t.path} element={<><div className="admin-title"><div><h2>{t.label}</h2><p>{t.desc}</p></div></div>{t.element}</>} />
+          ))}
+          <Route path="*" element={<Overview />} />
+        </Routes>
+      </div>
+    </div>
   )
 }
 
@@ -243,8 +226,40 @@ function Overview() {
 
 function UsersTab() {
   const { data, isLoading } = useProfiles()
+  const qc = useQueryClient()
   const [q, setQ] = useState('')
   const [st, setSt] = useState('all')
+  const [creating, setCreating] = useState(false)
+  const [nu, setNu] = useState({ name: '', email: '', role: 'editor', destination: 'app', trialDays: 7 })
+  const [tempPass, setTempPass] = useState('')
+  const reload = () => qc.invalidateQueries({ queryKey: ['admin', 'profiles'] })
+  const act = async (fn: () => Promise<unknown>, msg: string) => {
+    try { await fn(); toast(msg); reload() } catch (e) { toast(`Erro: ${(e as Error).message}`) }
+  }
+  const extend = (p: Profile, days: number) => act(async () => {
+    const base = p.trial_expires_at && new Date(p.trial_expires_at) > new Date() ? new Date(p.trial_expires_at) : new Date()
+    base.setDate(base.getDate() + days)
+    const { error } = await supabase.from('profiles').update({ subscription_status: 'trial', trial_expires_at: base.toISOString() }).eq('user_id', p.user_id)
+    if (error) throw error
+  }, `Trial estendido em ${days} dias`)
+  const expire = (p: Profile) => confirm('Expirar o acesso deste usuário agora?') && act(async () => {
+    const { error } = await supabase.from('profiles').update({ subscription_status: 'expired', trial_expires_at: new Date().toISOString() }).eq('user_id', p.user_id)
+    if (error) throw error
+  }, 'Acesso expirado')
+  const toggleRole = (p: Profile, role: string) => act(async () => {
+    const has = (data?.roles[p.user_id] ?? []).includes(role)
+    const { error } = has ? await supabase.from('user_roles').delete().eq('user_id', p.user_id).eq('role', role) : await supabase.from('user_roles').insert({ user_id: p.user_id, role })
+    if (error) throw error
+  }, 'Papéis atualizados')
+  const remove = (p: Profile) => confirm(`Excluir definitivamente ${p.full_name || 'este usuário'}? Essa ação não pode ser desfeita.`) && act(() => invoke('admin-delete-user', { userId: p.user_id }), 'Usuário excluído')
+  const create = async () => {
+    try {
+      const d = await invoke('create-user', { name: nu.name.trim(), email: nu.email.trim().toLowerCase(), role: nu.role, destination: nu.destination, trialDays: nu.trialDays, locale: 'pt' })
+      setTempPass(d?.temp_password ?? '')
+      toast('Usuário criado')
+      reload()
+    } catch (e) { toast(`Erro: ${(e as Error).message}`) }
+  }
   const list = useMemo(() => {
     const s = q.trim().toLowerCase()
     return (data?.profiles ?? []).filter((p) => (st === 'all' || p.subscription_status === st) && (!s || (p.full_name ?? '').toLowerCase().includes(s) || (p.whatsapp_phone ?? '').includes(s)))
@@ -259,13 +274,13 @@ function UsersTab() {
         </div>
         <div className="row gap-8 wrap">
           <Seg value={st} onChange={setSt} options={[{ value: 'all', label: 'Todos' }, { value: 'active', label: 'Ativos' }, { value: 'trial', label: 'Trial' }, { value: 'expired', label: 'Expirados' }]} />
-          <ClassicBtn path="/admin/users">Gerenciar</ClassicBtn>
+          <button className="btn sm primary" onClick={() => setCreating(true)}><Plus /> Novo usuário</button>
         </div>
       </div>
       {isLoading ? <div className="card-b"><Skel h={240} /></div> : !list.length ? <Empty icon={<Users size={20} />} title="Nenhum usuário encontrado" /> : (
         <div style={{ overflowX: 'auto', marginTop: 12 }}>
           <table className="tbl">
-            <thead><tr><th>Usuário</th><th>Plano</th><th>Papéis</th><th>Trial até</th><th className="r">Último acesso</th><th className="r">Cadastro</th></tr></thead>
+            <thead><tr><th>Usuário</th><th>Plano</th><th>Papéis</th><th>Trial até</th><th className="r">Último acesso</th><th className="r">Cadastro</th><th /></tr></thead>
             <tbody>
               {list.map((p) => (
                 <tr key={p.user_id}>
@@ -275,12 +290,42 @@ function UsersTab() {
                   <td className="muted">{p.trial_expires_at ? dateBR(p.trial_expires_at) : '—'}</td>
                   <td className="r muted">{p.last_access_at ? `há ${timeAgo(p.last_access_at)}` : '—'}</td>
                   <td className="r muted">{dateBR(p.created_at)}</td>
+                  <td className="r"><span className="row gap-4" style={{ justifyContent: 'flex-end' }}>
+                    <button className="btn sm ghost" onClick={() => extend(p, 7)}>+7 dias</button>
+                    <button className="btn sm ghost" onClick={() => extend(p, 30)}>+30 dias</button>
+                    <button className="btn sm ghost" onClick={() => expire(p)}>Expirar</button>
+                    {['admin', 'editor', 'consultor', 'partner'].map((r) => (
+                      <button key={r} className={`btn sm ${(data?.roles[p.user_id] ?? []).includes(r) ? 'primary' : 'ghost'}`} title={`Alternar papel ${r}`} onClick={() => toggleRole(p, r)}>{r}</button>
+                    ))}
+                    <button className="icon-btn" title="Excluir usuário" onClick={() => remove(p)}><Trash2 /></button>
+                  </span></td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       )}
+      <Modal open={creating} onClose={() => { setCreating(false); setTempPass('') }}>
+        <div className="stack gap-16">
+          <h3>Novo usuário</h3>
+          {tempPass ? (
+            <>
+              <p className="muted" style={{ margin: 0 }}>Usuário criado. Senha temporária (copie e envie ao usuário):</p>
+              <div className="card pad mono" style={{ background: 'var(--surface-2)', fontSize: 18, userSelect: 'all' }}>{tempPass}</div>
+              <button className="btn primary" onClick={() => { setCreating(false); setTempPass('') }}>Concluir</button>
+            </>
+          ) : (
+            <>
+              <div className="field"><label>Nome</label><input className="input" value={nu.name} onChange={(e) => setNu({ ...nu, name: e.target.value })} /></div>
+              <div className="field"><label>E-mail</label><input className="input" type="email" value={nu.email} onChange={(e) => setNu({ ...nu, email: e.target.value })} /></div>
+              <div className="field"><label>Papel</label><Seg value={nu.role} onChange={(v) => setNu({ ...nu, role: v })} options={[{ value: 'editor', label: 'Editor' }, { value: 'admin', label: 'Admin' }, { value: 'consultor', label: 'Consultor' }, { value: 'partner', label: 'Parceiro' }]} /></div>
+              <div className="field"><label>Acesso</label><Seg value={nu.destination} onChange={(v) => setNu({ ...nu, destination: v })} options={[{ value: 'app', label: 'App' }, { value: 'academy', label: 'Academy' }, { value: 'both', label: 'App + Academy' }]} /></div>
+              <div className="field"><label>Dias de trial</label><input className="input" type="number" value={nu.trialDays} onChange={(e) => setNu({ ...nu, trialDays: +e.target.value })} /></div>
+              <div className="row gap-8" style={{ justifyContent: 'flex-end' }}><button className="btn ghost" onClick={() => setCreating(false)}>Cancelar</button><button className="btn primary" disabled={!nu.name || !nu.email} onClick={create}>Criar usuário</button></div>
+            </>
+          )}
+        </div>
+      </Modal>
     </div>
   )
 }
@@ -293,6 +338,9 @@ function SupportTab() {
   const [st, setSt] = useState('open')
   const list = (data ?? []).filter((t) => st === 'all' || (st === 'open' ? t.status !== 'answered' : t.status === 'answered'))
   const t = (data ?? []).find((x) => x.id === sel) ?? list[0]
+  const qc = useQueryClient()
+  const [reply, setReply] = useState('')
+  const [sending, setSending] = useState(false)
   const replies = useQuery({
     queryKey: ['admin', 'replies', t?.id],
     enabled: !!t,
@@ -324,7 +372,7 @@ function SupportTab() {
         <div className="card">
           <div className="card-h">
             <h3>{t.ticket_number ? `#${t.ticket_number} · ` : ''}{t.title}</h3>
-            <ClassicBtn path="/admin/support">Responder</ClassicBtn>
+
           </div>
           <div className="card-b stack gap-12">
             <div className="tiny faint">{t.user_email} · {dateBR(t.created_at, true)}</div>
@@ -332,6 +380,22 @@ function SupportTab() {
             {(replies.data ?? []).map((r) => (
               <div key={r.id} className="bubble me" style={{ maxWidth: '100%' }}><p>{r.body}</p><span>Treend · {dateBR(r.created_at, true)}</span></div>
             ))}
+            <textarea className="textarea" placeholder="Escreva a resposta — o usuário recebe por e-mail" value={reply} onChange={(e) => setReply(e.target.value)} />
+            <div className="row" style={{ justifyContent: 'flex-end' }}>
+              <button className="btn primary" disabled={!reply.trim() || sending} onClick={async () => {
+                setSending(true)
+                try {
+                  const { data: s } = await supabase.auth.getSession()
+                  const { error } = await supabase.from('support_replies').insert({ ticket_id: t.id, admin_id: s.session?.user.id, body: reply.trim() })
+                  if (error) throw error
+                  await supabase.from('support_tickets').update({ status: 'answered' }).eq('id', t.id)
+                  await invoke('send-support-reply', { ticket_number: t.ticket_number, ticket_title: t.title, user_email: t.user_email, user_id: t.user_id, reply_body: reply.trim() })
+                  setReply('')
+                  toast('Resposta enviada por e-mail')
+                  qc.invalidateQueries({ queryKey: ['admin'] })
+                } catch (e) { toast(`Erro: ${(e as Error).message}`) } finally { setSending(false) }
+              }}><Send /> {sending ? 'Enviando…' : 'Responder'}</button>
+            </div>
           </div>
         </div>
       ) : <div />}
@@ -460,6 +524,34 @@ function AuditTab() {
 
 /* ── Taxa Treend ────────────────────────────────────────────── */
 
+function PublishRate() {
+  const qc = useQueryClient()
+  const [v, setV] = useState('')
+  const [busy, setBusy] = useState(false)
+  const publish = async () => {
+    const { data: s } = await supabase.auth.getSession()
+    const { error } = await supabase.from('treend_rate').insert({ rate_pct: Number(v.replace(',', '.')), admin_id: s.session?.user.id })
+    if (error) return toast(`Erro: ${error.message}`)
+    toast('Nova taxa publicada'); setV(''); qc.invalidateQueries({ queryKey: ['admin', 'treend-rate'] })
+  }
+  const recalc = async () => {
+    setBusy(true)
+    let ok = 0
+    for (const c of ['USD', 'EUR', 'GBP', 'CNY', 'USDT']) {
+      try { const d = await invoke('calculate-adaptive-rate', { currency: c }); ok += d?.updated ?? 0 } catch { /* next */ }
+    }
+    setBusy(false)
+    toast(`Taxas recalculadas: ${ok} atualizadas`)
+    qc.invalidateQueries({ queryKey: ['admin-res', 'spread_rates'] })
+  }
+  return (
+    <div className="stack gap-12" style={{ marginTop: 18 }}>
+      <div className="row gap-8"><input className="input" style={{ maxWidth: 140 }} inputMode="decimal" placeholder="0,50" value={v} onChange={(e) => setV(e.target.value)} /><button className="btn primary" disabled={!v} onClick={publish}>Publicar taxa</button></div>
+      <button className="btn" onClick={recalc} disabled={busy}><RefreshCw /> {busy ? 'Recalculando…' : 'Recalcular spreads adaptativos'}</button>
+    </div>
+  )
+}
+
 function TaxaTab() {
   const { data, isLoading } = useQuery({
     queryKey: ['admin', 'treend-rate'],
@@ -472,13 +564,14 @@ function TaxaTab() {
   const cur = data?.[0]
   const series = [...(data ?? [])].reverse().map((r) => ({ t: r.published_at, v: Number(r.rate_pct) }))
   return (
+    <div className="stack gap-16">
     <div className="grid g-side" style={{ alignItems: 'start' }}>
       <div className="card feature">
         <div className="card-b">
           <div className="small muted">Taxa Treend vigente</div>
           <div className="big-px mono" style={{ marginTop: 10 }}>{cur ? <>{num(cur.rate_pct, 2)}<small>%</small></> : <span className="faint">—</span>}</div>
           {cur && <div className="tiny faint" style={{ marginTop: 8 }}>Publicada {dateBR(cur.published_at, true)}</div>}
-          <div style={{ marginTop: 18 }}><ClassicBtn path="/admin/taxa">Publicar nova taxa</ClassicBtn></div>
+          <PublishRate />
         </div>
       </div>
       <div className="card">
@@ -498,21 +591,11 @@ function TaxaTab() {
         )}
       </div>
     </div>
-  )
-}
-
-/* ── Classic tools ──────────────────────────────────────────── */
-
-function ClassicTab() {
-  return (
-    <div className="admin-tools">
-      {CLASSIC_TOOLS.map((t) => (
-        <a key={t.path} className="card interactive admin-tool" href={classic(t.path)} target="_blank" rel="noreferrer">
-          <span className="admin-tool-ico"><t.icon /></span>
-          <div style={{ minWidth: 0, flex: 1 }}><b>{t.label}</b><div className="tiny faint">{t.desc}</div></div>
-          <ArrowUpRight size={14} className="faint" />
-        </a>
-      ))}
+      <div className="admin-title"><div><h2 style={{ fontSize: 18 }}>Spreads por moeda e janela</h2><p>Ative o override manual para fixar uma taxa.</p></div></div>
+      <Resource table="spread_rates" order={{ col: 'currency', asc: true }} canCreate={false} canDelete={false}
+        columns={[{ key: 'currency' }, { key: 'frequency' }, { key: 'rate_pct', label: 'Calculada (%)' }, { key: 'manual_rate_pct', label: 'Manual (%)' }, { key: 'manual_override', label: 'Override' }]}
+        fields={[{ key: 'manual_rate_pct', label: 'Taxa manual (%)', type: 'number' }, { key: 'manual_override', label: 'Usar taxa manual', type: 'bool' }]} />
     </div>
   )
 }
+
