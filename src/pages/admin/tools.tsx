@@ -7,6 +7,8 @@ import {
 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { CURRENCIES, FREQUENCIES, PROFILES, signal, useHeatmap, pick } from '../../lib/heatmap'
+import Select from '../../components/Select'
+import TradingViewChart from '../../components/TradingViewChart'
 import Resource, { fmt, type ResourceProps, type Row } from '../../components/admin/Resource'
 import { Empty, Modal, Seg, Skel, toast } from '../../components/ui'
 import { dateBR, money, num } from '../../lib/format'
@@ -227,6 +229,7 @@ export const TOOLS: Tool[] = [
         return d?.spread_rate_pct != null ? `Taxa atualizada: ${d.spread_rate_pct}%` : 'Taxa não encontrada — insira manualmente'
       } }]} />,
   },
+  { path: 'grafico', label: 'Gráfico', icon: LineChart, group: 'Mercado', desc: 'Gráfico avançado em tempo real das moedas, cripto, ouro e ações.', element: <Chart /> },
   { path: 'outros-mercados', label: 'Outros mercados', icon: Activity, group: 'Mercado', desc: 'Café, Bitcoin e ouro.', element: <OtherMarkets /> },
   { path: 'analise', label: 'Análise de gráfico', icon: ScanSearch, group: 'Mercado', desc: 'Leitura de gráfico por IA a partir de uma imagem.', element: <ChartAnalysis /> },
   { path: 'scores', label: 'Scores diários', icon: LineChart, group: 'Mercado', desc: 'Pontuações diárias registradas.', element: <R table="daily_scores" order={{ col: 'created_at' }} insertDefaults={(u) => ({ admin_id: u })} /> },
@@ -523,3 +526,35 @@ function LiveAccess() {
   )
 }
 
+
+/* ── Gráfico ────────────────────────────────────────────────── */
+
+const SYMBOLS = [
+  { value: 'FX_IDC:USDBRL', label: 'USD/BRL' }, { value: 'FX_IDC:EURBRL', label: 'EUR/BRL' }, { value: 'FX_IDC:GBPBRL', label: 'GBP/BRL' },
+  { value: 'FX_IDC:CNYBRL', label: 'CNY/BRL' }, { value: 'BINANCE:USDTBRL', label: 'USDT/BRL' }, { value: 'BINANCE:BTCUSDT', label: 'BTC/USDT' },
+  { value: 'OANDA:XAUUSD', label: 'Ouro' }, { value: 'NASDAQ:AAPL', label: 'AAPL' }, { value: 'NASDAQ:AMZN', label: 'AMZN' },
+  { value: 'NASDAQ:GOOGL', label: 'GOOGL' }, { value: 'NASDAQ:META', label: 'META' }, { value: 'NASDAQ:MSFT', label: 'MSFT' },
+  { value: 'NASDAQ:NVDA', label: 'NVDA' }, { value: 'NASDAQ:TSLA', label: 'TSLA' },
+]
+const INTERVALS = [{ value: '15', label: '15m' }, { value: '60', label: '1h' }, { value: '240', label: '4h' }, { value: 'D', label: '1D' }, { value: 'W', label: '1S' }]
+
+function Chart() {
+  const [symbol, setSymbol] = useState('FX_IDC:USDBRL')
+  const [interval, setInterval] = useState('60')
+  const [candles, setCandles] = useState(true)
+  const dark = document.documentElement.dataset.theme === 'dark'
+  return (
+    <div className="card">
+      <div className="card-h wrap" style={{ gap: 12 }}>
+        <div style={{ width: 180 }}><Select value={symbol} onChange={setSymbol} options={SYMBOLS} /></div>
+        <div className="row gap-8 wrap">
+          <Seg value={interval} onChange={setInterval} options={INTERVALS} />
+          <Seg value={candles ? 'c' : 'l'} onChange={(v) => setCandles(v === 'c')} options={[{ value: 'c', label: 'Candles' }, { value: 'l', label: 'Linha' }]} />
+        </div>
+      </div>
+      <div className="card-b" style={{ height: 'min(72vh, 680px)' }}>
+        <TradingViewChart symbol={symbol} interval={interval} dark={dark} candles={candles} />
+      </div>
+    </div>
+  )
+}
