@@ -67,7 +67,9 @@ for (const [ccy, { q }] of Object.entries(CURRENCIES)) {
     const g = await rss(`https://news.google.com/rss/search?q=${enc}+when:3d&hl=pt-BR&gl=BR&ceid=BR:pt-419`)
     for (const it of g) {
       const title = tag(it, 'title')
-      items.push({ title: title.replace(/ - [^-]+$/, ''), link: tag(it, 'link'), pubDate: tag(it, 'pubDate'), source: tag(it, 'source') || title.match(/ - ([^-]+)$/)?.[1] || 'Google News', currency: ccy })
+      const source = tag(it, 'source') || 'Google News'
+      const clean = title.endsWith(` - ${source}`) ? title.slice(0, -(source.length + 3)) : title.replace(/ - [^-]+$/, '')
+      items.push({ title: clean, link: tag(it, 'link'), pubDate: tag(it, 'pubDate'), source: source.replace(/ - .*$/, ''), currency: ccy })
     }
   }
 }
