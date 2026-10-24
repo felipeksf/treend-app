@@ -53,6 +53,18 @@ async function scan(market: string, body: object, signal?: AbortSignal): Promise
 }
 
 /** Typeahead scoped to one asset class (B3, US stocks, crypto, FX). Without a class, searches everything. */
+const B3_ALIAS: Record<string, string> = {"PETR": "petrobras", "VALE": "vale", "ITUB": "itau unibanco", "ITSA": "itausa", "BBDC": "bradesco", "BBAS": "banco do brasil", "ABEV": "ambev", "MGLU": "magazine luiza magalu", "WEGE": "weg", "B3SA": "b3 bolsa", "ELET": "eletrobras", "SBSP": "sabesp", "RENT": "localiza", "PRIO": "prio petrorio", "SUZB": "suzano", "GGBR": "gerdau", "GOAU": "gerdau metalurgica", "JBSS": "jbs", "LREN": "lojas renner", "RADL": "raia drogasil", "VIVT": "vivo telefonica", "TIMS": "tim", "EMBR": "embraer", "EMBJ": "embraer", "CSNA": "csn siderurgica nacional", "USIM": "usiminas", "CMIG": "cemig", "CPLE": "copel", "BRFS": "brf sadia perdigao", "AZUL": "azul linhas aereas", "GOLL": "gol linhas aereas", "NTCO": "natura", "HAPV": "hapvida", "RAIL": "rumo", "CSAN": "cosan", "UGPA": "ultrapar ipiranga", "VBBR": "vibra br distribuidora", "KLBN": "klabin", "TOTS": "totvs", "CYRE": "cyrela", "MRVE": "mrv", "BPAC": "btg pactual", "SANB": "santander", "CASH": "meliuz", "PETZ": "petz", "ASAI": "assai atacadista", "CRFB": "carrefour atacadao", "YDUQ": "yduqs estacio", "COGN": "cogna kroton", "ENEV": "eneva", "EQTL": "equatorial", "TAEE": "taesa", "BBSE": "bb seguridade", "IRBR": "irb brasil re", "CIEL": "cielo", "ALPA": "alpargatas havaianas", "SMTO": "sao martinho", "BEEF": "minerva", "MRFG": "marfrig", "MBRF": "marfrig brf", "HYPE": "hypera", "FLRY": "fleury", "RDOR": "rede dor", "BHIA": "casas bahia via", "AMER": "americanas", "LWSA": "locaweb", "POSI": "positivo", "CVCB": "cvc", "SULA": "sulamerica", "PSSA": "porto seguro", "CXSE": "caixa seguridade", "EGIE": "engie", "NEOE": "neoenergia", "CPFE": "cpfl", "ENGI": "energisa", "TRPL": "isa cteep", "AURE": "auren", "SAPR": "sanepar", "CSMG": "copasa", "MULT": "multiplan", "IGTI": "iguatemi", "ALOS": "allos aliansce sonae", "ARZZ": "arezzo", "AZZA": "azzas arezzo soma", "SOMA": "grupo soma", "GRND": "grendene", "VULC": "vulcabras", "SLCE": "slc agricola", "STBP": "santos brasil", "ECOR": "ecorodovias", "CCRO": "ccr", "MOTV": "motiva ccr", "RAPT": "randon", "TUPY": "tupy", "POMO": "marcopolo", "DXCO": "dexco duratex", "EZTC": "eztec", "DIRR": "direcional", "CURY": "cury", "SMFT": "smart fit", "INTB": "intelbras", "BRAP": "bradespar", "CMIN": "csn mineracao", "BRKM": "braskem", "UNIP": "unipar", "RECV": "petroreconcavo", "RRRP": "3r petroleum", "QUAL": "qualicorp", "ODPV": "odontoprev", "BMGB": "banco bmg", "BPAN": "banco pan", "ABCB": "abc brasil", "BRSR": "banrisul", "INBR": "inter banco", "ROXO": "nubank", "NUBR": "nubank", "MELI": "mercado livre", "WIZC": "wiz", "LJQQ": "quero quero", "PGMN": "pague menos", "PNVL": "panvel", "GMAT": "grupo mateus", "SBFG": "centauro sbf", "TEND": "tenda", "EVEN": "even", "JHSF": "jhsf", "LOGG": "log commercial", "ORVR": "orizon", "SIMH": "simpar", "VAMO": "vamos", "MOVI": "movida", "AERI": "aeris", "KEPL": "kepler weber", "FRAS": "fras-le", "LEVE": "mahle metal leve", "MYPK": "iochpe maxion", "ROMI": "romi", "MILS": "mills", "ANIM": "anima", "SEER": "ser educacional", "BLAU": "blau farmaceutica", "ONCO": "oncoclinicas", "MATD": "mater dei", "DASA": "dasa diagnosticos", "PARD": "hermes pardini", "AALR": "alliar", "CEAB": "c&a", "GUAR": "guararapes riachuelo", "AMAR": "marisa", "TFCO": "track field", "ESPA": "espaçolaser", "LIGT": "light", "CEEB": "coelba", "CLSC": "celesc", "EKTR": "elektro", "ENAT": "enauta", "FESA": "ferbasa", "PMAM": "paranapanema", "MTRE": "mitre", "TRIS": "trisul", "HBOR": "helbor", "PLPL": "plano e plano", "LAVV": "lavvi", "MDNE": "moura dubeux", "SEQL": "sequoia", "ARML": "armac", "TGMA": "tegma", "JSLG": "jsl", "HBSA": "hidrovias", "PORT": "wilson sons", "BRBI": "br partners", "GGPS": "gps", "VIVA": "vivara", "SOJA": "boa safra", "AGRO": "brasilagro", "TTEN": "3tentos", "CAML": "camil", "MDIA": "m dias branco", "JALL": "jalles machado", "RAIZ": "raizen", "ODER": "oderich", "KRSA": "kora saude", "PTBL": "portobello", "EUCA": "eucatex", "RANI": "irani", "FHER": "fertilizantes heringer", "DESK": "desktop", "BMOB": "bemobi", "NINJ": "getninjas", "TRAD": "tc traders club", "VLID": "valid", "LUPA": "lupatech", "OIBR": "oi", "TELB": "telebras", "DOTZ": "dotz", "ENJU": "enjoei", "MLAS": "multilaser", "AMBP": "ambipar", "EALT": "electro aco altona", "MEAL": "ima"}
+const UNI = new Map<ClassKey, { at: number; p: Promise<Row[]> }>()
+/** Full row list of a class, cached for 10 minutes (one scanner call per class). */
+function universe(k: ClassKey): Promise<Row[]> {
+  const c = UNI.get(k)
+  if (c && Date.now() - c.at < 600_000) return c.p
+  const p = scanClass(k)
+  p.catch(() => UNI.delete(k))
+  UNI.set(k, { at: Date.now(), p })
+  return p
+}
+
 export async function searchAssets(q: string, signal?: AbortSignal, cls?: ClassKey): Promise<Asset[]> {
   const s = norm(q.trim())
   if (s.length < 1) return []
@@ -62,11 +74,23 @@ export async function searchAssets(q: string, signal?: AbortSignal, cls?: ClassK
     symbol: r.symbol, ticker: r.ticker, name: r.name, logo: r.logo, currency: r.cur || CLASSES[k].currency,
     sub: k === 'crypto' ? 'Cripto' : `${CLASSES[k].label}${r.sector ? ` · ${r.sector}` : ''}`,
   })
-  const run = (k: ClassKey, n: number) =>
-    k === 'commod'
-      // Commodity names are translated locally, so search the full list in PT and EN instead of the scanner text match.
-      ? scanClass('commod', { signal }).then((x) => x.filter((r) => norm(`${r.name} ${r.ticker} ${r.alt ?? ''} ${r.sector ?? ''}`).includes(s)).slice(0, n).map(toAsset(k))).catch(() => [] as Asset[])
-      : scanClass(k, { search: q.trim(), limit: n, signal }).then((x) => x.map(toAsset(k))).catch(() => [] as Asset[])
+  const run = async (k: ClassKey, n: number): Promise<Asset[]> => {
+    // Search the full class universe locally (ticker, full name, translated name), so “Solana”,
+    // “Petrobras” or “Apple” work as well as SOL, PETR4 or AAPL. The scanner's own text search
+    // only matches tickers, so it is used just as a fallback.
+    const list = await universe(k).catch(() => [] as Row[])
+    const words = s.split(/\s+/).filter(Boolean)
+    const scored = list.map((r) => {
+      const t = norm(r.ticker), nm = norm(`${k === 'b3' ? `${B3_ALIAS[r.ticker.slice(0, 4)] ?? ''} ` : ''}${r.name} ${r.alt ?? ''}`), all = `${t} ${nm} ${norm(r.symbol)} ${norm(r.sector ?? '')}`
+      if (!words.every((w) => all.includes(w))) return null
+      const score = t === s ? 0 : t.startsWith(s) ? 1 : nm.startsWith(s) ? 2 : nm.split(/[\s.,/-]+/).some((w) => w.startsWith(words[0])) ? 3 : 4
+      return { r, score }
+    }).filter((x): x is { r: Row; score: number } => !!x)
+    scored.sort((a, b) => a.score - b.score)
+    let out = scored.slice(0, n).map((x) => x.r)
+    if (!out.length && k !== 'commod') out = await scanClass(k, { search: q.trim(), limit: n, signal }).catch(() => [] as Row[])
+    return out.map(toAsset(k))
+  }
   if (cls) return run(cls, 12)
   const [b3, us, cr, co] = await Promise.all([run('b3', 6), run('us', 4), run('crypto', 4), run('commod', 3)])
   return [...fx, ...b3, ...us, ...cr, ...co].slice(0, 12)
