@@ -1,3 +1,4 @@
+import { LOCALE } from '../lib/i18n'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
@@ -94,7 +95,7 @@ function SearchBox({ onPick, autoFocus, compact, cls }: { onPick: (a: Asset) => 
   const voice = () => {
     if (!SpeechRec) return
     const r = new SpeechRec()
-    r.lang = 'pt-BR'
+    r.lang = LOCALE
     r.interimResults = false
     r.onresult = (e) => { const t = e.results[0][0].transcript.replace(/\.$/, ''); setQ(t); setOpen(true) }
     r.onend = () => setListening(false)

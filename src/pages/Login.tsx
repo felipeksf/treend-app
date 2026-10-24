@@ -1,3 +1,4 @@
+import LangPicker from '../components/LangPicker'
 import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { ArrowRight, Eye, EyeOff, Lock, Mail } from 'lucide-react'
@@ -78,7 +79,8 @@ export default function Login() {
         </div>
       </section>
 
-      <section className="auth-form">
+      <section className="auth-form" style={{ position: 'relative' }}>
+        <div className="auth-lang"><LangPicker /></div>
         <div>
           <h1 style={{ fontSize: 30, letterSpacing: '-0.035em', margin: '0 0 6px', fontWeight: 600 }}>Bem-vindo de volta</h1>
           <p className="muted" style={{ margin: '0 0 28px' }}>Entre para acessar sua inteligência Treend.</p>

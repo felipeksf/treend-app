@@ -1,3 +1,4 @@
+import LangPicker from './LangPicker'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { ArrowUpRight, Bell, CornerDownLeft, Menu, Moon, PanelLeft, Search, Sun, LogOut, Coins } from 'lucide-react'
@@ -172,6 +173,7 @@ export default function Shell() {
           <span className="live hide-m">
             <i /> Ao vivo
           </span>
+          <LangPicker />
           <button className="icon-btn" title="Notificações">
             <Bell />
             <span className="dot-badge" />

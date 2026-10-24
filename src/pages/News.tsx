@@ -69,7 +69,7 @@ export default function News() {
             <span className="pill tone" style={{ ['--c' as string]: 'var(--brand)' }}><span className="d" />Destaque</span>
             <span className="faint">{lead.source} · {timeAgo(new Date(lead.pubDate).toISOString())}</span>
           </div>
-          <h2 style={{ margin: 0, fontSize: 26, letterSpacing: '-0.03em', lineHeight: 1.2, fontWeight: 600, maxWidth: 900 }}>{lead.title.replace(/ - [^-]+$/, '')}</h2>
+          <h2 data-no-tr style={{ margin: 0, fontSize: 26, letterSpacing: '-0.03em', lineHeight: 1.2, fontWeight: 600, maxWidth: 900 }}>{lead.title.replace(/ - [^-]+$/, '')}</h2>
           <div className="row gap-8" style={{ marginTop: 18 }}>
             <button className="btn sm" onClick={(e) => { e.preventDefault(); summarize(lead) }}><Sparkles /> Resumir com IA</button>
             <span className="btn ghost sm">Ler matéria <ArrowUpRight /></span>
@@ -84,7 +84,7 @@ export default function News() {
             <div key={n.link} className="news-item">
               <div className="source-badge">{initials(n.source)}</div>
               <a href={n.link} target="_blank" rel="noreferrer">
-                <h4>{n.title.replace(/ - [^-]+$/, '')}</h4>
+                <h4 data-no-tr>{n.title.replace(/ - [^-]+$/, '')}</h4>
                 <div className="small faint">{n.source} · {timeAgo(new Date(n.pubDate).toISOString())}</div>
               </a>
               <button className="btn ghost sm" onClick={() => summarize(n)}><Sparkles /> Resumo</button>

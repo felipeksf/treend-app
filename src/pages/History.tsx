@@ -1,3 +1,4 @@
+import { LOCALE } from '../lib/i18n'
 import { useMemo, useState } from 'react'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { Download, History as HistoryIcon, Mail } from 'lucide-react'
@@ -65,7 +66,7 @@ export default function History() {
                       <AreaChart data={series}>
                         <defs><linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--brand)" stopOpacity={0.3} /><stop offset="100%" stopColor="var(--brand)" stopOpacity={0} /></linearGradient></defs>
                         <CartesianGrid stroke="var(--line)" vertical={false} />
-                        <XAxis dataKey="t" tickFormatter={(t) => new Date(t).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })} axisLine={false} tickLine={false} minTickGap={40} />
+                        <XAxis dataKey="t" tickFormatter={(t) => new Date(t).toLocaleDateString(LOCALE, { day: '2-digit', month: 'short' })} axisLine={false} tickLine={false} minTickGap={40} />
                         <YAxis tickFormatter={(v) => compact(v)} axisLine={false} tickLine={false} width={48} orientation="right" />
                         <Tooltip content={({ payload }) => (payload?.[0] ? <div className="chart-tip mono">R$ {compact(payload[0].payload.v)}</div> : null)} />
                         <Area type="stepAfter" dataKey="v" stroke="var(--brand)" strokeWidth={2} fill="url(#hg)" />

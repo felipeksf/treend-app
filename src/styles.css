@@ -1103,3 +1103,16 @@ h1, h2, h3, .big-px, .px, .score, .wordmark { letter-spacing: -0.03em; }
 .ticker-link:hover b, .ticker-link:hover { text-decoration: underline; text-underline-offset: 3px; }
 .range52 { position: relative; height: 6px; border-radius: 99px; background: linear-gradient(90deg, var(--up), var(--amber) 50%, var(--down)); opacity: 0.85; }
 .range52 i { position: absolute; top: 50%; width: 14px; height: 14px; border-radius: 50%; background: var(--text); border: 3px solid var(--surface); transform: translate(-50%, -50%); }
+
+/* language picker */
+.lang-pick{position:relative}
+.lang-btn{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--text);font:600 12px/1 inherit;cursor:pointer}
+.lang-btn:hover{border-color:var(--brand)}
+.lang-flag{font-size:16px;line-height:1}
+.lang-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:60;min-width:160px;padding:6px;border-radius:12px;background:var(--surface);border:1px solid var(--line);box-shadow:0 12px 32px rgba(10,20,50,.16);display:flex;flex-direction:column}
+.lang-menu button{display:flex;align-items:center;gap:10px;padding:9px 10px;border:0;border-radius:8px;background:none;color:var(--text);font:500 13px inherit;cursor:pointer;text-align:left}
+.lang-menu button:hover{background:var(--brand-soft)}
+.lang-menu button.on{color:var(--brand);font-weight:600}
+.auth-lang{position:fixed;top:16px;right:16px;z-index:50}
+@media (max-width: 900px) { .auth:not(.onb2) .auth-art h2 { margin-top: 40px; } .auth-lang .lang-btn { background: rgba(255,255,255,.12); color: #fff; border-color: rgba(255,255,255,.25); } }
+.auth > .auth-lang, .auth-lang { position: fixed !important; top: 16px !important; right: 16px !important; left: auto !important; width: auto !important; min-height: 0 !important; padding: 0 !important; z-index: 50; }

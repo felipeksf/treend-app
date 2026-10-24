@@ -1,3 +1,4 @@
+import LangPicker from '../components/LangPicker'
 import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, BarChart3, Bell, Calculator, CalendarDays, FlaskConical, Grid3x3, Moon, Radar, ScrollText, Sparkles, Sun, MessageCircle, type LucideIcon } from 'lucide-react'
@@ -68,7 +69,8 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="auth onb2">
+    <div className="auth onb2" style={{ position: 'relative' }}>
+      <div className="auth-lang"><LangPicker /></div>
       <section className="auth-art">
         <TreendLogo size={36} light />
         <svg className="orbit hide-m" viewBox="0 0 560 560" fill="none" aria-hidden>

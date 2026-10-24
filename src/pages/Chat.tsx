@@ -1,3 +1,4 @@
+import { LOCALE } from '../lib/i18n'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowLeft, Check, Clock, MessagesSquare, Plus, Search, Send, UserPlus, X } from 'lucide-react'
 import { supabase } from '../lib/supabase'
@@ -14,10 +15,10 @@ type Req = { id: string; sender_id: string; receiver_id: string; status: string;
 
 const nameOf = (p?: Person | null) => p?.full_name || 'Usuário'
 const initial = (p?: Person | null) => nameOf(p).charAt(0).toUpperCase()
-const hhmm = (iso: string) => new Date(iso).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+const hhmm = (iso: string) => new Date(iso).toLocaleTimeString(LOCALE, { hour: '2-digit', minute: '2-digit' })
 const ddmm = (iso: string) => {
   const d = new Date(iso)
-  return d.toDateString() === new Date().toDateString() ? hhmm(iso) : d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
+  return d.toDateString() === new Date().toDateString() ? hhmm(iso) : d.toLocaleDateString(LOCALE, { day: '2-digit', month: '2-digit' })
 }
 
 function Avatar({ p, size = 40, tone }: { p?: Person | null; size?: number; tone?: string }) {
@@ -214,7 +215,7 @@ function ChatApp() {
                 const dayChange = i === 0 || new Date(msgs[i - 1].created_at).toDateString() !== new Date(m.created_at).toDateString()
                 return (
                   <div key={m.id}>
-                    {dayChange && <div className="chat-day">{new Date(m.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' })}</div>}
+                    {dayChange && <div className="chat-day">{new Date(m.created_at).toLocaleDateString(LOCALE, { day: '2-digit', month: 'long' })}</div>}
                     <div className={`bubble ${mine ? 'me' : ''}`}>
                       <p>{m.body}</p>
                       <span>{hhmm(m.created_at)}</span>

@@ -1,3 +1,4 @@
+import { LOCALE } from '../lib/i18n'
 import { useMemo, useState, type ReactNode } from 'react'
 import { NavLink, Route, Routes } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
@@ -196,7 +197,7 @@ function Overview() {
               <AreaChart data={series} margin={{ left: 0, right: 0, top: 8 }}>
                 <defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--brand)" stopOpacity={0.3} /><stop offset="100%" stopColor="var(--brand)" stopOpacity={0} /></linearGradient></defs>
                 <CartesianGrid stroke="var(--line)" vertical={false} />
-                <XAxis dataKey="d" tickFormatter={(d) => new Date(d + 'T12:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })} axisLine={false} tickLine={false} minTickGap={40} />
+                <XAxis dataKey="d" tickFormatter={(d) => new Date(d + 'T12:00').toLocaleDateString(LOCALE, { day: '2-digit', month: 'short' })} axisLine={false} tickLine={false} minTickGap={40} />
                 <YAxis allowDecimals={false} axisLine={false} tickLine={false} width={32} orientation="right" />
                 <Tooltip content={({ payload }) => (payload?.[0] ? <div className="chart-tip mono">{payload[0].payload.v} usuários</div> : null)} />
                 <Area type="monotone" dataKey="v" stroke="var(--brand)" strokeWidth={2} fill="url(#ag)" />
@@ -581,7 +582,7 @@ function TaxaTab() {
             <ResponsiveContainer>
               <AreaChart data={series}>
                 <CartesianGrid stroke="var(--line)" vertical={false} />
-                <XAxis dataKey="t" tickFormatter={(t) => new Date(t).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })} axisLine={false} tickLine={false} minTickGap={40} />
+                <XAxis dataKey="t" tickFormatter={(t) => new Date(t).toLocaleDateString(LOCALE, { day: '2-digit', month: 'short' })} axisLine={false} tickLine={false} minTickGap={40} />
                 <YAxis tickFormatter={(v) => compact(v)} axisLine={false} tickLine={false} width={40} orientation="right" domain={['dataMin', 'dataMax']} />
                 <Tooltip content={({ payload }) => (payload?.[0] ? <div className="chart-tip mono">{num(payload[0].payload.v, 2)}%</div> : null)} />
                 <Area type="stepAfter" dataKey="v" stroke="var(--brand)" strokeWidth={2} fill="var(--brand-soft)" />

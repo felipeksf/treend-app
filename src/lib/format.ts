@@ -1,20 +1,21 @@
+import { LOCALE } from './i18n'
 export const brl = (v: number, digits = 4) =>
-  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: digits, maximumFractionDigits: digits }).format(v)
+  new Intl.NumberFormat(LOCALE, { style: 'currency', currency: 'BRL', minimumFractionDigits: digits, maximumFractionDigits: digits }).format(v)
 
 export const money = (v: number, currency = 'BRL', digits = 2) => {
   const c = currency === 'USDT' ? 'USD' : currency
   try {
-    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: c, minimumFractionDigits: digits, maximumFractionDigits: digits }).format(v)
+    return new Intl.NumberFormat(LOCALE, { style: 'currency', currency: c, minimumFractionDigits: digits, maximumFractionDigits: digits }).format(v)
   } catch {
     return `${currency} ${num(v, digits)}`
   }
 }
 
 export const num = (v: number, digits = 2) =>
-  new Intl.NumberFormat('pt-BR', { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(v)
+  new Intl.NumberFormat(LOCALE, { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(v)
 
 export const compact = (v: number) =>
-  new Intl.NumberFormat('pt-BR', { notation: 'compact', maximumFractionDigits: 1 }).format(v)
+  new Intl.NumberFormat(LOCALE, { notation: 'compact', maximumFractionDigits: 1 }).format(v)
 
 export const pct = (v: number, digits = 2) => `${v >= 0 ? '+' : ''}${num(v, digits)}%`
 
@@ -27,6 +28,6 @@ export const timeAgo = (iso: string) => {
 }
 
 export const dateBR = (iso: string, withTime = false) =>
-  new Date(iso).toLocaleString('pt-BR', withTime
+  new Date(iso).toLocaleString(LOCALE, withTime
     ? { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }
     : { day: '2-digit', month: 'short', year: 'numeric' })

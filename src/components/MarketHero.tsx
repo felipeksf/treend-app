@@ -164,7 +164,7 @@ export default function MarketHero({ k, rows, news }: { k: ClassKey; rows: Row[]
               <a key={n.link} href={n.link} target="_blank" rel="noreferrer" className="list-row" style={{ alignItems: 'flex-start' }}>
                 <Zap size={14} style={{ color: 'var(--brand)', marginTop: 3, flex: 'none' }} />
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 500, lineHeight: 1.4 }}>{n.title.replace(/ - [^-]+$/, '')}</div>
+                  <div data-no-tr style={{ fontSize: 13, fontWeight: 500, lineHeight: 1.4 }}>{n.title.replace(/ - [^-]+$/, '')}</div>
                   <div className="tiny faint" style={{ marginTop: 4 }}>{n.source} · {timeAgo(new Date(n.pubDate).toISOString())}</div>
                 </div>
               </a>

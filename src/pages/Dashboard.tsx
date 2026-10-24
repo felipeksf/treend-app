@@ -1,3 +1,4 @@
+import { LOCALE } from '../lib/i18n'
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
@@ -192,14 +193,14 @@ function Dashboard({ onMarket }: { onMarket: (k: ClassKey) => void }) {
                     </linearGradient>
                   </defs>
                   <CartesianGrid stroke="var(--line)" vertical={false} />
-                  <XAxis dataKey="t" tickFormatter={(t) => new Date(t).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })} axisLine={false} tickLine={false} minTickGap={40} />
+                  <XAxis dataKey="t" tickFormatter={(t) => new Date(t).toLocaleDateString(LOCALE, { day: '2-digit', month: 'short' })} axisLine={false} tickLine={false} minTickGap={40} />
                   <YAxis domain={['dataMin', 'dataMax']} tickFormatter={(v) => v.toFixed(3)} axisLine={false} tickLine={false} width={52} orientation="right" />
                   <Tooltip
                     cursor={{ stroke: 'var(--line-3)', strokeDasharray: '3 3' }}
                     content={({ payload }) =>
                       payload?.[0] ? (
                         <div className="chart-tip">
-                          <div className="faint tiny">{new Date(payload[0].payload.t).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' })}</div>
+                          <div className="faint tiny">{new Date(payload[0].payload.t).toLocaleDateString(LOCALE, { weekday: 'short', day: '2-digit', month: 'short' })}</div>
                           <div className="mono" style={{ fontSize: 14 }}>R$ {num(payload[0].payload.v, 4)}</div>
                         </div>
                       ) : null
@@ -289,7 +290,7 @@ function Dashboard({ onMarket }: { onMarket: (k: ClassKey) => void }) {
               <a key={n.link} href={n.link} target="_blank" rel="noreferrer" className="list-row" style={{ alignItems: 'flex-start' }}>
                 
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 500, lineHeight: 1.4 }}>{n.title.replace(/ - [^-]+$/, '')}</div>
+                  <div data-no-tr style={{ fontSize: 13, fontWeight: 500, lineHeight: 1.4 }}>{n.title.replace(/ - [^-]+$/, '')}</div>
                   <div className="tiny faint" style={{ marginTop: 4 }}>{n.source} · {timeAgo(new Date(n.pubDate).toISOString())}</div>
                 </div>
               </a>

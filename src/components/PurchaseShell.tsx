@@ -1,3 +1,4 @@
+import LangPicker from './LangPicker'
 import type { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LogOut, ShieldCheck } from 'lucide-react'
@@ -9,7 +10,8 @@ export default function PurchaseShell({ eyebrow, title, accent, description, pay
   const { session, signOut } = useAuth()
   const nav = useNavigate()
   return (
-    <div className="auth onb2">
+    <div className="auth onb2" style={{ position: 'relative' }}>
+      <div className="auth-lang"><LangPicker /></div>
       <section className="auth-art">
         <TreendLogo size={36} light />
         <svg className="orbit hide-m" viewBox="0 0 560 560" fill="none" aria-hidden>

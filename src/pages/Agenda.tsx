@@ -1,3 +1,4 @@
+import { LOCALE } from '../lib/i18n'
 import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { CalendarDays, ChevronLeft, ChevronRight, Clock } from 'lucide-react'
@@ -63,7 +64,7 @@ export default function Agenda() {
         {view === 'month' ? (
           <div className="card" style={{ overflow: 'hidden' }}>
             <div className="card-h" style={{ paddingBottom: 16 }}>
-              <h3 style={{ fontSize: 18, textTransform: 'capitalize' }}>{cursor.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</h3>
+              <h3 style={{ fontSize: 18, textTransform: 'capitalize' }}>{cursor.toLocaleDateString(LOCALE, { month: 'long', year: 'numeric' })}</h3>
               <div className="row gap-8">
                 <button className="btn sm" onClick={() => { const d = new Date(); d.setDate(1); setCursor(d) }}>Hoje</button>
                 <button className="icon-btn" onClick={() => move(-1)}><ChevronLeft /></button>
@@ -95,7 +96,7 @@ export default function Agenda() {
               return (
                 <div key={e.id} className="list-row" style={{ alignItems: 'flex-start', gap: 18 }}>
                   <div style={{ width: 54, textAlign: 'center', flex: 'none' }}>
-                    <div className="tiny faint" style={{ textTransform: 'uppercase', letterSpacing: '0.1em' }}>{d.toLocaleDateString('pt-BR', { month: 'short' })}</div>
+                    <div className="tiny faint" style={{ textTransform: 'uppercase', letterSpacing: '0.1em' }}>{d.toLocaleDateString(LOCALE, { month: 'short' })}</div>
                     <div className="mono" style={{ fontSize: 26, fontWeight: 500, letterSpacing: '-0.04em' }}>{d.getDate()}</div>
                   </div>
                   <div style={{ flex: 1 }}>
