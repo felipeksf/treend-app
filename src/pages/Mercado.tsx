@@ -1,3 +1,4 @@
+import { clsOf } from '../lib/market'
 import AssetNews from '../components/AssetNews'
 import { toast } from '../components/ui'
 import { addHistory } from '../lib/assetHistory'
@@ -50,15 +51,16 @@ export default function Mercado() {
   const choose = (a: Asset) => {
     setPicked(a)
     try { sessionStorage.setItem('treend-v2-asset', JSON.stringify(a)) } catch { /* ignore */ }
-    setParams({ c: cls, s: a.symbol })
+    setParams({ c: homeCls ?? clsOf(a), s: a.symbol })
   }
-  const cls = (params.get('c') as ClassKey) in CLASSES ? (params.get('c') as ClassKey) : 'b3'
-  const setCls = (c: ClassKey) => setParams({ c })
-  const back = () => setParams({ c: cls })
+  const homeCls = (params.get('c') as ClassKey) in CLASSES ? (params.get('c') as ClassKey) : null
+  const cls: ClassKey = homeCls ?? (asset ? clsOf(asset) : 'b3')
+  const setCls = (c: ClassKey | null) => setParams(c ? { c } : {})
+  const back = () => setParams(homeCls ? { c: homeCls } : {})
 
   return (
     <div className="page mercado">
-      {asset ? <Result asset={asset} cls={cls} onBack={back} onPick={choose} /> : <SearchHome cls={cls} setCls={setCls} onPick={choose} />}
+      {asset ? <Result asset={asset} cls={cls} onBack={back} onPick={choose} /> : <SearchHome cls={homeCls} setCls={setCls} onPick={choose} />}
       <Toaster />
     </div>
   )
@@ -142,24 +144,26 @@ export function SearchBox({ onPick, autoFocus, compact, cls, placeholder }: { on
   )
 }
 
-function SearchHome({ onPick, cls, setCls }: { onPick: (a: Asset) => void; cls: ClassKey; setCls: (c: ClassKey) => void }) {
-  const q = CLASSES[cls].question
+const ALL_SUGS = ['PETR4', 'Bitcoin', 'Dólar', 'AAPL', 'Ouro', 'MXRF11']
+
+function SearchHome({ onPick, cls, setCls }: { onPick: (a: Asset) => void; cls: ClassKey | null; setCls: (c: ClassKey | null) => void }) {
+  const q = cls ? CLASSES[cls].question : 'O que deseja analisar agora?'
   const cut = q.lastIndexOf(' ')
   const run = async (s: string) => {
-    const r = await searchAssets(s, undefined, cls)
+    const r = await searchAssets(s, undefined, cls ?? undefined)
     if (r[0]) onPick(r[0])
   }
   return (
     <div className="mercado-home">
       <div className="class-switch" role="tablist" aria-label="Classe de ativo">
-        {CLASS_LIST.map((c) => <button key={c.key} role="tab" aria-selected={cls === c.key} className={cls === c.key ? 'on' : ''} onClick={() => setCls(c.key)}>{c.label}</button>)}
+        {CLASS_LIST.map((c) => <button key={c.key} role="tab" aria-selected={cls === c.key} className={cls === c.key ? 'on' : ''} onClick={() => setCls(cls === c.key ? null : c.key)}>{c.label}</button>)}
       </div>
-      <h1 key={`q-${cls}`} className="q-anim">{q.slice(0, cut)} <span className="serif">{q.slice(cut + 1)}</span><Hint text="Pesquise ações da B3 e dos EUA, moedas e criptomoedas e veja o índice Treend de 0 a 100 em cada tempo gráfico." side="bottom" /></h1>
+      <h1 key={`q-${cls ?? 'all'}`} className="q-anim">{q.slice(0, cut)} <span className="serif">{q.slice(cut + 1)}</span><Hint text="Pesquise ações da B3 e dos EUA, moedas e criptomoedas e veja o índice Treend de 0 a 100 em cada tempo gráfico." side="bottom" /></h1>
       <p>Digite o nome ou o código do ativo e veja o índice Treend em cada tempo gráfico.</p>
-      <SearchBox key={`s-${cls}`} onPick={onPick} autoFocus cls={cls} />
+      <SearchBox key={`s-${cls ?? 'all'}`} onPick={onPick} autoFocus cls={cls ?? undefined} />
       <div className="mercado-sugs">
         <span className="tiny faint">Sugestões</span>
-        {SUGGESTIONS[cls].map((s) => <button key={s} className="chip" onClick={() => run(s)}>{s}</button>)}
+        {(cls ? SUGGESTIONS[cls] : ALL_SUGS).map((s) => <button key={s} className="chip" onClick={() => run(s)}>{s}</button>)}
       </div>
     </div>
   )
