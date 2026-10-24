@@ -53,10 +53,10 @@ export default function Login() {
 
         <div style={{ maxWidth: 560 }}>
           <h2>
-            Decida o câmbio com <span className="serif">contexto,</span> não com sorte.
+            Decida o mercado com <span className="serif">contexto,</span> não com sorte.
           </h2>
           <p style={{ color: '#c3cfe6', fontSize: 16, maxWidth: 440, marginTop: 20 }}>
-            Leituras em tempo real, projeções por perfil e alertas automáticos — o aliado que importadores, exportadores e viajantes usam para escolher o momento certo.
+            Câmbio, ações da B3 e dos EUA, cripto, commodities e FIIs: leituras em tempo real, índices por tempo gráfico e alertas automáticos para escolher o momento certo de cada decisão.
           </p>
         </div>
 

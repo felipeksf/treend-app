@@ -6,6 +6,8 @@ import { useAuth } from '../lib/auth'
 import { CURRENCIES, FREQUENCIES, PROFILES, pick, signal, useHeatmap } from '../lib/heatmap'
 import { Empty, Modal, PageHeader, Seg, Skel, toast, Hint } from '../components/ui'
 import Gate from '../components/Gate'
+import { useNavigate } from 'react-router-dom'
+import { ALERT_FRAMES, removeAlert, useAssetAlerts } from '../lib/assetAlerts'
 import { dateBR } from '../lib/format'
 import Select from '../components/Select'
 import { HELP } from '../lib/help'
@@ -95,6 +97,8 @@ export default function Radar() {
         </div>
       </Gate>
 
+      <AssetRadars />
+
       <Modal open={open} onClose={() => setOpen(false)}>
         <h3>Novo alerta</h3>
         <p className="small muted" style={{ marginTop: 0 }}>Você será notificado quando a cotação atingir a zona escolhida.</p>
@@ -110,6 +114,26 @@ export default function Radar() {
           </div>
         </div>
       </Modal>
+    </div>
+  )
+}
+
+function AssetRadars() {
+  const list = useAssetAlerts()
+  const nav = useNavigate()
+  return (
+    <div className="card" style={{ marginTop: 16 }}>
+      <div className="card-h"><h3><Zap /> Radares de ativos <span className="pill">{list.length}</span><Hint text="Radares criados em qualquer mercado (ações, stocks, cripto, commodities, FIIs, câmbio). Verificados a cada 2 minutos enquanto a Treend estiver aberta, com aviso na tela e notificação do navegador." /></h3><button className="btn ghost sm" onClick={() => nav('/mercado')}>Analisar um ativo</button></div>
+      {!list.length ? <Empty icon={<Zap size={20} />} title="Nenhum radar de ativo">Abra qualquer ativo em Analisar ativo ou clique em um bloco do mapa de um mercado para criar.</Empty> : list.map((a) => (
+        <div key={a.id} className="list-row">
+          <span className="asset-logo" style={{ width: 34, height: 34 }}>{a.logo ? <img src={a.logo} alt="" /> : <b style={{ fontSize: 11 }}>{a.ticker.slice(0, 2)}</b>}</span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontWeight: 600 }}>{a.ticker} <span className="tiny faint">· {a.name}</span></div>
+            <div className="tiny faint">{ALERT_FRAMES.find((f) => f.key === a.frame)?.label} · meta ≥ {a.target}{a.lastIndex != null ? ` · índice agora ${Math.round(a.lastIndex)}` : ''}{a.lastFired ? ` · disparou em ${dateBR(`${a.lastFired}T12:00`)}` : ''}</div>
+          </div>
+          <button className="icon-btn" title="Excluir radar" onClick={() => removeAlert(a.id)}><Trash2 /></button>
+        </div>
+      ))}
     </div>
   )
 }

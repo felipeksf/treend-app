@@ -2,13 +2,14 @@ import { useMemo, type MouseEvent } from 'react'
 import { Star } from 'lucide-react'
 import { useMarkets } from '../lib/favorites'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { ArrowRight, ArrowUpRight, Grid3x3, Search, TrendingDown, TrendingUp } from 'lucide-react'
+import { ArrowRight, Grid3x3, TrendingDown, TrendingUp } from 'lucide-react'
 import { CLASSES, CLASS_LIST, priceDigits, useClassScan, type ClassKey, type Row } from '../lib/classes'
 import { zoneOf } from '../lib/market'
-import { Delta, Empty, Hint, PageHeader, Skel } from '../components/ui'
+import { Delta, Hint, PageHeader, Skel } from '../components/ui'
 import { num, timeAgo } from '../lib/format'
 import { useNewsFeed } from './Dashboard'
 import { openAsset } from './Mercado'
+import MarketHero from '../components/MarketHero'
 
 /* Mode selection (Ações B3 | Stocks | Cripto | Câmbio) and a dedicated overview per asset class. */
 
@@ -142,7 +143,9 @@ export function Overview({ k, embedded }: { k: ClassKey; embedded?: boolean }) {
         <Link to={`/mercado?c=${k}`} className="ins ins-cta"><span className="ins-k">Analisar ativo</span><span className="ins-v">Buscar {c.short}</span><span className="ins-s">{num(s.breadth, 0)}% dos ativos em alta hoje</span><ArrowRight className="ins-go" /></Link>
       </div>
 
-      {isLoading ? <Skel h={360} /> : (
+      {isLoading ? <Skel h={420} /> : <MarketHero k={k} rows={rows} news={news} />}
+
+      {isLoading ? null : (
         <div className="grid g-2" style={{ alignItems: 'start' }}>
           <div className="card">
             <div className="card-h"><h3><TrendingUp /> Maiores oportunidades<Hint text="Ativos com o maior índice Treend no tempo gráfico diário." /></h3><Link to={c.heatmapRoute} className="btn ghost sm"><Grid3x3 size={14} /> Mapa completo</Link></div>
@@ -167,18 +170,6 @@ export function Overview({ k, embedded }: { k: ClassKey; embedded?: boolean }) {
         </div>
       )}
 
-      <div className="card" style={{ marginTop: 16 }}>
-        <div className="card-h"><h3>Notícias de {c.label}</h3><Link to="/noticias" className="btn ghost sm">Ver todas</Link></div>
-        <div style={{ marginTop: 8 }}>
-          {!news.length && <Empty icon={<Search size={20} />} title="Sem notícias recentes deste mercado" />}
-          {news.map((n) => (
-            <a key={n.link} href={n.link} target="_blank" rel="noreferrer" className="list-row" style={{ alignItems: 'flex-start' }}>
-              <div style={{ flex: 1, minWidth: 0 }}><div style={{ fontWeight: 550, lineHeight: 1.4 }}>{n.title.replace(/ - [^-]+$/, '')}</div><div className="tiny faint" style={{ marginTop: 4 }}>{n.source} · {timeAgo(new Date(n.pubDate).toISOString())}</div></div>
-              <ArrowUpRight size={16} className="faint" />
-            </a>
-          ))}
-        </div>
-      </div>
       <p className="tiny faint" style={{ marginTop: 16 }}>Conteúdo informativo, não constitui recomendação de investimento.</p>
     </div>
   )

@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { ArrowLeft, Loader2, Mic, RefreshCw, Search } from 'lucide-react'
+import { ArrowLeft, BellRing, Loader2, Mic, RefreshCw, Search } from 'lucide-react'
+import AssetAlertModal from '../components/AssetAlertModal'
 import { analyze, searchAssets, zoneOf, type Asset } from '../lib/market'
 import { CLASSES, CLASS_LIST, scanClass, type ClassKey, type Row } from '../lib/classes'
 import type { NavigateFunction } from 'react-router-dom'
@@ -160,6 +161,7 @@ function SearchHome({ onPick, cls, setCls }: { onPick: (a: Asset) => void; cls: 
 }
 
 function Result({ asset, cls, onBack, onPick }: { asset: Asset; cls: ClassKey; onBack: () => void; onPick: (a: Asset) => void }) {
+  const [radar, setRadar] = useState<string | null>(null)
   const { data, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ['analysis', asset.symbol],
     queryFn: () => analyze(asset),
@@ -186,6 +188,7 @@ function Result({ asset, cls, onBack, onPick }: { asset: Asset; cls: ClassKey; o
           <div className="mono" style={{ fontSize: 30, fontWeight: 700, letterSpacing: '-0.03em', fontFamily: 'var(--display)' }}>{data?.price != null ? `${asset.currency} ${num(data.price, digits)}` : '—'}</div>
           <div className="row gap-8" style={{ justifyContent: 'flex-end' }}>{data?.change != null && <Delta v={data.change} />}<span className="tiny faint">hoje</span></div>
         </div>
+        <button className="btn primary" onClick={() => setRadar(best?.key ?? 'd1')}><BellRing /> Criar radar</button>
       </div>
 
       {cls === 'fii' && <FiiPanel ticker={asset.ticker} />}
@@ -202,7 +205,7 @@ function Result({ asset, cls, onBack, onPick }: { asset: Asset; cls: ClassKey; o
             {(isLoading ? [] : data?.frames ?? []).map((f) => {
               const z = zoneOf(f.index)
               return (
-                <div key={f.key} className={`card frame-card ${best?.key === f.key ? 'best' : ''}`} style={{ ['--c' as string]: z.c }}>
+                <div key={f.key} className={`card frame-card ${best?.key === f.key ? 'best' : ''}`} style={{ ['--c' as string]: z.c, cursor: 'pointer' }} role="button" title="Criar radar neste tempo gráfico" onClick={() => setRadar(f.key)}>
                   <div className="row between"><span className="small muted">{f.label}</span>{best?.key === f.key && <span className="pill tone" style={{ ['--c' as string]: 'var(--brand)' }}>Melhor janela</span>}</div>
                   <div style={{ display: 'grid', placeItems: 'center' }}><Gauge value={f.index ?? 0} color={z.c} size={150} label="ÍNDICE TREEND" /></div>
                   <div className="frame-zone" style={{ color: z.c }}>{z.label}</div>
@@ -216,6 +219,7 @@ function Result({ asset, cls, onBack, onPick }: { asset: Asset; cls: ClassKey; o
         </>
       )}
 
+      {radar && <AssetAlertModal asset={{ symbol: asset.symbol, ticker: asset.ticker, name: asset.name, logo: asset.logo, cls }} frame={radar} current={data?.frames.find((f) => f.key === radar)?.index ?? null} onClose={() => setRadar(null)} />}
       <p className="tiny faint" style={{ marginTop: 16 }}>Conteúdo informativo, não constitui recomendação de investimento.</p>
     </>
   )

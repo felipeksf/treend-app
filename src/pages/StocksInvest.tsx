@@ -1,11 +1,15 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import AssetAlertModal from '../components/AssetAlertModal'
+import { ALERT_FRAMES, removeAlert, useAssetAlerts } from '../lib/assetAlerts'
+import { openAsset } from './Mercado'
 import { useQueryClient } from '@tanstack/react-query'
-import { BellRing, Boxes, Lock, RefreshCw, Search, Trash2, TriangleAlert } from 'lucide-react'
+import { Boxes, Lock, RefreshCw, Search, Trash2, TriangleAlert } from 'lucide-react'
 import { CLASSIC_URL } from '../lib/supabase'
 import { signal } from '../lib/heatmap'
 import { CLASSES, priceDigits, useClassScan, type ClassKey, type Row } from '../lib/classes'
 import { useRoles } from '../lib/roles'
-import { Delta, Empty, Gauge, Modal, PageHeader, Seg, Skel, toast, Hint } from '../components/ui'
+import { Delta, Empty, Gauge, PageHeader, Skel, Hint } from '../components/ui'
 import Gate from '../components/Gate'
 import { num, timeAgo } from '../lib/format'
 import { HELP } from '../lib/help'
@@ -13,7 +17,7 @@ import { HELP } from '../lib/help'
 /* Same source as the classic Stocks Invest: edge function `stocks-heatmap` with
    { mode: 'invest' } — buy-zone scores. */
 type Score = { frequency: string; rsi: number | null; heat_x: number; heat_y: number; change_pct: number; volatility_pct: number; momentum: number }
-type Stock = { fii?: Row['fii']; cur?: string | null; ticker: string; name?: string | null; sector?: string | null; logo?: string | null; price: number | null; change_pct: number | null; scores: Score[] }
+type Stock = { symbol?: string; fii?: Row['fii']; cur?: string | null; ticker: string; name?: string | null; sector?: string | null; logo?: string | null; price: number | null; change_pct: number | null; scores: Score[] }
 export type Market = ClassKey
 
 const NAMES: Record<string, string> = { AMZN: 'Amazon', AAPL: 'Apple', GOOGL: 'Alphabet', META: 'Meta', MSFT: 'Microsoft', NVDA: 'NVIDIA', TSLA: 'Tesla' }
@@ -23,23 +27,6 @@ const FREQ_US = [
 const FREQ_B3 = [{ key: 'h1', label: '1h' }, { key: 'h4', label: '4h' }, { key: 'd1', label: 'Diário' }, { key: 'w1', label: 'Semanal' }, { key: 'm1', label: 'Mensal' }]
 let FREQ = FREQ_US
 const CACHE = 'treend-v2-stocks-invest'
-const ALERTS = 'treend-v2-stock-alerts'
-
-type StockAlert = { id: string; ticker: string; frequency: string; target: number; notify: boolean; lastFired?: string; createdAt: string }
-const loadAlerts = (): StockAlert[] => {
-  try {
-    return JSON.parse(localStorage.getItem(ALERTS) || '[]')
-  } catch {
-    return []
-  }
-}
-const saveAlerts = (a: StockAlert[]) => {
-  try {
-    localStorage.setItem(ALERTS, JSON.stringify(a))
-  } catch {
-    /* ignore */
-  }
-}
 
 
 export function StockLogo({ t, size = 28, src }: { t: string; size?: number; src?: string | null }) {
@@ -97,25 +84,8 @@ function Board({ market }: { market: Market }) {
   const nameOf = (s?: Stock) => (s ? s.name || NAMES[s.ticker] || s.ticker : '')
   const [sel, setSel] = useState<{ t: string; f: string }>({ t: market === 'b3' ? 'PETR4' : 'AAPL', f: 'd1' })
   const [alertFor, setAlertFor] = useState<{ t: string; f: string } | null>(null)
-  const [alerts, setAlerts] = useState<StockAlert[]>(loadAlerts)
-  const updateAlerts = (a: StockAlert[]) => { setAlerts(a); saveAlerts(a) }
-
-  // Check alerts whenever fresh scores arrive.
-  useEffect(() => {
-    if (!data?.stocks?.length) return
-    const today = new Date().toISOString().slice(0, 10)
-    let changed = false
-    const next = loadAlerts().map((a) => {
-      const sc = data.stocks.find((x) => x.ticker === a.ticker)?.scores.find((x) => x.frequency === a.frequency)
-      if (!sc || sc.heat_x < a.target || a.lastFired === today) return a
-      changed = true
-      const msg = `${a.ticker} · ${FREQ.find((f) => f.key === a.frequency)?.label}: índice ${Math.round(sc.heat_x)} atingiu sua meta de ${a.target}`
-      toast(`🔔 ${msg}`)
-      if (a.notify && 'Notification' in window && Notification.permission === 'granted') new Notification('Radar Treend · Stocks', { body: msg })
-      return { ...a, lastFired: today }
-    })
-    if (changed) updateAlerts(next)
-  }, [data])
+  const alerts = useAssetAlerts().filter((a) => a.cls === market)
+  const nav = useNavigate()
 
   const refresh = () => {
     try {
@@ -185,7 +155,7 @@ function Board({ market }: { market: Market }) {
               <tbody>
                 {stocks.slice(page * PAGE, (page + 1) * PAGE).map((s) => (
                   <tr key={s.ticker}>
-                    <td className="lbl"><span className="row gap-8"><StockLogo src={s.logo} t={s.ticker} size={22} /><span>{s.ticker}{s.fii && <div className="tiny" style={{ color: s.fii.read.c, fontWeight: 600 }}>P/VP {s.fii.pvp != null ? num(s.fii.pvp, 2) : '—'} · {s.fii.read.label}</div>}</span></span></td>
+                    <td className="lbl"><span className="row gap-8 ticker-link" role="button" title="Abrir análise completa" onClick={() => openAsset(nav, s as unknown as Row, market)}><StockLogo src={s.logo} t={s.ticker} size={22} /><span>{s.ticker}{s.fii && <div className="tiny" style={{ color: s.fii.read.c, fontWeight: 600 }}>P/VP {s.fii.pvp != null ? num(s.fii.pvp, 2) : '—'} · {s.fii.read.label}</div>}</span></span></td>
                     {FREQ.map((f) => {
                       const x = s.scores.find((y) => y.frequency === f.key)
                       if (!x) return <td key={f.key}><div className="heat-cell" style={{ ['--c' as string]: 'var(--line-3)', ['--a' as string]: '0%', opacity: 0.45, cursor: 'default' }}><b>—</b><span>Sem dado</span></div></td>
@@ -225,7 +195,7 @@ function Board({ market }: { market: Market }) {
             <div className="card feature" style={{ ['--c' as string]: sg.color }}>
               <div className="card-b stack gap-12">
                 <div className="row between">
-                  <span className="row gap-8"><StockLogo src={stock.logo} t={stock.ticker} size={32} /><span><b>{stock.ticker}</b><div className="tiny faint">{nameOf(stock)} · {FREQ.find((f) => f.key === score.frequency)?.label}</div></span></span>
+                  <span className="row gap-8 ticker-link" role="button" title="Abrir análise completa" onClick={() => openAsset(nav, stock as unknown as Row, market)}><StockLogo src={stock.logo} t={stock.ticker} size={32} /><span><b>{stock.ticker}</b><div className="tiny faint">{nameOf(stock)} · {FREQ.find((f) => f.key === score.frequency)?.label}</div></span></span>
                   <span className="pill tone"><span className="d" />{sg.label}</span>
                 </div>
                 <div style={{ display: 'grid', placeItems: 'center' }}><Gauge value={score.heat_x} color={sg.color} size={168} label={sg.summary.toUpperCase()} /></div>
@@ -249,13 +219,13 @@ function Board({ market }: { market: Market }) {
           )}
           {alerts.length > 0 && (
             <div className="card">
-              <div className="card-h"><h3>Seus alertas de ações</h3><span className="pill">{alerts.length}</span></div>
+              <div className="card-h"><h3>Seus radares neste mercado</h3><span className="pill">{alerts.length}</span></div>
               <div style={{ marginTop: 8 }}>
                 {alerts.map((a) => (
                   <div key={a.id} className="list-row">
-                    <StockLogo t={a.ticker} size={26} />
-                    <div style={{ flex: 1 }}><b>{a.ticker}</b> <span className="tiny faint">· {FREQ.find((f) => f.key === a.frequency)?.label} · meta ≥ {a.target}</span></div>
-                    <button className="icon-btn" title="Excluir" onClick={() => updateAlerts(alerts.filter((x) => x.id !== a.id))}><Trash2 /></button>
+                    <StockLogo src={a.logo} t={a.ticker} size={26} />
+                    <div style={{ flex: 1 }}><b>{a.ticker}</b> <span className="tiny faint">· {ALERT_FRAMES.find((f) => f.key === a.frame)?.label} · meta ≥ {a.target}{a.lastIndex != null ? ` · agora ${Math.round(a.lastIndex)}` : ''}</span></div>
+                    <button className="icon-btn" title="Excluir" onClick={() => removeAlert(a.id)}><Trash2 /></button>
                   </div>
                 ))}
               </div>
@@ -267,7 +237,7 @@ function Board({ market }: { market: Market }) {
               {ranked.map(({ s, x }) => {
                 const c = signal(x.heat_x)
                 return (
-                  <button key={s.ticker + x.frequency} className="list-row" style={{ width: '100%', background: 'none', border: 0, borderTop: '1px solid var(--line)', textAlign: 'left' }} onClick={() => setSel({ t: s.ticker, f: x.frequency })}>
+                  <button key={s.ticker + x.frequency} className="list-row" style={{ width: '100%', background: 'none', border: 0, borderTop: '1px solid var(--line)', textAlign: 'left' }} onClick={() => openAsset(nav, s as unknown as Row, market)} title="Abrir análise completa">
                     <StockLogo src={s.logo} t={s.ticker} size={26} />
                     <div style={{ flex: 1 }}><b>{s.ticker}</b> <span className="tiny faint">· {FREQ.find((f) => f.key === x.frequency)?.label} </span></div>
                     <b className="mono" style={{ color: c.color, fontSize: 18 }}>{Math.round(x.heat_x)}</b>
@@ -278,16 +248,11 @@ function Board({ market }: { market: Market }) {
           </div>
         </div>
       </div>
-      {alertFor && (
-        <StockAlertModal
-          key={alertFor.t + alertFor.f}
-          ticker={alertFor.t}
-          frequency={alertFor.f}
-          current={stocks.find((x) => x.ticker === alertFor.t)?.scores.find((x) => x.frequency === alertFor.f)?.heat_x ?? 50}
-          onClose={() => setAlertFor(null)}
-          onCreate={(a) => { updateAlerts([a, ...alerts]); setAlertFor(null); toast('Alerta criado — avisaremos quando a meta for atingida') }}
-        />
-      )}
+      {alertFor && (() => {
+        const st = stocks.find((x) => x.ticker === alertFor.t)
+        if (!st) return null
+        return <AssetAlertModal key={alertFor.t + alertFor.f} asset={{ symbol: st.symbol ?? st.ticker, ticker: st.ticker, name: st.name ?? st.ticker, logo: st.logo, cls: market }} frame={alertFor.f} current={st.scores.find((x) => x.frequency === alertFor.f)?.heat_x ?? null} onClose={() => setAlertFor(null)} />
+      })()}
       <p className="tiny faint" style={{ marginTop: 20, fontStyle: 'italic' }}>Conteúdo informativo baseado em dados de mercado. Não constitui recomendação de investimento.</p>
     </>
   )
@@ -309,42 +274,3 @@ function RsiBar({ rsi }: { rsi: number | null }) {
 
 const signalLabel = (x: number) => (x >= 70 ? 'Oportunidade' : x >= 45 ? 'Neutro' : 'Esticado')
 
-function StockAlertModal({ ticker, frequency, current, onClose, onCreate }: { ticker: string; frequency: string; current: number; onClose: () => void; onCreate: (a: StockAlert) => void }) {
-  const [freq, setFreq] = useState(frequency)
-  const [target, setTarget] = useState(Math.min(95, Math.max(70, Math.ceil((current + 10) / 5) * 5)))
-  const [notify, setNotify] = useState(true)
-  const sg = signal(current)
-  const create = async () => {
-    if (notify && 'Notification' in window && Notification.permission === 'default') {
-      try { await Notification.requestPermission() } catch { /* ignore */ }
-    }
-    onCreate({ id: crypto.randomUUID(), ticker, frequency: freq, target, notify, createdAt: new Date().toISOString() })
-  }
-  return (
-    <Modal open onClose={onClose}>
-      <div className="row gap-12" style={{ marginBottom: 6 }}>
-        <StockLogo t={ticker} size={40} />
-        <div>
-          <h3 style={{ margin: 0 }}>Radar · {ticker}</h3>
-          <div className="small muted">{NAMES[ticker]} · índice atual <b style={{ color: sg.color }}>{Math.round(current)}</b></div>
-        </div>
-      </div>
-      <div className="stack gap-16" style={{ marginTop: 18 }}>
-        <div className="field"><label>Janela<Hint text={HELP.frequency} /></label><Seg value={freq} onChange={setFreq} options={FREQ.map((f) => ({ value: f.key, label: f.label }))} /></div>
-        <div className="field">
-          <div className="row between"><label>Avise quando o índice chegar a</label><b className="mono" style={{ fontSize: 18 }}>{target}</b></div>
-          <input type="range" min={50} max={100} step={5} value={target} onChange={(e) => setTarget(+e.target.value)} />
-          <div className="row between tiny faint"><span>50 · interessante</span><span>100 · máxima</span></div>
-        </div>
-        <label className="row gap-8 small" style={{ cursor: 'pointer' }}>
-          <input type="checkbox" checked={notify} onChange={(e) => setNotify(e.target.checked)} style={{ accentColor: 'var(--brand)', width: 16, height: 16 }} />
-          Notificação no navegador
-        </label>
-        <div className="row gap-8" style={{ justifyContent: 'flex-end' }}>
-          <button className="btn ghost" onClick={onClose}>Agora não</button>
-          <button className="btn primary" onClick={create}><BellRing /> Criar alerta</button>
-        </div>
-      </div>
-    </Modal>
-  )
-}

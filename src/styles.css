@@ -1098,3 +1098,8 @@ h1, h2, h3, .big-px, .px, .score, .wordmark { letter-spacing: -0.03em; }
 .mcp-steps li > span { width: 26px; height: 26px; border-radius: 50%; flex: none; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand); font-weight: 700; font-size: 13px; }
 .mcp-steps li > div { flex: 1; min-width: 0; }
 .mcp-steps code { font-family: var(--mono); font-size: 12.5px; background: var(--surface-2); padding: 1px 6px; border-radius: 6px; }
+.ticker-link { cursor: pointer; border-radius: 8px; }
+.ticker-link:hover { color: var(--brand); }
+.ticker-link:hover b, .ticker-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.range52 { position: relative; height: 6px; border-radius: 99px; background: linear-gradient(90deg, var(--up), var(--amber) 50%, var(--down)); opacity: 0.85; }
+.range52 i { position: absolute; top: 50%; width: 14px; height: 14px; border-radius: 50%; background: var(--text); border: 3px solid var(--surface); transform: translate(-50%, -50%); }

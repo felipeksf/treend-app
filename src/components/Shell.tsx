@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { ArrowUpRight, Bell, CornerDownLeft, Menu, Moon, PanelLeft, Search, Sun, LogOut, Coins } from 'lucide-react'
 import { ALL, CLASSIC, NAV } from './nav'
-import { TreendLogo, Toaster } from './ui'
+import { TreendLogo, Toaster, toast } from './ui'
+import { ALERT_FRAMES, checkAlerts } from '../lib/assetAlerts'
 import Ticker from './Ticker'
 import { useAuth } from '../lib/auth'
 import { CLASSIC_URL } from '../lib/supabase'
@@ -41,6 +42,26 @@ export default function Shell() {
   }, [theme])
 
   useEffect(() => setMobileOpen(false), [loc.pathname])
+
+  // Asset radar: check every alert every 2 minutes while the app is open.
+  useEffect(() => {
+    let alive = true
+    const run = async () => {
+      try {
+        const fired = await checkAlerts()
+        if (!alive) return
+        for (const { alert, index } of fired) {
+          const label = ALERT_FRAMES.find((f) => f.key === alert.frame)?.label ?? alert.frame
+          const msg = `${alert.ticker} · ${label}: índice ${Math.round(index)} atingiu sua meta de ${alert.target}`
+          toast(`🔔 ${msg}`)
+          if (alert.notify && 'Notification' in window && Notification.permission === 'granted') new Notification('Radar Treend', { body: msg, icon: '/favicon.ico' })
+        }
+      } catch { /* try again next cycle */ }
+    }
+    run()
+    const t = setInterval(run, 2 * 60_000)
+    return () => { alive = false; clearInterval(t) }
+  }, [])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
