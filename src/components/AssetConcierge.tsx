@@ -219,17 +219,19 @@ function Answer({ p, d, usd, news, onRadar, onOpen }: { p: Parsed; d: Data; usd:
   const levels = tranches.map((_, i) => (i === 0 ? price : buying ? Math.max(0, price - step * i) : price + step * i))
 
   const holder = p.intent === 'hold'
+  // Neutral, probabilistic wording — describes the statistical reading, never tells the user to buy or sell.
+  const NOTE_HOT = 'Historicamente, leituras nessa faixa indicam preço descontado em relação ao comportamento recente do próprio ativo — um cenário estatisticamente mais raro.'
+  const NOTE_COLD = 'Historicamente, leituras nessa faixa indicam preço esticado em relação ao comportamento recente do próprio ativo — um cenário estatisticamente mais raro.'
   const verdict = hot.length && cold.length
-    ? `Leituras extremas e opostas: ${names(hot)} acima de 90 (preço descontado) e ${names(cold)} abaixo de 20 (preço esticado). ${shortSide(hot) ? 'O curto prazo corrigiu forte, mas o ciclo maior segue caro: é oportunidade de giro curto, não de posição longa.' : 'O ciclo maior está descontado e o curto prazo esticado: espere o curto prazo esfriar para montar posição.'}`
+    ? `Leituras extremas em sentidos opostos: ${names(hot)} acima de 90 (preço descontado) e ${names(cold)} abaixo de 20 (preço esticado). ${shortSide(hot) ? 'O curto prazo registra desconto, enquanto o ciclo maior segue em patamar elevado.' : 'O ciclo maior registra desconto, enquanto o curto prazo está esticado.'} Divergências assim costumam indicar maior incerteza na direção do preço.`
     : hot.length
-      ? `${names(hot).charAt(0).toUpperCase() + names(hot).slice(1)} ${hot.length > 1 ? 'estão' : 'está'} acima de 90 — desconto estatisticamente raro${shortSide(hot) ? ' no curto prazo' : ' no ciclo maior'}. ` + (p.intent === 'sell' ? 'Vender agora é sair no ponto de maior desconto dessas janelas: se puder, espere a recuperação até as zonas de venda acima.' : holder ? 'Para quem já está posicionado, não é hora de vender. Se houver caixa, é uma janela excelente para aumentar a posição ou fazer preço médio.' : 'É um excelente momento de compra: execute a maior parte agora e deixe o restante para as zonas abaixo.')
+      ? `${names(hot).charAt(0).toUpperCase() + names(hot).slice(1)} ${hot.length > 1 ? 'registram' : 'registra'} índice acima de 90${shortSide(hot) ? ', no curto prazo' : ', no ciclo maior'}. ${NOTE_HOT}` + (p.intent === 'sell' ? ' Para quem avalia vender, a leitura atual é de preço abaixo do padrão nessas janelas.' : holder ? ' Para quem já está posicionado, a leitura atual é de preço abaixo do padrão nessas janelas.' : '')
       : cold.length
-        ? `${names(cold).charAt(0).toUpperCase() + names(cold).slice(1)} ${cold.length > 1 ? 'estão' : 'está'} abaixo de 20 — preço esticado${shortSide(cold) ? ' no curto prazo' : ' no ciclo maior'}. ` + (p.intent === 'sell' ? 'É um excelente momento para vender ou realizar: o preço está no ponto mais alto dessas janelas.' : holder ? 'Para quem já está posicionado, é um bom momento para realizar uma parte ou proteger a posição — e não para aumentá-la.' : 'Evite comprar agora: o preço está caro nessas janelas. Deixe um radar para as zonas abaixo.')
-        : buying
-          ? (strength >= 70 ? 'O momento é favorável para comprar: o preço está descontado na janela de referência.' : strength >= 45 ? 'Momento neutro: não há desconto claro, então vale entrar em partes e guardar munição para preços melhores.' : 'O preço já subiu e está acima do ponto ideal de compra: entre com uma parte pequena e deixe o restante para as zonas abaixo.')
-          : holder
-            ? (strength <= 30 ? 'Sem extremos, mas o preço já subiu: manter é razoável; considere realizar uma parte se o lucro for relevante.' : 'Sem leituras extremas: manter a posição é coerente com o cenário atual. Use o radar para ser avisado quando surgir um extremo.')
-            : (strength <= 30 ? 'O momento é favorável para vender ou realizar: o preço está acima do usual.' : strength <= 55 ? 'Momento neutro para venda: realize em partes, aproveitando as zonas acima do preço.' : 'O preço está descontado: vender agora é sair na baixa. Se puder, espere as zonas de venda acima.')
+        ? `${names(cold).charAt(0).toUpperCase() + names(cold).slice(1)} ${cold.length > 1 ? 'registram' : 'registra'} índice abaixo de 20${shortSide(cold) ? ', no curto prazo' : ', no ciclo maior'}. ${NOTE_COLD}` + (p.intent === 'buy' || p.intent === 'average' ? ' Para quem avalia comprar, a leitura atual é de preço acima do padrão nessas janelas.' : holder ? ' Para quem já está posicionado, a leitura atual é de preço acima do padrão nessas janelas.' : '')
+        : strength >= 70 ? 'Sem leituras extremas. O índice de referência está na faixa de oportunidade (70–89): preço abaixo do padrão recente, sem atingir o nível estatisticamente raro.'
+          : strength >= 45 ? 'Sem leituras extremas. O índice de referência está na faixa neutra (45–69): preço próximo do comportamento usual do ativo, sem desconto nem excesso relevantes.'
+          : strength > 20 ? 'Sem leituras extremas. O índice de referência está na faixa de atenção (21–44): preço acima do comportamento usual do ativo, sem atingir o nível estatisticamente raro.'
+          : 'Índice de referência em 20 ou menos: preço esticado em relação ao comportamento recente do ativo.'
 
   const reasons: string[] = []
   if (extremes.length) reasons.push(`Destaque: ${extremes.map((f) => `${f.label.toLowerCase()} em ${Math.round(f.index!)}`).join(', ')} — ${hot.length && cold.length ? 'leituras extremas nos dois sentidos' : hot.length ? 'acima de 90, zona de oportunidade forte' : 'abaixo de 20, preço esticado'}. Leituras extremas como essas são raras e pesam mais que as demais janelas.`)
@@ -256,6 +258,7 @@ function Answer({ p, d, usd, news, onRadar, onOpen }: { p: Parsed; d: Data; usd:
 
   return (
     <div className="stack gap-16" style={{ animation: 'rise .5s var(--ease)' }}>
+      <Disclaimer />
       <div className="grid g-main">
         <div className="card">
           <div className="card-h"><h3><Target /> Leitura da sua operação<Hint text="Análise gerada a partir do índice Treend em cinco tempos gráficos, da faixa de 52 semanas, do desempenho recente e da oscilação típica do ativo." /></h3>
@@ -299,16 +302,17 @@ function Answer({ p, d, usd, news, onRadar, onOpen }: { p: Parsed; d: Data; usd:
 
       <div className="grid g-2" style={{ alignItems: 'start' }}>
         <div className="card">
-          <div className="card-h"><h3><TrendingUp /> Plano de ação sugerido<Hint text="Divisão em partes conforme a força do índice: quanto mais favorável o momento, mais se executa agora. As demais partes ficam nas zonas projetadas pela oscilação típica do ativo." /></h3></div>
+          <div className="card-h"><h3><TrendingUp /> Simulação de entradas escalonadas<Hint text="Exemplo ilustrativo de divisão em partes, proporcional à leitura do índice, com as zonas de preço projetadas pela oscilação típica do ativo. Não é uma recomendação de compra ou venda." /></h3></div>
           <div className="card-b stack gap-12">
             {tranches.map((t, i) => (
               <div key={i} className="row between" style={{ paddingBottom: 10, borderBottom: i < tranches.length - 1 ? '1px solid var(--line)' : 0 }}>
                 <span className="row gap-8"><span className="flag" style={{ width: 30, height: 30, fontSize: 12, background: 'var(--brand-soft)', color: 'var(--brand)', fontWeight: 700 }}>{i + 1}</span>
-                  <span><b>{t}%</b> {i === 0 ? (buying ? 'agora' : 'agora') : `${buying ? 'se cair a' : 'se subir a'} ${cc} ${num(levels[i], digits)}`}<div className="tiny faint">{i === 0 ? `ao preço atual de ${cc} ${num(price, digits)}` : `zona ${buying ? 'de compra' : 'de venda'} Z${i + 1} · ${pct(((levels[i] - price) / price) * 100)}`}</div></span></span>
+                  <span><b>{t}%</b> {i === 0 ? 'ao preço atual' : `${buying ? 'na zona de' : 'na zona de'} ${cc} ${num(levels[i], digits)}`}<div className="tiny faint">{i === 0 ? `ao preço atual de ${cc} ${num(price, digits)}` : `zona ${buying ? 'de compra' : 'de venda'} Z${i + 1} · ${pct(((levels[i] - price) / price) * 100)}`}</div></span></span>
                 {amountAsset != null && <b className="mono">{shown(amountAsset * t / 100)}</b>}
               </div>
             ))}
             <button className="btn" onClick={onRadar}><BellRing /> Criar radar para as próximas zonas</button>
+            <div className="tiny faint">Simulação ilustrativa. Não é uma recomendação de compra ou venda.</div>
           </div>
         </div>
         <div className="card">
@@ -336,7 +340,7 @@ function Answer({ p, d, usd, news, onRadar, onOpen }: { p: Parsed; d: Data; usd:
         </div>
         <div className="card">
           <div className="card-h"><h3><ShieldAlert /> Pontos de atenção</h3></div>
-          <ul className="conc-reasons" style={{ padding: '4px 20px 16px 40px' }}>{risks.map((r) => <li key={r}>{r}</li>)}<li>Leitura estatística e indicativa — não constitui recomendação de investimento. A decisão final é sempre sua.</li></ul>
+          <ul className="conc-reasons" style={{ padding: '4px 20px 16px 40px' }}>{risks.map((r) => <li key={r}>{r}</li>)}</ul>
         </div>
       </div>
 
@@ -344,6 +348,16 @@ function Answer({ p, d, usd, news, onRadar, onOpen }: { p: Parsed; d: Data; usd:
         <button className="btn primary" onClick={onOpen}>Abrir análise completa de {a.ticker} <ArrowRight /></button>
         <MyAssetButton asset={a} cls={p.cls} />
       </div>
+    </div>
+  )
+}
+
+/** Regulatory notice shown with every Concierge answer. */
+export function Disclaimer() {
+  return (
+    <div className="conc-disc">
+      <ShieldAlert size={16} />
+      <span><b>Não é recomendação de investimento.</b> As leituras são dados estatísticos e probabilísticos sobre o comportamento do preço, com finalidade informativa. Não constituem oferta, solicitação ou indicação de compra ou venda de qualquer ativo. Resultados passados não garantem resultados futuros; a decisão é exclusivamente sua.</span>
     </div>
   )
 }

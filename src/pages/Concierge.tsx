@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { CLASSES, CLASS_LIST, type ClassKey } from '../lib/classes'
-import AssetConcierge from '../components/AssetConcierge'
+import AssetConcierge, { Disclaimer } from '../components/AssetConcierge'
 import { ArrowRight, CheckCircle2, CornerDownLeft, Sparkles, Target, TrendingUp } from 'lucide-react'
 import { useQuotes } from '../lib/rates'
 import { FREQUENCIES, PROFILES, momentum, pick, signal, useHeatmap, volatility } from '../lib/heatmap'
@@ -45,7 +45,7 @@ export default function Concierge() {
   if (k !== 'fx') return (
     <div className="page" style={{ maxWidth: 1080 }}>
       {tabs}
-      <PageHeader eyebrow={<><Sparkles size={13} /> Concierge</>} title="Descreva sua operação." accent="Nós lemos o mercado." sub={`${CLASSES[k].label}: diga o ativo, o valor, o prazo e o que pretende fazer. Você recebe a leitura em cinco tempos gráficos, o plano de ação em partes, os cenários e as notícias do ativo.`} />
+      <PageHeader eyebrow={<><Sparkles size={13} /> Concierge</>} title="Descreva sua operação." accent="Nós lemos o mercado." sub={`${CLASSES[k].label}: diga o ativo, o valor, o prazo e o que pretende fazer. Você recebe a leitura estatística em cinco tempos gráficos, uma simulação de entradas, os cenários e as notícias do ativo.`} />
       <AssetConcierge key={k} cls={k} />
     </div>
   )
@@ -130,7 +130,7 @@ function FxConcierge({ tabs }: { tabs: React.ReactNode }) {
                 <p style={{ fontSize: 16, lineHeight: 1.65, margin: 0 }}>
                   Você quer {a.p.buys ? 'comprar' : 'vender'} <b className="mono">{asked.ccy} {compact(asked.amount)}</b> — cerca de <b className="mono">{money(a.brl, 'BRL', 0)}</b> à cotação atual de <b className="mono">R$ {num(a.q?.bid ?? 0, 4)}</b>.
                   O índice Treend para esse perfil está em <b style={{ color: a.g.color }}>{Math.round(a.s?.heat_x ?? 50)}/100 ({a.g.label.toLowerCase()})</b>, com volatilidade de {num(a.vol, 1)}% e momentum de {num(a.mom, 1)}.
-                  {' '}{a.favorable ? 'O cenário favorece executar boa parte agora.' : 'O cenário pede paciência: escalonar reduz o risco de executar no pior momento.'}
+                  {' '}{a.favorable ? 'A leitura atual está na faixa favorável para esse perfil, em termos estatísticos.' : 'A leitura atual está abaixo da faixa favorável para esse perfil, em termos estatísticos.'}
                 </p>
               </div>
             </div>
@@ -141,13 +141,13 @@ function FxConcierge({ tabs }: { tabs: React.ReactNode }) {
           </div>
 
           <div className="card">
-            <div className="card-h"><h3><CheckCircle2 /> Plano de ação sugerido<Hint text="Divisão sugerida do volume em parcelas, conforme a força do índice. Índice alto: executar mais agora; baixo: escalonar." /></h3></div>
+            <div className="card-h"><h3><CheckCircle2 /> Simulação de parcelas<Hint text="Exemplo ilustrativo de divisão do volume em parcelas, proporcional à leitura do índice. Não é uma recomendação." /></h3></div>
             <div className="card-b stack gap-12">
               {a.tranches.map((p, i) => (
                 <div key={i} className="row" style={{ gap: 16 }}>
                   <div className="flag mono" style={{ width: 34, height: 34, borderRadius: 10, fontSize: 13, fontWeight: 600 }}>{i + 1}</div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 550 }}>{i === 0 ? (a.favorable ? 'Executar agora' : 'Primeira parcela hoje') : `Parcela ${i + 1} — aguardar zona ${Math.min(6, i + 2)} ou nova leitura`}</div>
+                    <div style={{ fontWeight: 550 }}>{i === 0 ? 'Parcela 1 — cotação atual' : `Parcela ${i + 1} — zona ${Math.min(6, i + 2)} ou nova leitura`}</div>
                     <div className="small faint">{p}% do volume · {asked.ccy} {compact((asked.amount * p) / 100)}</div>
                   </div>
                   <div style={{ width: 120, height: 6, borderRadius: 99, background: 'var(--surface-3)', overflow: 'hidden' }}><div style={{ width: `${p}%`, height: '100%', background: 'var(--brand)' }} /></div>
@@ -166,7 +166,7 @@ function FxConcierge({ tabs }: { tabs: React.ReactNode }) {
             <Link to={`/projecoes?ccy=${asked.ccy}`} className="btn"><TrendingUp /> Ver zonas de preço</Link>
             <Link to="/radar" className="btn primary">Criar alerta para esta operação <ArrowRight /></Link>
           </div>
-          <p className="tiny faint">Análise indicativa gerada a partir dos índices Treend. Não é recomendação financeira.</p>
+          <Disclaimer />
         </div>
       )}
     </div>
