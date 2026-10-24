@@ -18,6 +18,7 @@ const CHAPTERS: Ch[] = [
     body: (<>
       <h2>Timing <span className="serif">quantitativo.</span></h2>
       <p className="pb-lead">A Treend não tenta adivinhar o futuro nem dizer qual ativo é “bom”. Ela mede, com estatística, <b>quão esticado ou descontado o preço está agora</b> — e transforma isso em um índice simples de 0 a 100.</p>
+      <div className="pb-stat"><b className="mono">+2.000h</b><span>Algoritmos treinados em <b>mais de 2.000 horas de análises</b> de mercado — o método por trás de cada índice Treend.</span></div>
       <div className="pb-grid">
         <div className="pb-card"><b>Mede</b><span>A distância do preço em relação ao seu próprio comportamento recente, em cada tempo gráfico.</span></div>
         <div className="pb-card"><b>Compara</b><span>Cinco janelas ao mesmo tempo — 1h, 4h, diário, semanal e mensal — para separar ruído de tendência.</span></div>
