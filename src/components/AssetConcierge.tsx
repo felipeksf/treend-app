@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, BellRing, CheckCircle2, CornerDownLeft, ExternalLink, Newspaper, ShieldAlert, Sparkles, Target, TrendingUp } from 'lucide-react'
+import { ArrowRight, BellRing, CheckCircle2, CornerDownLeft, ExternalLink, Newspaper, ShieldAlert, Target, TrendingUp } from 'lucide-react'
 import { CLASSES, fiiRead, type ClassKey } from '../lib/classes'
 import { FRAMES, clsOf, indexFromRsi, searchAssets, zoneOf, type Asset } from '../lib/market'
 import { useQuotes } from '../lib/rates'
@@ -49,8 +49,8 @@ export const ASSET_EXAMPLES: Record<Exclude<ClassKey, 'fx'>, string[]> = {
   ],
 }
 
-type Intent = 'buy' | 'sell' | 'average' | 'hold'
-type Parsed = { asset: Asset; cls: ClassKey; intent: Intent; amount: number | null; units: number | null; inCur: 'R$' | 'US$' | null; days: number; horizon: string; entry: number | null; monthly: boolean }
+type Intent = 'buy' | 'sell' | 'average' | 'hold' | 'info'
+type Parsed = { asset: Asset; cls: ClassKey; intent: Intent; amount: number | null; units: number | null; inCur: 'R$' | 'US$' | null; days: number; horizon: string; horizonGiven: boolean; since: string | null; entry: number | null; monthly: boolean }
 
 const STOP = new Set(['quero', 'tenho', 'comprar', 'compro', 'vender', 'vendo', 'aportar', 'aporto', 'investir', 'para', 'pensando', 'agora', 'próximos', 'proximos', 'meses', 'semanas', 'carteira', 'lucro', 'preço', 'preco', 'médio', 'medio', 'parte', 'realizar', 'realizo', 'mantenho', 'hora', 'fazer', 'saber', 'montar', 'posição', 'posicao', 'renda', 'mensal', 'desconto', 'espero', 'entrar', 'hoje', 'vale', 'momento', 'minha', 'empresa', 'compra', 'antecipo', 'antecipar', 'todo', 'safra', 'travo', 'aos', 'poucos', 'tudo', 'escalono', 'pena', 'mil', 'anos', 'dias', 'mês', 'mes', 'cripto', 'ações', 'acoes', 'fiis', 'logística', 'sou', 'produzo', 'exposição', 'exposicao', 'começo', 'comeco'])
 const ALIAS: Record<string, string> = { 'itaú': 'ITUB4', itau: 'ITUB4', bradesco: 'BBDC4', 'banco do brasil': 'BBAS3', ambev: 'ABEV3', magalu: 'MGLU3', 'café': 'Café', cafe: 'Café', ouro: 'Ouro', prata: 'Prata', soja: 'Soja', milho: 'Milho', 'petróleo': 'Petróleo', petroleo: 'Petróleo', diesel: 'Petróleo', boi: 'Boi gordo', eth: 'Ethereum', btc: 'Bitcoin' }
@@ -80,7 +80,9 @@ async function parse(text: string, cls: ClassKey): Promise<Parsed | null> {
   const asset = await findAsset(text, cls)
   if (!asset) return null
   const t = text.toLowerCase()
-  const intent: Intent = /preço médio|preco medio|médio|medio/.test(t) ? 'average' : /vend|realiz|sair|travo|travar/.test(t) ? 'sell' : /mantenho|segurar|manter/.test(t) && !/compr|aport/.test(t) ? 'hold' : 'buy'
+  const wantsBuy = /quero comprar|vou comprar|comprar|compro\b|aport|investir|entrar|montar posi|antecip/.test(t)
+  const holds = /estou comprad|estou posicionad|posicionad|na carteira|minha posi|tenho\s+(?!r\$|us\$|\$)[\w\d]|desde|mantenho|segurar|manter|comprei/.test(t)
+  const intent: Intent = /preço médio|preco medio|\bmédio\b|\bmedio\b/.test(t) ? 'average' : /vend|realiz|sair|travo|travar|zerar/.test(t) ? 'sell' : wantsBuy && !/comprad/.test(t) ? 'buy' : holds ? 'hold' : 'info'
   // money amounts that are not the price paid ("comprei a R$ 160")
   const money = [...t.matchAll(/(r\$|us\$|\$)\s*([\d.,]+)\s*(mil|k|milh\w*)?/g)].find((m) => !/(comprei|paguei|entrei|compra a|comprado a)[^.]{0,25}$/.test(t.slice(0, m.index)))
   const amount = money ? readNumber(money[2], money[3]) : null
@@ -91,12 +93,13 @@ async function parse(text: string, cls: ClassKey): Promise<Parsed | null> {
   const entry = entryM ? readNumber(entryM[1]) : null
   const h = t.match(/(\d+)\s*(dia|semana|m[eê]s|ano)/)
   let days = 63
+  const horizonGiven = !!h || /\b(um|1) ano|longo prazo|curto prazo|semana|trimestre/.test(t)
   if (h) days = +h[1] * (h[2].startsWith('dia') ? 1 : h[2].startsWith('semana') ? 5 : h[2].startsWith('ano') ? 252 : 21)
   else if (/\b(um|1) ano|longo prazo/.test(t)) days = 252
   else if (/semana|curto prazo/.test(t)) days = 10
   else if (/trimestre/.test(t)) days = 63
   const horizon = days <= 5 ? `${days} dia${days > 1 ? 's' : ''}` : days < 21 ? `${Math.round(days / 5)} semana${days >= 10 ? 's' : ''}` : days < 252 ? `${Math.round(days / 21)} ${Math.round(days / 21) > 1 ? 'meses' : 'mês'}` : `${Math.round(days / 252)} ano${days >= 504 ? 's' : ''}`
-  return { asset, cls: clsOf(asset), intent, amount, units, inCur, days, horizon, entry, monthly: /por mês|por mes|todo mês|todo mes|mensal/.test(t) }
+  return { asset, cls: clsOf(asset), intent, amount, units, inCur, days, horizon, horizonGiven, since: t.match(/desde\s+(?:o\s+|a\s+)?([a-zà-ú]+(?:\s+de\s+\d{4})?|\d{4})/)?.[1] ?? null, entry, monthly: /por mês|por mes|todo mês|todo mes|mensal/.test(t) }
 }
 
 async function loadData(a: Asset) {
@@ -149,7 +152,7 @@ export default function AssetConcierge({ cls }: { cls: Exclude<ClassKey, 'fx'> }
             onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') ask() }} />
           <div className="row between wrap" style={{ gap: 12, borderTop: '1px solid var(--line)', paddingTop: 14 }}>
             <span className="tiny faint row gap-8"><span className="kbd">⌘</span><span className="kbd"><CornerDownLeft size={10} /></span> para enviar · cite o ativo, o valor, o prazo e o que pretende fazer</span>
-            <button className="btn primary" onClick={ask} disabled={!text.trim() || busy}><Sparkles /> {busy ? 'Analisando…' : 'Gerar análise'}</button>
+            <button className="conc-go" onClick={ask} disabled={!text.trim() || busy}><span>{busy ? 'Lendo o mercado…' : 'Ler o mercado'}</span><i>{busy ? <span className="spin-dot" /> : <ArrowRight size={16} />}</i></button>
           </div>
         </div>
       </div>
@@ -176,9 +179,21 @@ function Answer({ p, d, usd, news, onRadar, onOpen }: { p: Parsed; d: Data; usd:
   const cc = a.currency
   const price = d.price ?? 0
   const digits = price < 10 ? 4 : 2
-  const fk = frameFor(p.days)
+  // Extreme readings (≥ 90 or ≤ 20) lead the answer; otherwise the window of the user's horizon (or the daily one).
+  const hot = d.frames.filter((f) => f.index != null && f.index >= 90)
+  const cold = d.frames.filter((f) => f.index != null && f.index <= 20)
+  const extremes = [...hot, ...cold]
+  const fk0 = p.horizonGiven ? frameFor(p.days) : 'd1'
+  const focus = extremes.length ? extremes.map((f) => f.key) : [fk0]
+  const fk = extremes.length ? extremes.reduce((a, b) => (Math.abs((b.index ?? 50) - 50) > Math.abs((a.index ?? 50) - 50) ? b : a)).key : fk0
   const main = d.frames.find((f) => f.key === fk)?.index ?? d.frames.find((f) => f.key === 'd1')?.index ?? null
   const z = zoneOf(main)
+  const DAYS: Record<string, number> = { h1: 3, h4: 5, d1: 21, w1: 63, m1: 252 }
+  const LBL: Record<string, string> = { h1: 'alguns dias', h4: 'alguns dias', d1: 'algumas semanas', w1: 'alguns meses', m1: '1 ano' }
+  const effDays = p.horizonGiven ? p.days : DAYS[fk]
+  const horizonTxt = p.horizonGiven ? p.horizon : LBL[fk]
+  const names = (l: typeof hot) => { const n = l.map((f) => f.label.toLowerCase()); return n.length > 1 ? `${n.slice(0, -1).join(', ')} e ${n[n.length - 1]}` : n[0] ?? '' }
+  const shortSide = (l: typeof hot) => l.every((f) => ['h1', 'h4', 'd1'].includes(f.key))
   const g = signal(main ?? 50)
   const valid = d.frames.filter((f) => f.index != null)
   const opp = valid.filter((f) => (f.index ?? 0) >= 70).length
@@ -186,7 +201,7 @@ function Answer({ p, d, usd, news, onRadar, onOpen }: { p: Parsed; d: Data; usd:
   const longIdx = d.frames.find((f) => f.key === 'w1')?.index ?? d.frames.find((f) => f.key === 'd1')?.index ?? null
   const shortIdx = d.frames.find((f) => f.key === 'h4')?.index ?? d.frames.find((f) => f.key === 'd1')?.index ?? null
   const range = d.low != null && d.high != null && d.high > d.low ? ((price - d.low) / (d.high - d.low)) * 100 : null
-  const sigma = d.atr && price ? (d.atr / price) * Math.sqrt(p.days) * 100 : null
+  const sigma = d.atr && price ? (d.atr / price) * Math.sqrt(effDays) * 100 : null
   const pvp = d.vp ? price / d.vp : null
   const fii = p.cls === 'fii' ? fiiRead(d.frames.find((f) => f.key === 'd1')?.index ?? null, d.frames.find((f) => f.key === 'w1')?.index ?? null, pvp) : null
 
@@ -195,27 +210,35 @@ function Answer({ p, d, usd, news, onRadar, onOpen }: { p: Parsed; d: Data; usd:
   const amountAsset = p.amount != null ? p.amount * conv : p.units != null ? p.units * price : null
   const shown = (v: number) => (p.inCur && p.inCur !== cc && usd ? `${p.inCur} ${num(v / conv, 2)}` : `${cc} ${num(v, 2)}`)
 
-  const buying = p.intent === 'buy' || p.intent === 'average'
+  const buying = p.intent === 'buy' || p.intent === 'average' || (p.intent === 'info' && (main ?? 50) >= 50)
   const strength = main ?? 50
   const tranches = buying
     ? (strength >= 85 ? [60, 40] : strength >= 70 ? [50, 30, 20] : strength >= 45 ? [30, 30, 40] : [20, 20, 30, 30])
     : (strength <= 20 ? [60, 40] : strength <= 35 ? [50, 30, 20] : strength <= 55 ? [30, 30, 40] : [20, 30, 50])
-  const step = d.atr ? d.atr * (p.days > 60 ? 1.5 : 1) : price * 0.02
+  const step = d.atr ? d.atr * (effDays > 60 ? 1.5 : 1) : price * 0.02
   const levels = tranches.map((_, i) => (i === 0 ? price : buying ? Math.max(0, price - step * i) : price + step * i))
 
-  const verdict = buying
-    ? (strength >= 70 ? 'O momento é favorável para comprar: o preço está descontado na janela do seu horizonte.' : strength >= 45 ? 'Momento neutro: não há desconto claro, então vale entrar em partes e guardar munição para preços melhores.' : strength > 20 ? 'O preço já subiu na janela do seu horizonte e está acima do ponto ideal de compra: entre com uma parte pequena e deixe o restante para as zonas abaixo.' : 'O preço está esticado na janela do seu horizonte: comprar tudo agora é pagar caro. Escalone e deixe um radar para as zonas abaixo.')
-    : p.intent === 'hold'
-      ? (strength <= 30 ? 'O ativo está esticado: manter é razoável, mas o risco de correção cresceu — considere realizar uma parte.' : 'Sem sinal de excesso: manter a posição é coerente com o cenário atual.')
-      : (strength <= 30 ? 'O momento é favorável para vender ou realizar: o preço está esticado na janela do seu horizonte.' : strength <= 55 ? 'Momento neutro para venda: realize em partes, aproveitando as zonas acima do preço.' : 'O preço está descontado: vender agora é sair na baixa. Se puder, espere as zonas de venda acima.')
+  const holder = p.intent === 'hold'
+  const verdict = hot.length && cold.length
+    ? `Leituras extremas e opostas: ${names(hot)} acima de 90 (preço descontado) e ${names(cold)} abaixo de 20 (preço esticado). ${shortSide(hot) ? 'O curto prazo corrigiu forte, mas o ciclo maior segue caro: é oportunidade de giro curto, não de posição longa.' : 'O ciclo maior está descontado e o curto prazo esticado: espere o curto prazo esfriar para montar posição.'}`
+    : hot.length
+      ? `${names(hot).charAt(0).toUpperCase() + names(hot).slice(1)} ${hot.length > 1 ? 'estão' : 'está'} acima de 90 — desconto estatisticamente raro${shortSide(hot) ? ' no curto prazo' : ' no ciclo maior'}. ` + (p.intent === 'sell' ? 'Vender agora é sair no ponto de maior desconto dessas janelas: se puder, espere a recuperação até as zonas de venda acima.' : holder ? 'Para quem já está posicionado, não é hora de vender. Se houver caixa, é uma janela excelente para aumentar a posição ou fazer preço médio.' : 'É um excelente momento de compra: execute a maior parte agora e deixe o restante para as zonas abaixo.')
+      : cold.length
+        ? `${names(cold).charAt(0).toUpperCase() + names(cold).slice(1)} ${cold.length > 1 ? 'estão' : 'está'} abaixo de 20 — preço esticado${shortSide(cold) ? ' no curto prazo' : ' no ciclo maior'}. ` + (p.intent === 'sell' ? 'É um excelente momento para vender ou realizar: o preço está no ponto mais alto dessas janelas.' : holder ? 'Para quem já está posicionado, é um bom momento para realizar uma parte ou proteger a posição — e não para aumentá-la.' : 'Evite comprar agora: o preço está caro nessas janelas. Deixe um radar para as zonas abaixo.')
+        : buying
+          ? (strength >= 70 ? 'O momento é favorável para comprar: o preço está descontado na janela de referência.' : strength >= 45 ? 'Momento neutro: não há desconto claro, então vale entrar em partes e guardar munição para preços melhores.' : 'O preço já subiu e está acima do ponto ideal de compra: entre com uma parte pequena e deixe o restante para as zonas abaixo.')
+          : holder
+            ? (strength <= 30 ? 'Sem extremos, mas o preço já subiu: manter é razoável; considere realizar uma parte se o lucro for relevante.' : 'Sem leituras extremas: manter a posição é coerente com o cenário atual. Use o radar para ser avisado quando surgir um extremo.')
+            : (strength <= 30 ? 'O momento é favorável para vender ou realizar: o preço está acima do usual.' : strength <= 55 ? 'Momento neutro para venda: realize em partes, aproveitando as zonas acima do preço.' : 'O preço está descontado: vender agora é sair na baixa. Se puder, espere as zonas de venda acima.')
 
   const reasons: string[] = []
-  reasons.push(`Índice Treend ${main != null ? Math.round(main) : '—'}/100 no tempo gráfico ${FRAMES.find((f) => f.key === fk)?.label.toLowerCase()}, o mais adequado ao seu prazo de ${p.horizon} (${z.label.toLowerCase()}).`)
-  if (valid.length) reasons.push(opp >= 3 ? `${opp} de ${valid.length} tempos gráficos em zona de oportunidade — alinhamento forte de desconto.` : str >= 3 ? `${str} de ${valid.length} tempos gráficos com preço esticado — alinhamento de euforia.` : `Tempos gráficos divergentes (${opp} em oportunidade, ${str} esticados): o curto e o longo prazo contam histórias diferentes.`)
+  if (extremes.length) reasons.push(`Destaque: ${extremes.map((f) => `${f.label.toLowerCase()} em ${Math.round(f.index!)}`).join(', ')} — ${hot.length && cold.length ? 'leituras extremas nos dois sentidos' : hot.length ? 'acima de 90, zona de oportunidade forte' : 'abaixo de 20, preço esticado'}. Leituras extremas como essas são raras e pesam mais que as demais janelas.`)
+  else reasons.push(`Sem leituras extremas (acima de 90 ou abaixo de 20). Referência: índice ${main != null ? Math.round(main) : '—'}/100 no tempo gráfico ${FRAMES.find((f) => f.key === fk)?.label.toLowerCase()}${p.horizonGiven ? `, o mais adequado ao seu prazo de ${p.horizon}` : ', usado quando o prazo não é informado'} (${z.label.toLowerCase()}).`)
+  if (valid.length) reasons.push(opp >= 3 ? `${opp} de ${valid.length} tempos gráficos em zona de oportunidade — alinhamento forte de desconto.` : str >= 3 ? `${str} de ${valid.length} tempos gráficos com preço esticado — alinhamento de euforia.` : opp && str ? `Tempos gráficos divergentes (${opp} em oportunidade, ${str} esticados): o curto e o longo prazo contam histórias diferentes.` : str ? `${str} de ${valid.length} janelas esticadas e nenhuma em oportunidade: o preço não está barato em nenhum prazo.` : opp ? `${opp} de ${valid.length} janelas em oportunidade e nenhuma esticada: o viés é de preço descontado.` : 'Nenhuma janela em extremo: o ativo está em equilíbrio entre os prazos.')
   if (longIdx != null && shortIdx != null && Math.abs(longIdx - shortIdx) >= 25) reasons.push(longIdx > shortIdx ? 'O longo prazo está mais descontado que o curto: o ciclo maior favorece, mas o gatilho de curto prazo ainda não veio.' : 'O curto prazo está mais descontado que o longo: pode ser uma correção pontual dentro de um ciclo ainda caro.')
   if (range != null) reasons.push(`Na faixa de 52 semanas (${cc} ${num(d.low!, digits)} a ${cc} ${num(d.high!, digits)}), o preço está a ${num(range, 0)}% do caminho entre a mínima e a máxima${range >= 85 ? ' — perto das máximas do ano' : range <= 15 ? ' — perto das mínimas do ano' : ''}.`)
   if (d.m1 != null || d.m3 != null) reasons.push(`Desempenho: ${pct(d.m1)} em 1 mês, ${pct(d.m3)} em 3 meses e ${pct(d.ytd)} no ano.`)
-  if (sigma != null) reasons.push(`A oscilação típica para ${p.horizon} é de ±${num(sigma, 1)}% — é a faixa usada nos cenários abaixo.`)
+  if (sigma != null) reasons.push(`A oscilação típica para ${horizonTxt} é de ±${num(sigma, 1)}% — é a faixa usada nos cenários abaixo.`)
   if (fii && pvp != null) reasons.push(`P/VP de ${num(pvp, 2)} (cota ${pvp < 1 ? 'com desconto' : 'com ágio'} sobre o patrimônio): leitura "${fii.label}". ${fii.note}`)
   if (p.entry) { const r = ((price - p.entry) / p.entry) * 100; reasons.push(`Sua entrada em ${cc} ${num(p.entry, digits)} está ${r >= 0 ? 'com lucro' : 'com prejuízo'} de ${pct(r)} ao preço de hoje${p.intent === 'average' && r < 0 ? '; um aporte agora reduz o preço médio' : ''}.`) }
 
@@ -236,7 +259,7 @@ function Answer({ p, d, usd, news, onRadar, onOpen }: { p: Parsed; d: Data; usd:
       <div className="grid g-main">
         <div className="card">
           <div className="card-h"><h3><Target /> Leitura da sua operação<Hint text="Análise gerada a partir do índice Treend em cinco tempos gráficos, da faixa de 52 semanas, do desempenho recente e da oscilação típica do ativo." /></h3>
-            <span className="pill">{CLASSES[p.cls].label} · {a.ticker} · {p.horizon}</span></div>
+            <span className="pill">{CLASSES[p.cls].label} · {a.ticker} · {p.horizonGiven ? p.horizon : 'prazo não informado'}</span></div>
           <div className="card-b stack gap-12">
             <div className="row gap-12">
               <span className="asset-logo" style={{ width: 44, height: 44 }}>{a.logo ? <img src={a.logo} alt="" /> : <b>{a.ticker.slice(0, 2)}</b>}</span>
@@ -244,16 +267,19 @@ function Answer({ p, d, usd, news, onRadar, onOpen }: { p: Parsed; d: Data; usd:
               <div style={{ textAlign: 'right' }}><b className="mono" style={{ fontSize: 20 }}>{cc} {num(price, digits)}</b><div className="tiny" style={{ color: (d.change ?? 0) >= 0 ? 'var(--up)' : 'var(--down)' }}>{pct(d.change, 2)} hoje</div></div>
             </div>
             <p style={{ fontSize: 16, lineHeight: 1.65, margin: 0 }}>
-              Você quer <b>{p.intent === 'buy' ? 'comprar' : p.intent === 'average' ? 'fazer preço médio em' : p.intent === 'hold' ? 'decidir se mantém' : 'vender ou realizar'}</b> {a.ticker}
+              {holder ? <>Você está posicionado em <b>{a.ticker}</b>{p.since ? <> desde <b>{p.since}</b></> : null}{p.entry ? <>, com entrada em <b className="mono">{cc} {num(p.entry, digits)}</b> ({pct(((price - p.entry) / p.entry) * 100)} até hoje)</> : null}. </>
+                : p.intent === 'info' ? <>Leitura atual de <b>{a.ticker}</b> a <b className="mono">{cc} {num(price, digits)}</b>. </>
+                : <>Você quer <b>{p.intent === 'buy' ? 'comprar' : p.intent === 'average' ? 'fazer preço médio em' : 'vender ou realizar'}</b> {a.ticker}
               {amountAsset != null && <> com <b className="mono">{p.amount != null ? `${p.inCur ?? cc} ${num(p.amount, 2)}` : `${num(p.units!, 4)} unidades`}</b>{p.inCur && p.inCur !== cc && usd ? <> (≈ <b className="mono">{cc} {num(amountAsset, 2)}</b> ao dólar de R$ {num(usd, 4)})</> : null}{amountAsset && price ? <> — cerca de <b className="mono">{num(amountAsset / price, amountAsset / price < 10 ? 4 : 2)}</b> unidades ao preço de hoje</> : null}</>}
-              {p.monthly ? ', em aportes mensais' : ''}, num horizonte de <b>{p.horizon}</b>. {verdict}
+              {p.monthly ? ', em aportes mensais' : ''}{p.horizonGiven ? <>, num horizonte de <b>{p.horizon}</b></> : null}. </>}
+              <b>{verdict}</b>
             </p>
           </div>
         </div>
         <div className="card" style={{ display: 'grid', placeItems: 'center', padding: 20 }}>
-          <Gauge value={main ?? 50} color={g.color} size={180} label="ÍNDICE TREEND" />
+          <Gauge value={main ?? 50} color={g.color} size={180} label={extremes.length ? 'LEITURA EXTREMA' : 'ÍNDICE TREEND'} />
           <div style={{ fontWeight: 600, marginTop: -4, color: z.c }}>{z.label}</div>
-          <div className="tiny faint">{FRAMES.find((f) => f.key === fk)?.label} · janela do seu prazo</div>
+          <div className="tiny faint">{extremes.length ? `Destaque: ${names(extremes)}` : `${FRAMES.find((f) => f.key === fk)?.label} · ${p.horizonGiven ? 'janela do seu prazo' : 'referência'}`}</div>
         </div>
       </div>
 
@@ -262,7 +288,7 @@ function Answer({ p, d, usd, news, onRadar, onOpen }: { p: Parsed; d: Data; usd:
         <div className="card-b">
           <div className="conc-frames">
             {d.frames.map((f) => { const zz = zoneOf(f.index); return (
-              <div key={f.key} className={`conc-frame ${f.key === fk ? 'on' : ''}`} style={{ ['--c' as string]: zz.c }}>
+              <div key={f.key} className={`conc-frame ${focus.includes(f.key) ? 'on' : ''} ${f.index != null && (f.index >= 90 || f.index <= 20) ? 'xt' : ''}`} style={{ ['--c' as string]: zz.c }}>
                 <span className="tiny faint">{f.label}</span><b className="mono">{f.index == null ? '—' : Math.round(f.index)}</b><span className="tiny" style={{ color: zz.c }}>{zz.label}</span>
               </div>
             ) })}
@@ -286,7 +312,7 @@ function Answer({ p, d, usd, news, onRadar, onOpen }: { p: Parsed; d: Data; usd:
           </div>
         </div>
         <div className="card">
-          <div className="card-h"><h3>Cenários em {p.horizon}<Hint text="Ganho ou perda da posição para uma e duas vezes a oscilação típica do ativo no prazo, para cima e para baixo." /></h3>{sigma != null && <span className="tiny faint">±{num(sigma, 1)}% de oscilação típica</span>}</div>
+          <div className="card-h"><h3>Cenários em {horizonTxt}<Hint text="Ganho ou perda da posição para uma e duas vezes a oscilação típica do ativo no prazo, para cima e para baixo." /></h3>{sigma != null && <span className="tiny faint">±{num(sigma, 1)}% de oscilação típica</span>}</div>
           <div>
             {scen.map((s) => { const v = pos * s.pct / 100; const c = s.k < 0 ? 'var(--down)' : s.k > 0 ? 'var(--up)' : 'var(--text-3)'; return (
               <div key={s.k} className="proj-row" style={{ ['--c' as string]: c }}>

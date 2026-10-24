@@ -1321,3 +1321,11 @@ tr:hover .row-my,.row-my:has(.on){opacity:1}
 .conc-reasons{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;font-size:14.5px;line-height:1.6;color:var(--text-2)}
 @media (max-width:640px){.conc-frames{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .board-logos{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}.board-logos .my-logo-img{width:60px;height:60px}.board-logos .my-logo-t{font-size:15px}.board-logos .my-logo:hover .row-my{opacity:1}
+.conc-go{display:inline-flex;align-items:center;gap:14px;height:46px;padding:0 6px 0 20px;border:0;border-radius:14px;background:#0b1640;color:#fff;font:600 14px var(--font);letter-spacing:-.01em;cursor:pointer;box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 10px 24px -12px rgba(11,22,64,.6);transition:transform .15s var(--ease),background .15s}
+.conc-go i{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#2453e0,#5a8cf5);font-style:normal}
+.conc-go:hover:not(:disabled){transform:translateY(-1px);background:#101f57}
+.conc-go:disabled{opacity:.45;cursor:not-allowed}
+[data-theme="dark"] .conc-go{background:#fff;color:#0b1640}
+.spin-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;animation:spin .8s linear infinite}
+.conc-frame.xt b{font-size:28px}
+.conc-frame.xt::after{content:'extremo';font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--c);margin-top:2px}
