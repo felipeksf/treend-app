@@ -72,7 +72,7 @@ export async function searchAssets(q: string, signal?: AbortSignal, cls?: ClassK
   if (cls === 'fx') return fx
   const toAsset = (k: ClassKey) => (r: Row): Asset => ({
     symbol: r.symbol, ticker: r.ticker, name: r.name, logo: r.logo, currency: r.cur || CLASSES[k].currency,
-    sub: k === 'crypto' ? 'Cripto' : `${CLASSES[k].label}${r.sector ? ` · ${r.sector}` : ''}`,
+    sub: k === 'crypto' ? 'Cripto' : `${CLASSES[k].label}${(r.category ?? r.sector) ? ` · ${r.category ?? r.sector}` : ''}`,
   })
   const run = async (k: ClassKey, n: number): Promise<Asset[]> => {
     // Search the full class universe locally (ticker, full name, translated name), so “Solana”,
@@ -81,7 +81,7 @@ export async function searchAssets(q: string, signal?: AbortSignal, cls?: ClassK
     const list = await universe(k).catch(() => [] as Row[])
     const words = s.split(/\s+/).filter(Boolean)
     const scored = list.map((r) => {
-      const t = norm(r.ticker), nm = norm(`${k === 'b3' ? `${B3_ALIAS[r.ticker.slice(0, 4)] ?? ''} ` : ''}${r.name} ${r.alt ?? ''}`), all = `${t} ${nm} ${norm(r.symbol)} ${norm(r.sector ?? '')}`
+      const t = norm(r.ticker), nm = norm(`${k === 'b3' ? `${B3_ALIAS[r.ticker.slice(0, 4)] ?? ''} ` : ''}${r.name} ${r.alt ?? ''}`), all = `${t} ${nm} ${norm(r.symbol)} ${norm(r.sector ?? '')} ${norm(r.category ?? '')}`
       if (!words.every((w) => all.includes(w))) return null
       const score = t === s ? 0 : t.startsWith(s) ? 1 : nm.startsWith(s) ? 2 : nm.split(/[\s.,/-]+/).some((w) => w.startsWith(words[0])) ? 3 : 4
       return { r, score }

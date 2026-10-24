@@ -1,5 +1,8 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { CLASSES, CLASS_LIST, type ClassKey } from '../lib/classes'
+import { Access } from './StocksInvest'
+import Gate from '../components/Gate'
 import { Grid3x3 } from 'lucide-react'
 import { CURRENCIES, FREQUENCIES, PROFILES, pick, signal, useHeatmap, volatility, momentum, type HeatScore } from '../lib/heatmap'
 import { useQuotes } from '../lib/rates'
@@ -17,7 +20,7 @@ const LEGEND = [
   { t: 'Alta', c: 'var(--up)', r: '80+' },
 ]
 
-export default function Heatmap() {
+function FxHeatmap() {
   const [profile, setProfile] = useProfile()
   const { data, isLoading } = useHeatmap()
   const { data: q } = useQuotes()
@@ -112,5 +115,27 @@ export default function Heatmap() {
       </div>
       {alertFor && <AlertModal currency={alertFor.currency} frequency={alertFor.frequency} profile={profile} onClose={() => setAlertFor(null)} />}
     </div>
+  )
+}
+
+/** Mapa de calor for every asset class: FX keeps the profile-calibrated grid, the others use the class board. */
+export default function Heatmap() {
+  const [params, setParams] = useSearchParams()
+  const k = ((params.get('c') as ClassKey) in CLASSES ? params.get('c') : 'fx') as ClassKey
+  const c = CLASSES[k]
+  return (
+    <>
+      <div className="page" style={{ paddingBottom: 0 }}>
+        <div className="class-switch heat-switch" role="tablist" aria-label="Classe de ativo">
+          {CLASS_LIST.map((x) => <button key={x.key} role="tab" aria-selected={k === x.key} className={k === x.key ? 'on' : ''} onClick={() => setParams(x.key === 'fx' ? {} : { c: x.key })}>{x.emoji} {x.label}</button>)}
+        </div>
+      </div>
+      {k === 'fx' ? <FxHeatmap /> : (
+        <div className="page">
+          <PageHeader eyebrow={<><Grid3x3 size={13} /> Mapa de calor</>} title="Todo o mercado," accent="em um olhar." sub={<>Índice Treend de 0 a 100 para {c.desc.charAt(0).toLowerCase() + c.desc.slice(1)}, em cinco tempos gráficos. Clique em um bloco para criar um radar.</>} />
+          <Gate what="o mapa de calor"><Access key={k} market={k} /></Gate>
+        </div>
+      )}
+    </>
   )
 }

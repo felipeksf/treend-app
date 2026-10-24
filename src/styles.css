@@ -1290,3 +1290,18 @@ tr:hover .row-my,.row-my:has(.on){opacity:1}
 .my-row:hover td{background:var(--brand-soft)}
 .my-idx{display:inline-grid;place-items:center;min-width:40px;height:28px;padding:0 8px;border-radius:8px;font-family:var(--mono, ui-monospace),monospace;font-weight:700;font-size:13px;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent)}
 .ov-search{margin-bottom:16px}.ov-focus{margin-bottom:24px;scroll-margin-top:80px}
+.heat-switch{margin:0 auto 4px;width:max-content;max-width:100%;overflow-x:auto}
+.my-logos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.my-logo{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;aspect-ratio:1;border:1px solid var(--line);border-radius:24px;background:var(--surface);cursor:pointer;font:inherit;color:inherit;transition:transform .2s var(--ease),box-shadow .2s,border-color .2s}
+.my-logo:hover{transform:translateY(-3px);border-color:var(--brand);box-shadow:0 18px 40px -20px rgba(36,83,224,.45)}
+.my-logo-img{display:grid;place-items:center;width:76px;height:76px;border-radius:50%;overflow:hidden;background:var(--bg-2,#eef1f6);box-shadow:0 8px 20px -10px rgba(10,20,50,.35)}
+.my-logo-img img{width:100%;height:100%;object-fit:cover}
+.my-logo-img b{font-family:var(--display);font-size:22px;color:var(--brand)}
+.my-logo-t{font-family:var(--display);font-size:18px;letter-spacing:-.02em}
+.my-logo-dot{position:absolute;top:14px;right:14px;width:10px;height:10px;border-radius:50%}
+.proj-row{display:flex;gap:14px;align-items:center;padding:12px 20px;border-top:1px solid var(--line)}
+.proj-z{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;font-weight:700;font-size:13px;color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent)}
+.proj-bar{height:4px;border-radius:4px;background:var(--line);margin-top:8px;overflow:hidden}
+.proj-bar i{display:block;height:100%;width:var(--w);background:var(--c);opacity:.7}
+.proj-range{position:relative;height:8px;border-radius:8px;background:linear-gradient(90deg,var(--up),var(--amber),var(--down))}
+.proj-range i{position:absolute;top:50%;width:16px;height:16px;border-radius:50%;background:var(--surface);border:3px solid var(--text);transform:translate(-50%,-50%)}

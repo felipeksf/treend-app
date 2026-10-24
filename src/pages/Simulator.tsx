@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
+import { CLASSES, CLASS_LIST, type ClassKey } from '../lib/classes'
+import AssetSimulator from '../components/AssetSimulator'
 import { FlaskConical, ArrowRight, Save } from 'lucide-react'
 import { useQuotes } from '../lib/rates'
 import { pick, useHeatmap, volatility, PROFILES } from '../lib/heatmap'
@@ -22,6 +24,24 @@ const PERIODS = [
 ]
 
 export default function Simulator() {
+  const [params, setParams] = useSearchParams()
+  const k = ((params.get('c') as ClassKey) in CLASSES ? params.get('c') : 'fx') as ClassKey
+  const tabs = (
+    <div className="class-switch heat-switch" role="tablist" aria-label="Classe de ativo">
+      {CLASS_LIST.map((x) => <button key={x.key} role="tab" aria-selected={k === x.key} className={k === x.key ? 'on' : ''} onClick={() => setParams(x.key === 'fx' ? {} : { c: x.key })}>{x.emoji} {x.label}</button>)}
+    </div>
+  )
+  if (k !== 'fx') return (
+    <div className="page">
+      {tabs}
+      <PageHeader eyebrow={<><FlaskConical size={13} /> Simulador</>} title="Simule ganhos e perdas" accent={`em ${CLASSES[k].label}.`} sub="Escolha o ativo, o valor e o horizonte e veja os cenários de ganho e perda — e quanto o timing de entrada pode fazer de diferença." />
+      <AssetSimulator key={k} cls={k} />
+    </div>
+  )
+  return <FxSimulator tabs={tabs} />
+}
+
+function FxSimulator({ tabs }: { tabs: React.ReactNode }) {
   const { data: quotes } = useQuotes()
   const { data: heat } = useHeatmap()
   const { data: treendPct = 0.5 } = useTreendRate()
@@ -52,6 +72,7 @@ export default function Simulator() {
 
   return (
     <div className="page">
+      {tabs}
       <PageHeader eyebrow={<><FlaskConical size={13} /> Simulador</>} title="Quanto você perde" accent="sem inteligência cambial?" sub="Somamos o custo do spread acima da referência e o custo de operar fora da melhor janela." />
 
       <div className="grid g-side" style={{ alignItems: 'start' }}>

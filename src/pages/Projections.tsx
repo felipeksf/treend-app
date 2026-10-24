@@ -1,3 +1,5 @@
+import AssetProjections from '../components/AssetProjections'
+import { CLASSES, CLASS_LIST, type ClassKey } from '../lib/classes'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Bell, Info, TrendingDown, TrendingUp } from 'lucide-react'
@@ -15,6 +17,24 @@ type Proj = { id: string; profile_type: string; currency: string; frequency: str
 const BUYERS = new Set(['importador', 'agente_turismo', 'importador_usdt'])
 
 export default function Projections() {
+  const [params0, setParams0] = useSearchParams()
+  const k = ((params0.get('c') as ClassKey) in CLASSES ? params0.get('c') : 'fx') as ClassKey
+  const tabs = (
+    <div className="class-switch heat-switch" role="tablist" aria-label="Classe de ativo">
+      {CLASS_LIST.map((x) => <button key={x.key} role="tab" aria-selected={k === x.key} className={k === x.key ? 'on' : ''} onClick={() => setParams0(x.key === 'fx' ? {} : { c: x.key })}>{x.emoji} {x.label}</button>)}
+    </div>
+  )
+  if (k !== 'fx') return (
+    <div className="page">
+      {tabs}
+      <PageHeader eyebrow="Projeções de preço" title="Zonas de" accent="intensidade." sub="Selecione a classe, busque o ativo e veja as zonas de preço projetadas para compra e para venda em cada tempo gráfico." />
+      <Gate what="as projeções de preço"><AssetProjections key={k} cls={k} /></Gate>
+    </div>
+  )
+  return <FxProjections tabs={tabs} />
+}
+
+function FxProjections({ tabs }: { tabs: React.ReactNode }) {
   const [params, setParams] = useSearchParams()
   const ccy = params.get('ccy') && (CURRENCIES as readonly string[]).includes(params.get('ccy')!) ? params.get('ccy')! : 'USD'
   const freq = params.get('f') || 'daily'
@@ -38,6 +58,7 @@ export default function Projections() {
 
   return (
     <div className="page">
+      {tabs}
       <PageHeader
         eyebrow="Projeções de preço"
         title="Zonas de"

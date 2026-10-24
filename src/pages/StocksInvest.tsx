@@ -1,3 +1,4 @@
+import Select from '../components/Select'
 import MyAssetButton from '../components/MyAssetButton'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -78,8 +79,15 @@ function Board({ market }: { market: Market }) {
   const [page, setPage] = useState(0)
   const PAGE = 100
   const [query, setQuery] = useState('')
+  const [cat, setCat] = useState('all')
   const all = useMemo(() => data?.stocks ?? [], [data])
-  const stocks = useMemo(() => all.filter((s) => !query || `${s.ticker} ${s.name ?? ''}`.toLowerCase().includes(query.toLowerCase())), [all, query])
+  const catOf = (s: Stock) => (s as unknown as Row).category ?? null
+  const cats = useMemo(() => {
+    const m = new Map<string, number>()
+    for (const s of all) { const c = catOf(s); if (c) m.set(c, (m.get(c) ?? 0) + 1) }
+    return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0], 'pt'))
+  }, [all])
+  const stocks = useMemo(() => all.filter((s) => (cat === 'all' || catOf(s) === cat) && (!query || `${s.ticker} ${s.name ?? ''} ${catOf(s) ?? ''}`.toLowerCase().includes(query.toLowerCase()))), [all, query, cat])
   const cur = CLASSES[market].currency
   FREQ = FREQ_B3
   const nameOf = (s?: Stock) => (s ? s.name || NAMES[s.ticker] || s.ticker : '')
@@ -123,7 +131,12 @@ function Board({ market }: { market: Market }) {
             <span><Search size={15} /></span>
             <input className="input" style={{ fontFamily: 'var(--font)' }} placeholder={`Buscar ${CLASSES[market].placeholder}`} value={query} onChange={(e) => { setQuery(e.target.value); setPage(0) }} />
           </div>
-          <span className="tiny faint">{all.length} ativos · ordenados por volume · atualização a cada 2 min</span>
+          {cats.length > 0 && (
+            <div style={{ width: 260, maxWidth: '100%' }}>
+              <Select value={cat} onChange={(v) => { setCat(v); setPage(0) }} options={[{ value: 'all', label: `Todos os setores (${all.length})` }, ...cats.map(([c, n]) => ({ value: c, label: `${c} (${n})` }))]} />
+            </div>
+          )}
+          <span className="tiny faint" style={{ marginLeft: 'auto' }}>{cat === 'all' ? all.length : `${stocks.length} de ${all.length}`} ativos · ordenados por volume · atualização a cada 2 min</span>
         </div>
       )}
       {false && <div className="stock-chips">

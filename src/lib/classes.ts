@@ -1,3 +1,4 @@
+import { categoryOf } from './sectors'
 import { useQuery } from '@tanstack/react-query'
 import { indexFromRsi } from './market'
 
@@ -6,7 +7,7 @@ import { indexFromRsi } from './market'
 
 export type ClassKey = 'b3' | 'us' | 'crypto' | 'fx' | 'commod' | 'fii'
 export type Row = {
-  symbol: string; ticker: string; name: string; logo: string | null; sector: string | null; cur?: string | null; alt?: string
+  symbol: string; ticker: string; name: string; logo: string | null; sector: string | null; cur?: string | null; alt?: string; category?: string | null
   fii?: { pvp: number | null; vp: number | null; dy12m: number | null; segment: string | null; read: FiiRead }
   price: number | null; change_pct: number | null; value_traded: number | null
   scores: { frequency: string; rsi: number | null; heat_x: number; heat_y: number; change_pct: number; volatility_pct: number; momentum: number }[]
@@ -47,7 +48,7 @@ export async function scanClass(key: ClassKey, opts: { limit?: number; search?: 
     : []
   if (search) filter.push({ left: 'name,description', operation: 'match', right: search })
   const body: Record<string, unknown> = {
-    columns: ['name', key === 'crypto' ? 'base_currency_desc' : 'description', logoCol, 'close', 'change', 'sector', valueCol, ...COLS.map((c) => c[1]), 'currency', 'exchange'],
+    columns: ['name', key === 'crypto' ? 'base_currency_desc' : 'description', logoCol, 'close', 'change', 'sector', valueCol, ...COLS.map((c) => c[1]), 'currency', 'exchange', 'industry'],
     range: [0, limit],
   }
   if (key === 'fx') body.symbols = { tickers: FX_CODES.map((c) => `FX_IDC:${c}BRL`) }
@@ -70,6 +71,7 @@ export async function scanClass(key: ClassKey, opts: { limit?: number; search?: 
       logo: key === 'fx' ? logoUrl(`country/${FX_FLAG[fxCode] ?? 'US'}`) : logoUrl(d[2]),
       price: d[3] as number | null,
       change_pct: d[4] == null ? null : Math.round((d[4] as number) * 100) / 100,
+      category: key === 'b3' || key === 'us' ? categoryOf(d[14] as string | null, raw) : null,
       sector: key === 'commod' ? `${SECTOR_PT[String(d[5])] ?? d[5]} · ${d[13] ?? ''}` : (d[5] as string) ?? null,
       alt: String(d[1] ?? ''),
       cur: key === 'commod' ? CUR_SYMBOL[String(d[12])] ?? String(d[12] ?? '') : null,
