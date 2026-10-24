@@ -6,13 +6,14 @@ import { useAuth } from '../lib/auth'
 import { PageHeader, Seg, toast } from '../components/ui'
 import Gate from '../components/Gate'
 import Select from '../components/Select'
+import McpConnect from '../components/McpConnect'
 import { dateBR } from '../lib/format'
 
-const ASSISTANTS = ['Claude', 'ChatGPT', 'Gemini', 'Agente próprio']
+const ASSISTANTS = ['ChatGPT', 'Claude', 'Gemini', 'Agente próprio']
 const EXAMPLES = [
-  { q: 'Qual o índice Treend do dólar para importador hoje?', a: 'O índice de 1x ao dia está em 18/100 (crítico). Volatilidade de 2,4% e momentum negativo — o cenário pede escalonar a compra.' },
-  { q: 'Compare euro e libra na janela semanal.', a: 'Euro em 20/100 e libra em 14/100. As duas estão pressionadas; o euro tem leve vantagem de momentum.' },
-  { q: 'Quanto economizei com as decisões deste mês?', a: 'Você registrou 6 decisões, com economia acumulada de US$ 396 mil e € 200 mil.' },
+  { q: 'Quais as 5 maiores oportunidades em Ações B3 no diário?', a: 'Pelo índice Treend diário, os destaques são os ativos com índice acima de 90 — zona de oportunidade forte — ordenados do maior para o menor.' },
+  { q: 'Analise o HGLG11 considerando o P/VP.', a: 'O fundo está com P/VP de 0,96 e o índice Treend em zona neutra no diário e no semanal: cota levemente descontada, sem assimetria forte no momento.' },
+  { q: 'Como está o Bitcoin em todos os tempos gráficos?', a: 'O Bitcoin aparece neutro no diário e no semanal, com o 4 horas mais pressionado. Veja a melhor janela antes de decidir.' },
 ]
 const TITLE = 'Solicitação de acesso ao Treend MCP'
 
@@ -46,7 +47,7 @@ export default function Mcp() {
 
   return (
     <div className="page">
-      <PageHeader title="A Treend dentro da" accent="sua inteligência artificial." sub="Conecte a inteligência cambial da Treend ao Claude, ChatGPT, Gemini ou ao seu agente via MCP — e consulte índices, mapas de calor e suas decisões direto na conversa." />
+      <PageHeader title="A Treend dentro da" accent="sua inteligência artificial." sub="Conecte a Treend ao ChatGPT, Claude, Gemini ou ao seu agente via MCP e consulte o índice Treend de qualquer ativo — Ações B3, Stocks, Cripto, Commodities, Câmbio e FIIs — direto na conversa." />
 
       <div className="grid g-main" style={{ alignItems: 'start', marginBottom: 16 }}>
         <div className="card mcp-hero">
@@ -86,10 +87,12 @@ export default function Mcp() {
         </Gate>
       </div>
 
+      <div style={{ marginBottom: 16 }}><McpConnect /></div>
+
       <div className="grid g-3" style={{ marginBottom: 16 }}>
         {[
           { i: Plug, t: 'Conecte', d: 'Seu time e a Treend configuram o assistente ou agente compatível com MCP.' },
-          { i: MessageSquareText, t: 'Pergunte', d: 'Peça índices, explore mapas de calor e consulte suas decisões em linguagem natural.' },
+          { i: MessageSquareText, t: 'Pergunte', d: 'Peça o índice de qualquer ativo, rankings de oportunidades e visões gerais de mercado em linguagem natural.' },
           { i: LineChart, t: 'Decida', d: 'Leve o contexto Treend para o financeiro, a tesouraria e o comércio exterior.' },
         ].map((s, n) => (
           <div key={s.t} className="card pad stack gap-8">

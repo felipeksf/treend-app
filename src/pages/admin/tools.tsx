@@ -3,11 +3,12 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   Activity, BarChart3, Bell, BookOpen, Bot, Building2, CalendarDays, CheckCircle2, ClipboardCheck, Eye, EyeOff, FileText, Grid3x3,
   LineChart, Mail, Megaphone, MessageCircle, PanelLeft, Receipt, RefreshCw, ScanSearch, Send, Sparkles, Tags, Target, Timer, Users,
-  Video, XCircle, Copy, Search, Trash2, type LucideIcon,
+  Video, XCircle, Copy, Search, Trash2, Plug, type LucideIcon,
 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { CURRENCIES, FREQUENCIES, PROFILES, signal, useHeatmap, pick } from '../../lib/heatmap'
 import TradingViewChart from '../../components/TradingViewChart'
+import { MCP_URL } from '../../components/McpConnect'
 import { NAV } from '../../components/nav'
 import { navKey, useSidebarVisibility, useToggleSidebarItem } from '../../lib/sidebar'
 import Resource, { fmt, type ResourceProps, type Row } from '../../components/admin/Resource'
@@ -259,6 +260,7 @@ export const TOOLS: Tool[] = [
   { path: 'analytics', label: 'Analytics', icon: BarChart3, group: 'Financeiro', desc: 'Uso da plataforma por parceiro.', element: <Analytics /> },
 
   /* ── Sistema ── */
+  { path: 'mcp', label: 'Treend MCP', icon: Plug, group: 'Sistema', desc: 'Pedidos de acesso e links pessoais para ChatGPT, Claude, Gemini e agentes.', element: <McpAdmin /> },
   { path: 'live', label: 'Acessos Live', icon: Video, group: 'Sistema', desc: 'Quem pode abrir as páginas Live com senha.', element: <LiveAccess /> },
   { path: 'sidebar', label: 'Menu lateral', icon: PanelLeft, group: 'Sistema', desc: 'Habilite ou desabilite itens do menu para todos os usuários.', element: <SidebarManager /> },
 ]
@@ -687,6 +689,115 @@ function StripeLeads() {
           </table>
         </div>
       )}
+    </div>
+  )
+}
+
+/* ── Treend MCP ─────────────────────────────────────────────── */
+
+const MCP_TITLE = 'Solicitação de acesso ao Treend MCP'
+type McpKey = { key: string; label?: string; email?: string; created_at?: string; last_used_at?: string; revoked?: boolean }
+
+function McpAdmin() {
+  const [server, setServer] = useState(() => localStorage.getItem('treend-v2-mcp-server') || MCP_URL)
+  const [secret, setSecret] = useState(() => localStorage.getItem('treend-v2-mcp-admin') || '')
+  const [form, setForm] = useState({ label: '', email: '' })
+  const [last, setLast] = useState<{ url: string; email: string } | null>(null)
+  const ready = !!server && !!secret
+  const save = () => { localStorage.setItem('treend-v2-mcp-server', server.trim()); localStorage.setItem('treend-v2-mcp-admin', secret.trim()); refetch() }
+  const api = async (path: string, init: RequestInit = {}) => {
+    const r = await fetch(`${server.replace(/\/$/, '')}${path}`, { ...init, headers: { 'content-type': 'application/json', 'x-admin-secret': secret, ...(init.headers || {}) } })
+    const j = await r.json().catch(() => ({}))
+    if (!r.ok) throw new Error(j.error || `Erro ${r.status}`)
+    return j
+  }
+  const { data: keys, refetch, error } = useQuery({ queryKey: ['mcp-keys', server, !!secret], enabled: ready, retry: false, queryFn: async () => ((await api('/admin/keys')).keys ?? []) as McpKey[] })
+  const { data: tickets, refetch: refetchTickets } = useQuery({
+    queryKey: ['admin', 'mcp-requests'],
+    queryFn: async () => ((await supabase.from('support_tickets').select('*').eq('title', MCP_TITLE).order('created_at', { ascending: false })).data ?? []) as Row[],
+  })
+  const create = async (label: string, email: string, ticket?: Row) => {
+    try {
+      const k = await api('/admin/keys', { method: 'POST', body: JSON.stringify({ label, email }) })
+      setLast({ url: k.url, email })
+      refetch()
+      if (ticket && confirm(`Link criado. Enviar por e-mail para ${email} agora?`)) {
+        const body = `Seu acesso ao Treend MCP foi liberado!\n\nSeu link pessoal: ${k.url}\n\nComo conectar: na Treend, abra o menu MCP e siga o passo a passo para ChatGPT, Claude, Gemini ou agentes. Não compartilhe este link.`
+        const { data: s } = await supabase.auth.getSession()
+        await supabase.from('support_replies').insert({ ticket_id: ticket.id, admin_id: s.session?.user.id, body })
+        await supabase.from('support_tickets').update({ status: 'answered' }).eq('id', ticket.id as string)
+        await invoke('send-support-reply', { ticket_number: ticket.ticket_number, ticket_title: ticket.title, user_email: ticket.user_email, user_id: ticket.user_id, reply_body: body })
+        toast('Link enviado por e-mail')
+        refetchTickets()
+      }
+    } catch (e) { toast(`Erro: ${(e as Error).message}`) }
+  }
+  const revoke = async (k: McpKey) => {
+    if (!confirm(`Revogar o acesso de ${k.label || k.email || 'este link'}? A IA conectada deixa de funcionar na hora.`)) return
+    try { await api(`/admin/keys?key=${encodeURIComponent(k.key)}`, { method: 'DELETE' }); toast('Acesso revogado'); refetch() } catch (e) { toast(`Erro: ${(e as Error).message}`) }
+  }
+  const pending = (tickets ?? []).filter((t) => t.status !== 'answered')
+
+  return (
+    <div className="stack gap-16">
+      <div className="card"><div className="card-b stack gap-12">
+        <div className="row wrap gap-8">
+          <div className="field" style={{ flex: '1 1 260px' }}><label>Servidor MCP</label><input className="input" value={server} onChange={(e) => setServer(e.target.value)} /></div>
+          <div className="field" style={{ flex: '1 1 220px' }}><label>Segredo do admin</label><input className="input" type="password" value={secret} onChange={(e) => setSecret(e.target.value)} placeholder="ADMIN_SECRET do servidor" /></div>
+          <button className="btn primary" style={{ alignSelf: 'flex-end' }} onClick={save}>Conectar</button>
+        </div>
+        {error && <div className="small down">Não foi possível acessar o servidor: {(error as Error).message}</div>}
+      </div></div>
+
+      <div className="card">
+        <div className="card-h"><h3>Pedidos de acesso pendentes</h3><span className="pill">{pending.length}</span></div>
+        <div style={{ marginTop: 8 }}>
+          {!pending.length && <Empty icon={<Plug size={20} />} title="Nenhum pedido pendente" />}
+          {pending.map((t) => (
+            <div key={t.id as string} className="list-row" style={{ alignItems: 'flex-start' }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <b>{String(t.user_email)}</b>
+                <div className="tiny faint" style={{ whiteSpace: 'pre-wrap', marginTop: 4 }}>{String(t.subject ?? '')}</div>
+              </div>
+              <button className="btn sm primary" disabled={!ready} onClick={() => create(String(t.user_email), String(t.user_email), t)}>Gerar link e enviar</button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-h wrap" style={{ gap: 8 }}>
+          <h3>Links pessoais</h3>
+          <div className="row gap-8 wrap">
+            <input className="input" style={{ height: 36, width: 200 }} placeholder="Nome / empresa" value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })} />
+            <input className="input" style={{ height: 36, width: 220 }} placeholder="E-mail" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+            <button className="btn sm primary" disabled={!ready || !form.email} onClick={() => { create(form.label || form.email, form.email); setForm({ label: '', email: '' }) }}>Criar link</button>
+          </div>
+        </div>
+        {last && <div className="banner" style={{ margin: '12px 24px 0' }}>Link criado para {last.email}: <code style={{ wordBreak: 'break-all' }}>{last.url}</code><button className="btn sm" style={{ marginLeft: 'auto' }} onClick={() => copy(last.url, 'Link')}><Copy size={14} /> Copiar</button></div>}
+        {!ready ? <Empty icon={<Plug size={20} />} title="Conecte o servidor MCP para gerenciar os links" /> : (
+          <div style={{ overflowX: 'auto', marginTop: 12 }}>
+            <table className="tbl">
+              <thead><tr><th>Cliente</th><th>E-mail</th><th>Criado</th><th>Último uso</th><th>Status</th><th /></tr></thead>
+              <tbody>
+                {(keys ?? []).map((k) => (
+                  <tr key={k.key}>
+                    <td><b style={{ fontWeight: 600 }}>{k.label || '—'}</b></td>
+                    <td className="muted">{k.email || '—'}</td>
+                    <td className="muted">{k.created_at ? dateBR(k.created_at, true) : '—'}</td>
+                    <td className="muted">{k.last_used_at ? dateBR(k.last_used_at, true) : 'Nunca'}</td>
+                    <td><span className="pill tone" style={{ ['--c' as string]: k.revoked ? 'var(--down)' : 'var(--up)' }}>{k.revoked ? 'Revogado' : 'Ativo'}</span></td>
+                    <td className="r"><span className="row gap-4" style={{ justifyContent: 'flex-end' }}>
+                      {!k.revoked && <button className="btn sm ghost" onClick={() => copy(`${server.replace(/\/$/, '')}/mcp/${k.key}`, 'Link')}><Copy size={14} /> Link</button>}
+                      {!k.revoked && <button className="btn sm ghost" onClick={() => revoke(k)}>Revogar</button>}
+                    </span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

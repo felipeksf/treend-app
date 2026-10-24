@@ -22,7 +22,7 @@ export const CLASSES: Record<ClassKey, {
   key: ClassKey; label: string; short: string; currency: string; question: string; placeholder: string; desc: string
   heatmapRoute: string; news: string[]; emoji: string
 }> = {
-  b3: { key: 'b3', label: 'Ações B3', short: 'B3', currency: 'R$', question: 'Qual ação da B3 deseja analisar?', placeholder: 'Ex.: PETR4, Vale, Itaú', desc: '287 ações da bolsa brasileira', heatmapRoute: '/acoes-b3', news: ['B3'], emoji: '🇧🇷' },
+  b3: { key: 'b3', label: 'Ações B3', short: 'B3', currency: 'R$', question: 'Qual ação da B3 deseja analisar?', placeholder: 'Ex.: PETR4, Vale, Itaú', desc: '375 ações da bolsa brasileira', heatmapRoute: '/acoes-b3', news: ['B3'], emoji: '🇧🇷' },
   us: { key: 'us', label: 'Stocks', short: 'EUA', currency: 'US$', question: 'Qual ação americana deseja analisar?', placeholder: 'Ex.: AAPL, Nvidia, Tesla', desc: '4.790 ações da NASDAQ e NYSE', heatmapRoute: '/stocks-invest', news: ['US'], emoji: '🇺🇸' },
   crypto: { key: 'crypto', label: 'Cripto', short: 'Cripto', currency: 'US$', question: 'Qual criptomoeda deseja analisar?', placeholder: 'Ex.: Bitcoin, ETH, Solana', desc: 'Todas as criptomoedas negociadas em USDT', heatmapRoute: '/cripto', news: ['CRYPTO'], emoji: '₿' },
   fii: { key: 'fii', label: 'FIIs', short: 'FIIs', currency: 'R$', question: 'Qual FII deseja analisar?', placeholder: 'Ex.: MXRF11, HGLG11, KNRI11', desc: 'Fundos imobiliários e Fiagros com P/VP', heatmapRoute: '/fiis', news: ['FII'], emoji: '🏢' },
@@ -40,7 +40,7 @@ export async function scanClass(key: ClassKey, opts: { limit?: number; search?: 
   const valueCol = key === 'crypto' ? '24h_vol|5' : key === 'commod' ? 'volume' : 'Value.Traded'
   const logoCol = key === 'crypto' ? 'base_currency_logoid' : key === 'fx' ? 'base_currency_logoid' : 'logoid'
   const filter: object[] =
-    key === 'b3' ? [{ left: 'type', operation: 'equal', right: 'stock' }, { left: 'is_primary', operation: 'equal', right: true }]
+    key === 'b3' ? [{ left: 'type', operation: 'equal', right: 'stock' }] // all share classes (ON, PN, units); fractional (…F) removed below
     : key === 'us' ? [{ left: 'type', operation: 'equal', right: 'stock' }, { left: 'is_primary', operation: 'equal', right: true }, { left: 'exchange', operation: 'in_range', right: ['NASDAQ', 'NYSE'] }]
     : key === 'crypto' ? [{ left: 'exchange', operation: 'equal', right: 'BINANCE' }, { left: 'type', operation: 'equal', right: 'spot' }, { left: 'currency', operation: 'equal', right: 'USDT' }]
     : key === 'commod' ? [{ left: 'subtype', operation: 'equal', right: 'continuous' }, { left: 'sector', operation: 'in_range', right: ['Energy', 'Metals', 'Agricultural'] }]
@@ -58,7 +58,8 @@ export async function scanClass(key: ClassKey, opts: { limit?: number; search?: 
   if (!r.ok) throw new Error('Dados de mercado indisponíveis no momento.')
   const j: { data: { s: string; d: (string | number | null)[] }[] } = await r.json()
   const STABLE = /^(USDC|USD1|FDUSD|TUSD|DAI|USDE|USDP|PYUSD|EUR|EURI|AEUR|XUSD|BFUSD|RLUSD|USDS|BUSD)USDT$/
-  const data = key === 'crypto' ? j.data.filter(({ d }) => !/tokenized/i.test(String(d[1] ?? '')) && !STABLE.test(String(d[0]))) : j.data
+  const data = key === 'b3' ? j.data.filter(({ d }) => !String(d[0]).endsWith('F'))
+    : key === 'crypto' ? j.data.filter(({ d }) => !/tokenized/i.test(String(d[1] ?? '')) && !STABLE.test(String(d[0]))) : j.data
   return data.map(({ s, d }) => {
     const raw = String(d[0])
     const fxCode = raw.replace('BRL', '')
