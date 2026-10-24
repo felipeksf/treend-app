@@ -1,4 +1,5 @@
 import Select from '../components/Select'
+import { Grid3x3, LayoutGrid } from 'lucide-react'
 import MyAssetButton from '../components/MyAssetButton'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -11,7 +12,7 @@ import { CLASSIC_URL } from '../lib/supabase'
 import { signal } from '../lib/heatmap'
 import { CLASSES, priceDigits, useClassScan, type ClassKey, type Row } from '../lib/classes'
 import { useRoles } from '../lib/roles'
-import { Delta, Empty, Gauge, PageHeader, Skel, Hint } from '../components/ui'
+import { Delta, Empty, Gauge, PageHeader, Skel, Hint, Seg } from '../components/ui'
 import Gate from '../components/Gate'
 import { num, timeAgo } from '../lib/format'
 import { HELP } from '../lib/help'
@@ -80,6 +81,8 @@ function Board({ market }: { market: Market }) {
   const PAGE = 100
   const [query, setQuery] = useState('')
   const [cat, setCat] = useState('all')
+  const [bview, setBviewState] = useState<'map' | 'logos'>(() => { try { return (localStorage.getItem('treend-v2-board-view') as 'map' | 'logos') || 'map' } catch { return 'map' } })
+  const setBview = (v: 'map' | 'logos') => { setBviewState(v); try { localStorage.setItem('treend-v2-board-view', v) } catch { /* ignore */ } }
   const all = useMemo(() => data?.stocks ?? [], [data])
   const catOf = (s: Stock) => (s as unknown as Row).category ?? null
   const cats = useMemo(() => {
@@ -157,11 +160,28 @@ function Board({ market }: { market: Market }) {
           <div className="card-h">
             <h3><Boxes /> Mapa de oportunidades</h3>
             <div className="row gap-8">
+              <Seg value={bview} onChange={setBview} options={[{ value: 'map', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Grid3x3 size={14} /> Mapa</span> }, { value: 'logos', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><LayoutGrid size={14} /> Logos</span> }]} />
               {data?.updated && <span className="tiny faint hide-m">Atualizado há {timeAgo(data.updated)}</span>}
               <button className="icon-btn" title="Atualizar" onClick={refresh}><RefreshCw className={isFetching ? 'spin' : ''} /></button>
             </div>
           </div>
           <div className="card-b">
+            {bview === 'logos' ? (
+              <div className="my-logos board-logos">
+                {stocks.slice(page * PAGE, (page + 1) * PAGE).map((s) => {
+                  const d1 = s.scores.find((x) => x.frequency === 'd1')?.heat_x ?? null
+                  const r = s as unknown as Row
+                  return (
+                    <div key={s.ticker} className="my-logo" role="button" onClick={() => openAsset(nav, r, market)} title={`${nameOf(s)}${r.category ? ` · ${r.category}` : ''}`}>
+                      <span className="row-my" style={{ position: 'absolute', top: 8, left: 8 }}><MyAssetButton compact cls={market} asset={{ symbol: r.symbol, ticker: s.ticker, name: nameOf(s), logo: s.logo ?? null, currency: r.cur || CLASSES[market].currency, sub: CLASSES[market].label }} /></span>
+                      <span className="my-logo-img">{s.logo ? <img src={s.logo} alt="" /> : <b>{s.ticker.slice(0, 3)}</b>}</span>
+                      <b className="my-logo-t">{s.ticker}</b>
+                      {d1 != null && <span className="my-logo-dot" style={{ background: signal(d1).color }} title={`Índice diário ${Math.round(d1)}`} />}
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
             <table className="heat-table">
               <thead>
                 <tr><th />{FREQ.map((f) => <th key={f.key}>{f.label}</th>)}</tr>
@@ -192,6 +212,7 @@ function Board({ market }: { market: Market }) {
                 ))}
               </tbody>
             </table>
+            )}
             {stocks.length > PAGE && (
               <div className="row between" style={{ marginTop: 12 }}>
                 <span className="tiny faint">{page * PAGE + 1}–{Math.min(stocks.length, (page + 1) * PAGE)} de {stocks.length}</span>

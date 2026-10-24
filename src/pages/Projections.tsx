@@ -1,4 +1,4 @@
-import AssetProjections from '../components/AssetProjections'
+import AssetProjections, { ViewSwitch, useProjView } from '../components/AssetProjections'
 import { CLASSES, CLASS_LIST, type ClassKey } from '../lib/classes'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
@@ -35,6 +35,7 @@ export default function Projections() {
 }
 
 function FxProjections({ tabs }: { tabs: React.ReactNode }) {
+  const [view, setView] = useProjView()
   const [params, setParams] = useSearchParams()
   const ccy = params.get('ccy') && (CURRENCIES as readonly string[]).includes(params.get('ccy')!) ? params.get('ccy')! : 'USD'
   const freq = params.get('f') || 'daily'
@@ -67,9 +68,10 @@ function FxProjections({ tabs }: { tabs: React.ReactNode }) {
         actions={<Link to="/radar" className="btn"><Bell /> Criar alerta</Link>}
       />
 
+      {view === 'list' ? <Gate what="as projeções de preço"><AssetProjections cls="fx" onView={setView} /></Gate> : (<>
       <div className="row between wrap" style={{ marginBottom: 20, gap: 12 }}>
         <Seg value={ccy} onChange={(v) => set('ccy', v)} options={CURRENCIES.map((c) => ({ value: c, label: <>{quotes?.[c]?.flag} {c}</> }))} />
-        <Seg value={freq} onChange={(v) => set('f', v)} options={FREQUENCIES.map((f) => ({ value: f.key, label: f.label }))} />
+        <div className="row gap-8 wrap"><Seg value={freq} onChange={(v) => set('f', v)} options={FREQUENCIES.map((f) => ({ value: f.key, label: f.label }))} /><ViewSwitch value={view} onChange={setView} /></div>
       </div>
 
       <Gate what="as projeções de preço">
@@ -114,6 +116,7 @@ function FxProjections({ tabs }: { tabs: React.ReactNode }) {
           })}
         </div>
       </Gate>
+      </>)}
 
       <div className="row small faint" style={{ marginTop: 28, gap: 10, alignItems: 'flex-start', maxWidth: 760 }}>
         <Info size={15} style={{ flex: 'none', marginTop: 2 }} />

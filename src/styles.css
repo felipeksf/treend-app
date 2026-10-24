@@ -1320,3 +1320,4 @@ tr:hover .row-my,.row-my:has(.on){opacity:1}
 .conc-frame.on{border-color:var(--c);box-shadow:0 0 0 1px var(--c)}
 .conc-reasons{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;font-size:14.5px;line-height:1.6;color:var(--text-2)}
 @media (max-width:640px){.conc-frames{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.board-logos{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}.board-logos .my-logo-img{width:60px;height:60px}.board-logos .my-logo-t{font-size:15px}.board-logos .my-logo:hover .row-my{opacity:1}

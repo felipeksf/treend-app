@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { BellRing, ExternalLink, TrendingDown, TrendingUp } from 'lucide-react'
+import { BarChart3, BellRing, ExternalLink, List, TrendingDown, TrendingUp } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { SearchBox } from '../pages/Mercado'
 import { CLASSES, type ClassKey } from '../lib/classes'
@@ -30,7 +30,18 @@ async function load(symbol: string) {
   return { price: d[0], low: d[1], high: d[2], atr: Object.fromEntries(TF.map((t, i) => [t.key, d[3 + i]])) as Record<string, number | null> }
 }
 
-export default function AssetProjections({ cls }: { cls: ClassKey }) {
+export type ProjView = 'bars' | 'list'
+export function useProjView(): [ProjView, (v: ProjView) => void] {
+  const [v, setV] = useState<ProjView>(() => { try { return (localStorage.getItem('treend-v2-proj-view') as ProjView) || 'bars' } catch { return 'bars' } })
+  return [v, (n) => { setV(n); try { localStorage.setItem('treend-v2-proj-view', n) } catch { /* ignore */ } }]
+}
+export const ViewSwitch = ({ value, onChange }: { value: ProjView; onChange: (v: ProjView) => void }) => (
+  <Seg value={value} onChange={onChange} options={[{ value: 'bars', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><BarChart3 size={14} /> Barras</span> }, { value: 'list', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><List size={14} /> Lista</span> }]} />
+)
+
+export default function AssetProjections({ cls, onView }: { cls: ClassKey; onView?: (v: ProjView) => void }) {
+  const [view, setViewLocal] = useProjView()
+  const setView = (v: ProjView) => { setViewLocal(v); onView?.(v) }
   const nav = useNavigate()
   const [asset, setAsset] = useState<Asset | null>(null)
   const [tf, setTf] = useState('d1')
@@ -53,6 +64,7 @@ export default function AssetProjections({ cls }: { cls: ClassKey }) {
         <div className="row between wrap gap-12">
           <div style={{ flex: 1, minWidth: 260 }}><SearchBox key={cls} cls={cls} compact onPick={setAsset} /></div>
           {tfs.length > 0 && <Seg value={cur} onChange={setTf} options={tfs.map((t) => ({ value: t.key, label: t.label }))} />}
+          <ViewSwitch value={view} onChange={setView} />
         </div>
       </div>
 
@@ -75,6 +87,35 @@ export default function AssetProjections({ cls }: { cls: ClassKey }) {
             </div>
           )}
 
+          {view === 'bars' ? (
+            <div className="grid g-2">
+              {([[-1, 'Para quem compra', 'Quanto menor, melhor para comprar.', TrendingDown], [1, 'Para quem vende', 'Quanto maior, melhor para vender.', TrendingUp]] as const).map(([dir, t, d, I]) => {
+                const zs = zones(dir)
+                const maxDev = Math.max(0.0001, ...zs.map((z) => Math.abs(z.pct)))
+                return (
+                  <div key={t} className="card">
+                    <div className="card-h"><h3><I style={{ color: 'var(--up)' }} />{t}</h3><span className="pill tone" style={{ ['--c' as string]: 'var(--up)' }}><span className="d" />Cenário otimista</span></div>
+                    <div className="card-b">
+                      <div className="small faint" style={{ marginBottom: 14 }}>{d}</div>
+                      <div className="stack gap-8">
+                        {zs.map((z, i) => (
+                          <div key={z.z} className="row" style={{ gap: 14 }}>
+                            <span className="small muted" style={{ width: 52 }}>Zona {z.z}</span>
+                            <div style={{ flex: 1, height: 30, borderRadius: 8, background: 'var(--surface-2)', position: 'relative', overflow: 'hidden' }}>
+                              <div style={{ position: 'absolute', inset: 0, width: `${18 + (Math.abs(z.pct) / maxDev) * 82}%`, borderRadius: 8, background: `color-mix(in srgb, var(--up) ${12 + i * 9}%, transparent)`, borderRight: '2px solid var(--up)', transition: 'width .8s var(--ease)' }} />
+                              <span className="mono" style={{ position: 'absolute', left: 12, top: 6, fontWeight: 550 }}>{cc} {num(z.price, digits)}</span>
+                            </div>
+                            <span className="mono small up" style={{ width: 64, textAlign: 'right' }}>{z.pct >= 0 ? '+' : ''}{num(z.pct, 2)}%</span>
+                          </div>
+                        ))}
+                        {!zs.length && <div className="faint small">Sem projeções para esta combinação.</div>}
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
           <div className="grid g-2">
             {([[-1, 'Zonas de compra', 'abaixo do preço atual — para quem quer comprar', TrendingDown, 'var(--up)'], [1, 'Zonas de venda', 'acima do preço atual — para quem quer vender ou realizar', TrendingUp, 'var(--down)']] as const).map(([dir, t, d, I, c]) => (
               <div key={t} className="card">
@@ -95,6 +136,7 @@ export default function AssetProjections({ cls }: { cls: ClassKey }) {
               </div>
             ))}
           </div>
+          )}
           <p className="tiny faint">Projeções estatísticas e indicativas; não constituem recomendação de investimento.</p>
           {radar && <AssetAlertModal asset={{ symbol: a.symbol, ticker: a.ticker, name: a.name, logo: a.logo, cls: clsOf(a) }} frame={cur} onClose={() => setRadar(false)} />}
         </>
