@@ -1,138 +1,213 @@
-import { Hint } from '../components/ui'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ExternalLink, X } from 'lucide-react'
+import { ArrowUpRight, ExternalLink, Newspaper, Search, X } from 'lucide-react'
+import { supabase } from '../lib/supabase'
+import { Empty, Hint, PageHeader, Skel } from '../components/ui'
+import { timeAgo } from '../lib/format'
+import { LOCALE } from '../lib/i18n'
+import { useNewsFeed, type NewsItem } from './Dashboard'
 import { SearchBox } from './Mercado'
 import AssetNews from '../components/AssetNews'
+import { useAssetNewsStore } from '../lib/assetNews'
+import { CLASSES, type ClassKey } from '../lib/classes'
 import { clsOf, type Asset } from '../lib/market'
-import { useMemo, useState } from 'react'
-import { ArrowUpRight, Newspaper, Search, Sparkles } from 'lucide-react'
-import { supabase } from '../lib/supabase'
-import { Empty, Modal, PageHeader, Seg, Skel } from '../components/ui'
-import { timeAgo } from '../lib/format'
-import { useNewsFeed } from './Dashboard'
 
-const FILTERS = [
-  { value: 'all', label: 'Tudo' },
-  { value: 'USD', label: '🇺🇸 Dólar' },
-  { value: 'EUR', label: '🇪🇺 Euro' },
-  { value: 'GBP', label: '🇬🇧 Libra' },
-  { value: 'CNY', label: '🇨🇳 Yuan' },
-  { value: 'JPY', label: '🇯🇵 Iene' },
-  { value: 'CRYPTO', label: '₿ Cripto' },
+/* Notícias — editorial, newsletter-style edition of the headlines that move every market. */
+
+type Tab = 'all' | ClassKey
+type Story = NewsItem & { cls: ClassKey }
+
+const TABS: { key: Tab; label: string; emoji: string }[] = [
+  { key: 'all', label: 'Tudo', emoji: '☕' },
+  { key: 'fx', label: 'Câmbio', emoji: '💱' },
+  { key: 'b3', label: 'Ações B3', emoji: '🇧🇷' },
+  { key: 'us', label: 'Stocks', emoji: '🇺🇸' },
+  { key: 'crypto', label: 'Cripto', emoji: '₿' },
+  { key: 'commod', label: 'Commodities', emoji: '🛢️' },
+  { key: 'fii', label: 'FIIs', emoji: '🏢' },
 ]
-
-const initials = (s: string) => s.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase()
+const FX_SUB = [
+  { key: 'all', label: 'Todas' }, { key: 'USD', label: '🇺🇸 Dólar' }, { key: 'EUR', label: '🇪🇺 Euro' },
+  { key: 'GBP', label: '🇬🇧 Libra' }, { key: 'CNY', label: '🇨🇳 Yuan' }, { key: 'JPY', label: '🇯🇵 Iene' },
+]
+// general feed category → asset class
+const CAT: Record<string, ClassKey> = { USD: 'fx', EUR: 'fx', GBP: 'fx', CNY: 'fx', JPY: 'fx', B3: 'b3', US: 'us', CRYPTO: 'crypto', COMMOD: 'commod', FII: 'fii' }
+const EMOJI = Object.fromEntries(TABS.map((t) => [t.key, t.emoji])) as Record<Tab, string>
+const clean = (t: string) => t.replace(/ - [^-]+$/, '')
+const keyOf = (t: string) => t.toLowerCase().replace(/[^a-z0-9à-ú]+/g, ' ').trim().slice(0, 80)
+const iso = (d: string) => { const t = Date.parse(d); return Number.isNaN(t) ? '1970-01-01T00:00:00.000Z' : new Date(t).toISOString() }
+const readMin = (n: number) => Math.max(1, Math.round(n * 0.35))
 
 export default function News() {
-  const [picked, setPicked] = useState<Asset | null>(null)
   const nav = useNavigate()
-  const { data: feed, isLoading, dataUpdatedAt } = useNewsFeed()
-  const data = feed?.news
-  const [f, setF] = useState('all')
+  const { data: feed, isLoading } = useNewsFeed()
+  const { data: store } = useAssetNewsStore()
+  const [tab, setTab] = useState<Tab>('all')
+  const [fx, setFx] = useState('all')
   const [q, setQ] = useState('')
-  const [summary, setSummary] = useState<{ title: string; text?: string; link: string } | null>(null)
+  const [picked, setPicked] = useState<Asset | null>(null)
+  const [summary, setSummary] = useState<{ story: Story; text?: string } | null>(null)
 
-  const list = useMemo(
-    () =>
-      (data ?? []).filter((n) => {
-        if (f !== 'all') {
-          if (n.currency !== f) return false
-        }
-        return !q || n.title.toLowerCase().includes(q.toLowerCase())
-      }),
-    [data, f, q],
-  )
+  // general feed + per-asset headlines, classified by asset class and deduplicated
+  const stories = useMemo(() => {
+    const out: Story[] = []
+    for (const n of feed?.news ?? []) { const c = CAT[n.currency ?? '']; if (c) out.push({ ...n, cls: c, pubDate: iso(n.pubDate) }) }
+    for (const [sym, items] of Object.entries(store?.bySymbol ?? {})) {
+      const code = sym.split(':')[1] ?? ''
+      const c: ClassKey = sym.startsWith('BMFBOVESPA:') && code.endsWith('11') ? 'fii' : clsOf({ symbol: sym, sub: '' })
+      for (const n of items.slice(0, 3)) out.push({ ...n, pubDate: iso(n.pubDate), cls: c, currency: c === 'fx' ? code.slice(0, 3) : n.currency })
+    }
+    const seen = new Set<string>()
+    return out
+      .filter((n) => { const k = keyOf(clean(n.title)); if (seen.has(k)) return false; seen.add(k); return true })
+      .sort((a, b) => b.pubDate.localeCompare(a.pubDate))
+  }, [feed, store])
 
-  const summarize = async (n: { title: string; link: string }) => {
-    setSummary({ title: n.title, link: n.link })
+  const counts = useMemo(() => {
+    const m: Record<string, number> = { all: stories.length }
+    for (const s of stories) m[s.cls] = (m[s.cls] ?? 0) + 1
+    return m
+  }, [stories])
+
+  const list = useMemo(() => stories.filter((n) =>
+    (tab === 'all' || n.cls === tab) &&
+    (tab !== 'fx' || fx === 'all' || n.currency === fx) &&
+    (!q || n.title.toLowerCase().includes(q.toLowerCase())),
+  ).slice(0, 40), [stories, tab, fx, q])
+
+  const summarize = async (story: Story) => {
+    setSummary({ story })
     try {
-      const { data } = await supabase.functions.invoke('summarize-news', { body: { title: n.title, link: n.link, locale: 'pt' } })
-      setSummary({ title: n.title, link: n.link, text: data?.summary || 'Resumo indisponível no momento.' })
+      const { data } = await supabase.functions.invoke('summarize-news', { body: { title: story.title, link: story.link, locale: 'pt' } })
+      setSummary({ story, text: data?.summary || 'Resumo indisponível no momento.' })
     } catch {
-      setSummary({ title: n.title, link: n.link, text: 'Resumo indisponível no momento.' })
+      setSummary({ story, text: 'Resumo indisponível no momento.' })
     }
   }
 
   const [lead, ...rest] = list
+  const today = new Date().toLocaleDateString(LOCALE, { weekday: 'long', day: 'numeric', month: 'long' })
+  const label = (c: ClassKey) => CLASSES[c].label
 
   return (
-    <div className="page">
-      <PageHeader eyebrow={<><Newspaper size={13} /> Notícias</>} title="O que move o câmbio," accent="agora." sub={<>Manchetes de dólar, euro, libra, yuan, iene e cripto, atualizadas continuamente. {feed?.updatedAt && <span className="faint">Feed atualizado há {timeAgo(feed.updatedAt)} · verificado há {timeAgo(new Date(dataUpdatedAt).toISOString())}.</span>}</>} />
+    <div className="page tn">
+      <PageHeader eyebrow={<><Newspaper size={13} /> Notícias</>} title="O que move o mercado," accent="agora." sub="Câmbio, ações da B3 e dos EUA, cripto, commodities e FIIs: as manchetes que importam, atualizadas continuamente e organizadas por mercado." />
 
-      <div className="card pad news-asset-search" style={{ marginBottom: 16 }}>
-        <div className="row between wrap gap-8" style={{ marginBottom: 12 }}>
-          <b className="row gap-8"><Search size={16} style={{ color: 'var(--brand)' }} /> Notícias por ativo<Hint text="Digite o nome ou o código de qualquer ativo — ações da B3 e dos EUA, cripto, commodities, FIIs ou moedas — e veja as manchetes recentes sobre ele." /></b>
-          {picked && <button className="btn sm ghost" onClick={() => setPicked(null)}><X /> Limpar</button>}
+      <div className="tn-mast">
+        <div>
+          <div className="tn-kicker">☕ edição de hoje</div>
+          <div className="tn-date">{today}</div>
         </div>
-        <SearchBox onPick={setPicked} compact placeholder="Digite um ativo: PETR4, Solana, Apple, Dólar, Ouro, MXRF11…" />
-      </div>
-
-      {picked && (
-        <div className="stack gap-12" style={{ marginBottom: 24 }}>
-          <div className="card pad row wrap gap-12">
-            <span className="asset-logo" style={{ width: 44, height: 44 }}>{picked.logo ? <img src={picked.logo} alt="" /> : <b>{picked.ticker.slice(0, 2)}</b>}</span>
-            <div style={{ flex: 1, minWidth: 160 }}><b style={{ fontSize: 18 }}>{picked.ticker}</b><div className="small muted">{picked.name} · {picked.sub}</div></div>
-            <button className="btn primary sm" onClick={() => { try { sessionStorage.setItem('treend-v2-asset', JSON.stringify(picked)) } catch { /* ignore */ } nav(`/mercado?c=${clsOf(picked)}&s=${encodeURIComponent(picked.symbol)}`) }}><ExternalLink /> Abrir análise completa</button>
-          </div>
-          <AssetNews asset={picked} />
-        </div>
-      )}
-
-      <div className="row between wrap" style={{ marginBottom: 20, gap: 12 }}>
-        <Seg value={f} onChange={setF} options={FILTERS} />
-        <div className="input-affix" style={{ width: 300, maxWidth: '100%' }}>
-          <span><Search size={15} /></span>
-          <input className="input" style={{ height: 36, fontFamily: 'var(--font)' }} placeholder="Filtrar manchetes" value={q} onChange={(e) => setQ(e.target.value)} />
+        <div className="tn-mast-stats">
+          <span><b className="mono">{list.length}</b> manchetes</span>
+          <span><b className="mono">{readMin(list.length)} min</b> de leitura</span>
         </div>
       </div>
 
-      {isLoading && <div className="card"><div className="card-b stack gap-16">{[0, 1, 2, 3, 4].map((i) => <Skel key={i} h={48} />)}</div></div>}
-
-      {!isLoading && list.length === 0 && <div className="card"><Empty icon={<Newspaper size={20} />} title="Nenhuma notícia encontrada">Tente outro filtro.</Empty></div>}
-
-      {lead && (
-        <a href={lead.link} target="_blank" rel="noreferrer" className="card feature interactive" style={{ display: 'block', padding: 28, marginBottom: 16 }}>
-          <div className="row gap-8 small" style={{ marginBottom: 14 }}>
-            <span className="pill tone" style={{ ['--c' as string]: 'var(--brand)' }}><span className="d" />Destaque</span>
-            <span className="faint">{lead.source} · {timeAgo(new Date(lead.pubDate).toISOString())}</span>
-          </div>
-          <h2 data-no-tr style={{ margin: 0, fontSize: 26, letterSpacing: '-0.03em', lineHeight: 1.2, fontWeight: 600, maxWidth: 900 }}>{lead.title.replace(/ - [^-]+$/, '')}</h2>
-          <div className="row gap-8" style={{ marginTop: 18 }}>
-            <button className="btn sm" onClick={(e) => { e.preventDefault(); summarize(lead) }}><Sparkles /> Resumir com IA</button>
-            <span className="btn ghost sm">Ler matéria <ArrowUpRight /></span>
-          </div>
-        </a>
+      <div className="tn-tabs" role="tablist">
+        {TABS.map((t) => (
+          <button key={t.key} role="tab" aria-selected={tab === t.key} className={tab === t.key ? 'on' : ''} onClick={() => setTab(t.key)}>
+            <span>{t.emoji}</span>{t.label}<b className="mono">{counts[t.key] ?? 0}</b>
+          </button>
+        ))}
+      </div>
+      {tab === 'fx' && (
+        <div className="tn-sub">{FX_SUB.map((s) => <button key={s.key} className={fx === s.key ? 'on' : ''} onClick={() => setFx(s.key)}>{s.label}</button>)}</div>
       )}
 
-      {rest.length > 0 && (
-        <div className="card" style={{ overflow: 'hidden' }}>
-          <div className="card-h" style={{ paddingBottom: 12 }}><h3>{list.length} manchetes</h3></div>
-          {rest.map((n) => (
-            <div key={n.link} className="news-item">
-              <div className="source-badge">{initials(n.source)}</div>
-              <a href={n.link} target="_blank" rel="noreferrer">
-                <h4 data-no-tr>{n.title.replace(/ - [^-]+$/, '')}</h4>
-                <div className="small faint">{n.source} · {timeAgo(new Date(n.pubDate).toISOString())}</div>
-              </a>
-              <button className="btn ghost sm" onClick={() => summarize(n)}><Sparkles /> Resumo</button>
+      <div className="tn-grid">
+        <div className="tn-feed">
+          {isLoading && <div className="stack gap-16">{[0, 1, 2, 3].map((i) => <Skel key={i} h={70} />)}</div>}
+          {!isLoading && !list.length && <div className="card"><Empty icon={<Newspaper size={20} />} title="Nenhuma notícia encontrada">Tente outro filtro.</Empty></div>}
+
+          {lead && (
+            <article className="tn-lead">
+              <div className="tn-tag">{EMOJI[lead.cls]} {label(lead.cls)} · <span data-no-tr>{lead.source}</span> · {timeAgo(lead.pubDate)}</div>
+              <a href={lead.link} target="_blank" rel="noreferrer"><h2 data-no-tr>{clean(lead.title)}</h2></a>
+              <div className="tn-actions">
+                <button className="tn-btn primary" onClick={() => summarize(lead)}>☕ Resumo Treend</button>
+                <a className="tn-btn" href={lead.link} target="_blank" rel="noreferrer">Ler matéria <ArrowUpRight size={14} /></a>
+              </div>
+            </article>
+          )}
+
+          <ol className="tn-list">
+            {rest.map((n, i) => (
+              <li key={n.link + n.title}>
+                <span className="tn-num">{i + 2}.</span>
+                <div className="tn-item">
+                  <div className="tn-tag">{EMOJI[n.cls]} {label(n.cls)} · <span data-no-tr>{n.source}</span> · {timeAgo(n.pubDate)}</div>
+                  <a href={n.link} target="_blank" rel="noreferrer"><h3 data-no-tr>{clean(n.title)}</h3></a>
+                  <div className="tn-actions">
+                    <button className="tn-link" onClick={() => summarize(n)}>☕ resumo</button>
+                    <a className="tn-link" href={n.link} target="_blank" rel="noreferrer">ler matéria ↗</a>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        <aside className="tn-side">
+          <div className="card pad">
+            <div className="tn-side-h"><Search size={15} /> Notícias por ativo<Hint text="Digite o nome ou o código de qualquer ativo — ações da B3 e dos EUA, cripto, commodities, FIIs ou moedas — e veja as manchetes recentes sobre ele." /></div>
+            <SearchBox onPick={setPicked} compact placeholder="PETR4, Solana, Apple, Ouro…" />
+            {picked && (
+              <div className="row between gap-8" style={{ marginTop: 12 }}>
+                <span className="row gap-8" style={{ minWidth: 0 }}><span className="asset-logo" style={{ width: 30, height: 30 }}>{picked.logo ? <img src={picked.logo} alt="" /> : <b style={{ fontSize: 11 }}>{picked.ticker.slice(0, 2)}</b>}</span><b>{picked.ticker}</b></span>
+                <span className="row gap-4">
+                  <button className="icon-btn" title="Abrir análise completa" onClick={() => { try { sessionStorage.setItem('treend-v2-asset', JSON.stringify(picked)) } catch { /* ignore */ } nav(`/mercado?c=${clsOf(picked)}&s=${encodeURIComponent(picked.symbol)}`) }}><ExternalLink size={15} /></button>
+                  <button className="icon-btn" title="Limpar" onClick={() => setPicked(null)}><X size={15} /></button>
+                </span>
+              </div>
+            )}
+          </div>
+          {picked && <AssetNews asset={picked} />}
+          <div className="card pad">
+            <div className="tn-side-h"><Search size={15} /> Filtrar esta edição</div>
+            <input className="input" style={{ height: 38 }} placeholder="Palavra-chave" value={q} onChange={(e) => setQ(e.target.value)} />
+          </div>
+        </aside>
+      </div>
+
+      {summary && (
+        <div className="overlay tn-overlay" onMouseDown={() => setSummary(null)}>
+          <article className="tn-sheet" onMouseDown={(e) => e.stopPropagation()}>
+            <button className="icon-btn tn-x" onClick={() => setSummary(null)} aria-label="Fechar"><X /></button>
+            <div className="tn-kicker">☕ resumo treend · {EMOJI[summary.story.cls]} {label(summary.story.cls)}</div>
+            <h2 data-no-tr>{clean(summary.story.title)}</h2>
+            <div className="tn-meta"><span data-no-tr>{summary.story.source}</span> · {timeAgo(summary.story.pubDate)} · leitura de 1 min</div>
+            <div className="tn-body">
+              {summary.text ? <SummaryBody text={summary.text} /> : (
+                <div className="stack gap-8"><Skel h={18} /><Skel h={18} /><Skel h={18} w="80%" /><Skel h={18} w="60%" /></div>
+              )}
             </div>
-          ))}
+            <div className="tn-sheet-foot">
+              <span className="tiny faint">Resumo gerado por IA a partir da matéria original. Conteúdo informativo, não constitui recomendação de investimento.</span>
+              <a className="tn-btn primary" href={summary.story.link} target="_blank" rel="noreferrer">Ler matéria completa <ArrowUpRight size={14} /></a>
+            </div>
+          </article>
         </div>
       )}
-
-      <Modal open={!!summary} onClose={() => setSummary(null)}>
-        {summary && (
-          <div className="stack gap-12">
-            <div className="eyebrow"><Sparkles size={13} /> Resumo Treend</div>
-            <h3>{summary.title.replace(/ - [^-]+$/, '')}</h3>
-            {summary.text ? <p className="muted" style={{ margin: 0, lineHeight: 1.65, whiteSpace: 'pre-wrap' }}>{summary.text}</p> : <div className="stack gap-8"><Skel h={14} /><Skel h={14} /><Skel h={14} w="70%" /></div>}
-            <div className="row gap-8" style={{ justifyContent: 'flex-end', marginTop: 6 }}>
-              <button className="btn ghost" onClick={() => setSummary(null)}>Fechar</button>
-              <a className="btn primary" href={summary.link} target="_blank" rel="noreferrer">Ler completa <ArrowUpRight /></a>
-            </div>
-          </div>
-        )}
-      </Modal>
     </div>
+  )
+}
+
+/** Renders the AI summary like a newsletter story: intro paragraph, then labelled blocks ("o que aconteceu", impacts…). */
+function SummaryBody({ text }: { text: string }) {
+  const lines = text.split(/\n+/).map((l) => l.trim()).filter(Boolean).filter((l) => !/^aqui est[aá]/i.test(l))
+  const inline = (t: string) => t.split(/(\*\*[^*]+\*\*)/g).map((x, i) => (x.startsWith('**') ? <b key={i}>{x.slice(2, -2)}</b> : x))
+  let first = true
+  return (
+    <>
+      {lines.map((raw, i) => {
+        const l = raw.replace(/^([*•-]|\d+\.)\s+/, '')
+        const m = l.match(/^\*\*([^*]+?):?\*\*:?\s*(.*)$/)
+        if (m) return <div key={i} className="tn-block"><div className="tn-block-h">{m[1].replace(/:$/, '').toLowerCase()}</div><p>{inline(m[2])}</p></div>
+        const cls = first ? 'lead' : ''
+        first = false
+        return <p key={i} className={cls}>{inline(l)}</p>
+      })}
+    </>
   )
 }

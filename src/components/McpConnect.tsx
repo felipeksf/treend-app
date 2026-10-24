@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Check, Copy, ExternalLink, Link2 } from 'lucide-react'
+import { Bot, Check, Copy, ExternalLink, Link2 } from 'lucide-react'
 import { Hint, Seg, toast } from './ui'
 
 /* Step-by-step connection of the Treend MCP server to ChatGPT, Claude, Gemini and custom agents. */
@@ -18,6 +18,13 @@ function Code({ children }: { children: string }) {
     </div>
   )
 }
+
+/** Brand logo of each AI assistant (agents use a generic bot icon). */
+export function AiLogo({ id, size = 18 }: { id: string; size?: number }) {
+  if (id === 'agents') return <Bot size={size} style={{ color: 'var(--brand)' }} />
+  return <img className="ai-logo" src={`/ai/${id}.png`} alt="" width={size} height={size} />
+}
+export const AiLabel = ({ id, name }: { id: string; name: string }) => <span className="row gap-6" style={{ display: 'inline-flex', alignItems: 'center', gap: 7 }}><AiLogo id={id} size={16} />{name}</span>
 
 const Steps = ({ items }: { items: React.ReactNode[] }) => (
   <ol className="mcp-steps">{items.map((s, i) => <li key={i}><span>{i + 1}</span><div>{s}</div></li>)}</ol>
@@ -45,7 +52,7 @@ export default function McpConnect() {
           </span>
         </div>
 
-        <Seg value={tab} onChange={setTab} options={[{ value: 'gpt', label: 'ChatGPT' }, { value: 'claude', label: 'Claude' }, { value: 'gemini', label: 'Gemini' }, { value: 'agents', label: 'Agentes' }]} />
+        <Seg value={tab} onChange={setTab} options={[{ value: 'gpt', label: <AiLabel id="chatgpt" name="ChatGPT" /> }, { value: 'claude', label: <AiLabel id="claude" name="Claude" /> }, { value: 'gemini', label: <AiLabel id="gemini" name="Gemini" /> }, { value: 'agents', label: <AiLabel id="agents" name="Agentes" /> }]} />
 
         {tab === 'gpt' && (
           <Steps items={[

@@ -1,3 +1,7 @@
+import { CLASS_LIST, type ClassKey } from '../lib/classes'
+import type { Asset } from '../lib/market'
+import { SearchBox } from './Mercado'
+import { addAlert } from '../lib/assetAlerts'
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { BellRing, Plus, Radar as RadarIcon, Trash2, Zap, Mail, Crosshair } from 'lucide-react'
@@ -15,6 +19,10 @@ import { HELP } from '../lib/help'
 type Alert = { id: string; profile_type: string; currency: string; frequency: string; target_zone: string; enabled: boolean; max_alerts_per_day: number; created_at: string }
 
 export default function Radar() {
+  const [acls, setAcls] = useState<ClassKey>('fx')
+  const [picked, setPicked] = useState<Asset | null>(null)
+  const [aframe, setAframe] = useState('d1')
+  const [atarget, setAtarget] = useState(80)
   const { session } = useAuth()
   const qc = useQueryClient()
   const { data: heat } = useHeatmap()
@@ -103,6 +111,8 @@ export default function Radar() {
         <h3>Novo alerta</h3>
         <p className="small muted" style={{ marginTop: 0 }}>Você será notificado quando a cotação atingir a zona escolhida.</p>
         <div className="stack gap-16" style={{ marginTop: 18 }}>
+          <div className="field"><label>Classe de ativo<Hint text="Escolha o mercado do alerta. Câmbio usa as zonas de preço por perfil; as demais classes acompanham o índice Treend do ativo no tempo gráfico escolhido." /></label><Select value={acls} onChange={(v) => { setAcls(v as ClassKey); setPicked(null) }} options={CLASS_LIST.map((c) => ({ value: c.key, label: `${c.emoji} ${c.label}` }))} /></div>
+          {acls === 'fx' ? (<>
           <div className="field"><label>Perfil<Hint text={HELP.profile} /></label><Select value={form.profile_type} onChange={(v) => setForm({ ...form, profile_type: v })} options={PROFILES.map((p) => ({ value: p.key, label: p.label }))} /></div>
           <div className="field"><label>Moeda</label><Seg value={form.currency} onChange={(v) => setForm({ ...form, currency: v })} options={CURRENCIES.map((c) => ({ value: c, label: c }))} /></div>
           <div className="field"><label>Janela<Hint text={HELP.frequency} /></label><Select value={form.frequency} onChange={(v) => setForm({ ...form, frequency: v })} options={FREQUENCIES.map((f) => ({ value: f.key, label: f.label }))} /></div>
@@ -112,6 +122,31 @@ export default function Radar() {
             <button className="btn ghost" onClick={() => setOpen(false)}>Cancelar</button>
             <button className="btn primary" disabled={create.isPending} onClick={() => create.mutate()}>Criar alerta</button>
           </div>
+          </>) : (<>
+            <div className="field"><label>Ativo</label>
+              {picked ? (
+                <div className="row gap-8 between" style={{ padding: '10px 12px', border: '1px solid var(--line)', borderRadius: 12 }}>
+                  <span className="row gap-8"><span className="asset-logo" style={{ width: 30, height: 30 }}>{picked.logo ? <img src={picked.logo} alt="" /> : <b style={{ fontSize: 11 }}>{picked.ticker.slice(0, 2)}</b>}</span><span><b>{picked.ticker}</b><div className="tiny faint">{picked.name}</div></span></span>
+                  <button className="btn sm ghost" onClick={() => setPicked(null)}>Trocar</button>
+                </div>
+              ) : <SearchBox key={acls} cls={acls} compact onPick={setPicked} />}
+            </div>
+            <div className="field"><label>Tempo gráfico<Hint text="O radar acompanha o índice Treend no tempo gráfico escolhido." /></label><Seg value={aframe} onChange={setAframe} options={ALERT_FRAMES.map((x) => ({ value: x.key, label: x.label }))} /></div>
+            <div className="field">
+              <div className="row between"><label>Avise quando o índice chegar a</label><b className="mono" style={{ fontSize: 18 }}>{atarget}</b></div>
+              <input type="range" min={50} max={100} step={5} value={atarget} onChange={(e) => setAtarget(+e.target.value)} />
+              <div className="row between tiny faint"><span>50 · interessante</span><span>100 · máxima</span></div>
+            </div>
+            <div className="row gap-8" style={{ justifyContent: 'flex-end' }}>
+              <button className="btn ghost" onClick={() => setOpen(false)}>Cancelar</button>
+              <button className="btn primary" disabled={!picked} onClick={async () => {
+                if (!picked) return
+                if ('Notification' in window && Notification.permission === 'default') { try { await Notification.requestPermission() } catch { /* ignore */ } }
+                addAlert({ symbol: picked.symbol, ticker: picked.ticker, name: picked.name, logo: picked.logo, cls: acls, frame: aframe, target: atarget, notify: true })
+                toast('Radar criado — avisaremos quando a meta for atingida'); setOpen(false); setPicked(null)
+              }}>Criar alerta</button>
+            </div>
+          </>)}
         </div>
       </Modal>
     </div>

@@ -6,7 +6,8 @@ import { useAuth } from '../lib/auth'
 import { PageHeader, Seg, toast } from '../components/ui'
 import Gate from '../components/Gate'
 import Select from '../components/Select'
-import McpConnect from '../components/McpConnect'
+import McpConnect, { AiLabel } from '../components/McpConnect'
+const AI_ID: Record<string, string> = { ChatGPT: 'chatgpt', Claude: 'claude', Gemini: 'gemini', 'Agente próprio': 'agents' }
 import { dateBR } from '../lib/format'
 
 const ASSISTANTS = ['ChatGPT', 'Claude', 'Gemini', 'Agente próprio']
@@ -53,7 +54,7 @@ export default function Mcp() {
         <div className="card mcp-hero">
           <div className="card-b">
             <div className="row gap-8 wrap" style={{ marginBottom: 18 }}>
-              {ASSISTANTS.map((a) => <span key={a} className="pill">{a}</span>)}
+              {ASSISTANTS.map((a) => <span key={a} className="pill" style={{ padding: '6px 12px' }}><AiLabel id={AI_ID[a]} name={a} /></span>)}
               <ArrowRight size={16} className="faint" />
               <span className="pill tone" style={{ ['--c' as string]: 'var(--brand)' }}><Plug size={12} /> Treend MCP</span>
             </div>
@@ -76,7 +77,7 @@ export default function Mcp() {
               </div>
             ) : (
               <div className="card-b stack gap-16">
-                <div className="field"><label>Qual IA você usa?</label><Select value={form.assistant} onChange={(v) => setForm({ ...form, assistant: v })} options={ASSISTANTS.map((a) => ({ value: a, label: a }))} /></div>
+                <div className="field"><label>Qual IA você usa?</label><Select value={form.assistant} onChange={(v) => setForm({ ...form, assistant: v })} options={ASSISTANTS.map((a) => ({ value: a, label: <AiLabel id={AI_ID[a]} name={a} /> }))} /></div>
                 <div className="field"><label>Empresa</label><input className="input" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} placeholder="Nome da empresa" /></div>
                 <div className="field"><label>Tamanho do time</label><Seg value={form.size} onChange={(v) => setForm({ ...form, size: v })} options={['1-5', '6-20', '21-100', '100+'].map((x) => ({ value: x, label: x }))} /></div>
                 <div className="field"><label>Como pretende usar?</label><textarea className="textarea" style={{ minHeight: 90 }} value={form.use} onChange={(e) => setForm({ ...form, use: e.target.value })} placeholder="Ex.: tesouraria consultando o índice antes de fechar câmbio" /></div>
