@@ -2,7 +2,7 @@ import { addHistory } from '../lib/assetHistory'
 import LangPicker from './LangPicker'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { ArrowUpRight, Bell, CornerDownLeft, Menu, Moon, PanelLeft, Search, Sun, LogOut, Coins } from 'lucide-react'
+import { ArrowUpRight, Bell, CornerDownLeft, Menu, Moon, PanelLeft, Search, Sun, LogOut, Coins, ShieldAlert } from 'lucide-react'
 import { ALL, CLASSIC, NAV } from './nav'
 import { TreendLogo, Toaster, toast } from './ui'
 import { ALERT_FRAMES, checkAlerts } from '../lib/assetAlerts'
@@ -184,6 +184,7 @@ export default function Shell() {
         <Ticker />
         <main>
           <Outlet />
+          <footer className="disclaimer"><ShieldAlert size={14} /><span><b>Aviso:</b> a Treend não faz recomendação de investimento. As informações e índices exibidos são estatísticos e indicativos, com finalidade educacional e de apoio à decisão; não constituem oferta, solicitação ou recomendação de compra ou venda de qualquer ativo. Rentabilidade passada não garante resultados futuros. A decisão final é de total responsabilidade do usuário.</span></footer>
         </main>
       </div>
       {mobileOpen && <div className="overlay" style={{ zIndex: 19, paddingTop: 0 }} onClick={() => setMobileOpen(false)} />}

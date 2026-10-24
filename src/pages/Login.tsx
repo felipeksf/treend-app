@@ -127,6 +127,7 @@ export default function Login() {
               {busy ? 'Entrando…' : 'Entrar na plataforma'} <ArrowRight />
             </button>
           </form>
+          <p className="tiny faint" style={{ marginTop: 22, lineHeight: 1.5 }}>A Treend não faz recomendação de investimento. As informações exibidas são estatísticas e indicativas; a decisão final é de total responsabilidade do usuário.</p>
 
           <p className="tiny faint" style={{ marginTop: 32, textAlign: 'center' }}>
             Ainda não tem acesso? <a href="https://treend.com.br" style={{ color: 'var(--text)' }}>Fale com a Treend ↗</a>

@@ -1187,3 +1187,6 @@ h1, h2, h3, .big-px, .px, .score, .wordmark { letter-spacing: -0.03em; }
 }
 .pb-body h2 .serif{-webkit-text-fill-color:transparent !important;color:transparent !important;background:linear-gradient(90deg,#2453e0,#5a8cf5) !important;-webkit-background-clip:text !important;background-clip:text !important}
 @media (max-width:760px){.pb-overlay{padding:12px}.pb{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);width:100%}.pb-side{min-width:0}.pb-side nav{scrollbar-width:none}.pb-main{min-width:0}.pb-vs-col,.pb-card,.pb-list>div{min-width:0}}
+.disclaimer{display:flex;gap:10px;align-items:flex-start;margin:40px auto 8px;padding:14px 18px;max-width:1400px;border-top:1px solid var(--line);color:var(--text-3);font-size:11.5px;line-height:1.55}
+.disclaimer svg{flex:none;margin-top:2px}
+.disclaimer b{color:var(--text-2);font-weight:600}
