@@ -6,7 +6,8 @@ import { loadMap, resolveAll, saveMap } from './gnews.mjs'
 
 const OUT = process.argv[2] || 'news-assets.json'
 const SCAN = 'https://scanner.tradingview.com'
-const HEAD = 'https://news-headlines.tradingview.com/v2/headlines?client=web&lang=pt&symbol='
+const LANG = ['en', 'es'].includes(process.env.NEWS_LANG) ? process.env.NEWS_LANG : 'pt'
+const HEAD = `https://news-headlines.tradingview.com/v2/headlines?client=web&lang=${LANG}&symbol=`
 const scan = async (market, body) => {
   const r = await fetch(`${SCAN}/${market}/scan`, { method: 'POST', headers: { 'content-type': 'text/plain;charset=UTF-8' }, body: JSON.stringify(body) })
   if (!r.ok) throw new Error(`scan ${market} ${r.status}`)
@@ -46,32 +47,48 @@ async function worker() {
 await Promise.all(Array.from({ length: 8 }, worker))
 
 // Google News per asset for local markets (B3, FIIs, commodities, FX), merged with the headlines above.
-const decode = (s = '') => s.replace(/<!\[CDATA\[|\]\]>/g, '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim()
+const decode = (s = '') => s.replace(/<!\[CDATA\[|\]\]>/g, '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#(\d+);/g, (_, n) => String.fromCharCode(+n)).trim()
 const tag = (xml, t) => decode(xml.match(new RegExp(`<${t}[^>]*>([\\s\\S]*?)</${t}>`, 'i'))?.[1])
-const FXQ = { USD: 'dólar', EUR: 'euro', GBP: 'libra esterlina', CNY: 'yuan', JPY: 'iene', CAD: 'dólar canadense', AUD: 'dólar australiano', CHF: 'franco suíço', ARS: 'peso argentino', MXN: 'peso mexicano', CLP: 'peso chileno' }
+const FXQ = {
+  pt: { USD: 'dólar', EUR: 'euro', GBP: 'libra esterlina', CNY: 'yuan', JPY: 'iene', CAD: 'dólar canadense', AUD: 'dólar australiano', CHF: 'franco suíço', ARS: 'peso argentino', MXN: 'peso mexicano', CLP: 'peso chileno' },
+  en: { USD: 'US dollar', EUR: 'euro', GBP: 'British pound', CNY: 'Chinese yuan', JPY: 'Japanese yen', CAD: 'Canadian dollar', AUD: 'Australian dollar', CHF: 'Swiss franc', ARS: 'Argentine peso', MXN: 'Mexican peso', CLP: 'Chilean peso' },
+  es: { USD: 'dólar', EUR: 'euro', GBP: 'libra esterlina', CNY: 'yuan', JPY: 'yen', CAD: 'dólar canadiense', AUD: 'dólar australiano', CHF: 'franco suizo', ARS: 'peso argentino', MXN: 'peso mexicano', CLP: 'peso chileno' },
+}[LANG]
+const W = { pt: { fx: 'câmbio real', stock: 'ações', crypto: 'cripto', price: 'preço' }, en: { fx: 'exchange rate', stock: 'stock', crypto: 'crypto', price: 'price' }, es: { fx: 'tipo de cambio', stock: 'acciones', crypto: 'cripto', price: 'precio' } }[LANG]
 const names = Object.fromEntries([...b3, ...co, ...us, ...cr].map((x) => [x.s, String(x.d[1] ?? '')]))
-const local = [...b3.map((x) => x.s).filter((x) => !x.endsWith('F')), ...fiis, ...FX, ...co.map((x) => x.s), ...us.map((x) => x.s), ...cr.map((x) => x.s)]
+const local = [...b3.map((x) => x.s).filter((x) => !x.endsWith('F')), ...(LANG === 'pt' ? fiis : []), ...FX, ...co.map((x) => x.s), ...us.map((x) => x.s), ...cr.map((x) => x.s)]
 const query = (s) => {
   const code = s.split(':')[1]
-  if (s.startsWith('FX_IDC:')) return `"${FXQ[code.slice(0, 3)]}" câmbio real`
-  if (s.startsWith('BMFBOVESPA:')) return `"${code}"`
-  if (s.startsWith('NASDAQ:') || s.startsWith('NYSE:')) return `"${(names[s] || code).replace(/,? (Inc|Corp|Corporation|Ltd|Plc|Co|Company|Holdings?)\.?\b.*$/i, '')}" ações`
-  if (s.startsWith('BINANCE:')) return `"${names[s] || code.replace(/USDT$/, '')}" cripto`
-  return `"${names[s]?.replace(/ Futures?$/i, '') || code}" preço`
+  if (s.startsWith('FX_IDC:')) return `"${FXQ[code.slice(0, 3)]}" ${W.fx}`
+  if (s.startsWith('BMFBOVESPA:')) return LANG === 'pt' ? `"${code}"` : `"${(names[s] || code).replace(/ (SA|S\.A\.|Pfd|ON|PN|Units?)\b.*$/i, '')}" ${W.stock}`
+  if (s.startsWith('NASDAQ:') || s.startsWith('NYSE:')) return `"${(names[s] || code).replace(/,? (Inc|Corp|Corporation|Ltd|Plc|Co|Company|Holdings?)\.?\b.*$/i, '')}" ${W.stock}`
+  if (s.startsWith('BINANCE:')) return `"${names[s] || code.replace(/USDT$/, '')}" ${W.crypto}`
+  return `"${names[s]?.replace(/ Futures?$/i, '') || code}" ${W.price}`
 }
+// quote/profile pages ("Petroleo Brasileiro SA Petrobras (PETR4)") are not news
+const isQuotePage = (t) => t.length < 70 && /\([A-Za-z0-9.]{2,10}\)\s*$/.test(t) && !/[,:;!?]/.test(t)
 let j = 0
 async function gworker() {
   while (j < local.length) {
     const s = local[j++]
     try {
-      const r = await fetch(`https://news.google.com/rss/search?q=${encodeURIComponent(query(s) + ' when:30d')}&hl=pt-BR&gl=BR&ceid=BR:pt-419`, { headers: { 'user-agent': 'Mozilla/5.0 (treend-news-bot)' } })
+      // PT: Google News (links resolved below). EN/ES: Bing News, which already gives the publisher URL.
+      const url = LANG === 'pt'
+        ? `https://news.google.com/rss/search?q=${encodeURIComponent(query(s) + ' when:30d')}&hl=pt-BR&gl=BR&ceid=BR:pt-419`
+        : `https://www.bing.com/news/search?q=${encodeURIComponent(query(s))}&format=rss&mkt=${LANG === 'en' ? 'en-US' : 'es-MX'}`
+      const r = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36' } })
       if (!r.ok) continue
       const xml = await r.text()
       const got = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].slice(0, 8).map(([, it]) => {
+        if (LANG !== 'pt') {
+          let link = tag(it, 'link'); try { link = new URL(link).searchParams.get('url') || link } catch { /* ignore */ }
+          const d = Date.parse(tag(it, 'pubDate'))
+          return { title: tag(it, 'title'), link, source: tag(it, 'News:Source') || '', pubDate: Number.isNaN(d) ? '' : new Date(d).toISOString() }
+        }
         const source = tag(it, 'source')
         const title = tag(it, 'title').replace(new RegExp(` - ${source.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`), '')
         return { title, link: tag(it, 'link'), source, pubDate: new Date(tag(it, 'pubDate')).toISOString() }
-      }).filter((n) => n.title && n.link && !Number.isNaN(Date.parse(n.pubDate)))
+      }).filter((n) => n.title && n.link && !Number.isNaN(Date.parse(n.pubDate)) && !isQuotePage(n.title) && (LANG === 'pt' || !n.link.includes('google.com/')))
       const all = [...(bySymbol[s] ?? []), ...got]
       const seen = new Set()
       const merged = all.filter((n) => { const k = n.title.toLowerCase().replace(/[^a-z0-9à-ú]+/g, ' ').slice(0, 70); if (seen.has(k)) return false; seen.add(k); return true })
@@ -91,7 +108,7 @@ const isSearch = (n) => n.link.startsWith('https://www.google.com/search')
 for (const k of Object.keys(bySymbol)) {
   let l = bySymbol[k].filter((n) => n.link && !n.link.startsWith('https://news.google.com/'))
   // only headlines that open the exact article on the publisher's site
-  l = l.filter((n) => !isSearch(n))
+  l = l.filter((n) => !isSearch(n) && !isQuotePage(n.title) && !/^https?:\/\/(www\.|news\.)?google\./.test(n.link))
   if (l.length) bySymbol[k] = l; else delete bySymbol[k]
 }
 mkdirSync(dirname(OUT), { recursive: true })

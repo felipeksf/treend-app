@@ -31,6 +31,9 @@ export function useLang() {
 }
 
 const lang = getLang()
+/** Suffix of the news files for the current language ('' = Portuguese). */
+export const NEWS_SUFFIX = lang === 'pt' ? '' : `-${lang}`
+export const LANG = lang
 export const LOCALE = lang === 'en' ? 'en-US' : lang === 'es' ? 'es-ES' : 'pt-BR'
 // fragments (≥ 4 chars, with letters) for partial replacement, longest first
 const FRAGS = Object.keys(D).filter((k) => k.length >= 4 && /\S\s+\S/.test(k) && /[a-zà-ú]/i.test(k)).sort((a, b) => b.length - a.length)

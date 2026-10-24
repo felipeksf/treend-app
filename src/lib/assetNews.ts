@@ -1,3 +1,4 @@
+import { NEWS_SUFFIX } from './i18n'
 import { useQuery } from '@tanstack/react-query'
 import type { Asset } from './market'
 import { useNewsFeed, type NewsItem } from '../pages/Dashboard'
@@ -11,12 +12,12 @@ type Store = { updatedAt: string | null; bySymbol: Record<string, NewsItem[]> }
 
 export const useAssetNewsStore = () =>
   useQuery({
-    queryKey: ['asset-news-store'],
+    queryKey: ['asset-news-store', NEWS_SUFFIX],
     staleTime: 5 * 60_000,
     refetchInterval: 10 * 60_000,
     queryFn: async (): Promise<Store> => {
       try {
-        const r = await fetch(`/news-assets.json?t=${Math.floor(Date.now() / 600_000)}`)
+        const r = await fetch(`/news-assets${NEWS_SUFFIX}.json?t=${Math.floor(Date.now() / 600_000)}`)
         if (r.ok) return await r.json()
       } catch { /* ignore */ }
       return { updatedAt: null, bySymbol: {} }

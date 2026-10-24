@@ -1,3 +1,4 @@
+import { LANG } from '../lib/i18n'
 import { useEffect, useState } from 'react'
 import { ArrowUpRight, X } from 'lucide-react'
 import { supabase } from '../lib/supabase'
@@ -13,7 +14,7 @@ export default function SummarySheet({ story, kicker, onClose }: { story: Story;
   useEffect(() => {
     let alive = true
     setText(null)
-    supabase.functions.invoke('summarize-news', { body: { title: story.title, link: story.link, locale: 'pt' } })
+    supabase.functions.invoke('summarize-news', { body: { title: story.title, link: story.link, locale: LANG } })
       .then(({ data }) => alive && setText(data?.summary || 'Resumo indisponível no momento.'))
       .catch(() => alive && setText('Resumo indisponível no momento.'))
     return () => { alive = false }
@@ -26,7 +27,7 @@ export default function SummarySheet({ story, kicker, onClose }: { story: Story;
         <div className="tn-kicker">☕ resumo treend{kicker ? ` · ${kicker}` : ''}</div>
         <h2 data-no-tr>{clean(story.title)}</h2>
         <div className="tn-meta"><span data-no-tr>{story.source}</span> · {timeAgo(story.pubDate)} · leitura de 1 min</div>
-        <div className="tn-body">
+        <div className="tn-body" data-no-tr>
           {text ? <SummaryBody text={text} /> : <div className="stack gap-8"><Skel h={18} /><Skel h={18} /><Skel h={18} w="80%" /><Skel h={18} w="60%" /></div>}
         </div>
         <div className="tn-sheet-foot">
@@ -40,7 +41,7 @@ export default function SummarySheet({ story, kicker, onClose }: { story: Story;
 
 /** Renders the AI summary like a newsletter story: intro paragraph, then labelled blocks ("o que aconteceu", impacts…). */
 export function SummaryBody({ text }: { text: string }) {
-  const lines = text.split(/\n+/).map((l) => l.trim()).filter(Boolean).filter((l) => !/^aqui est[aá]/i.test(l))
+  const lines = text.split(/\n+/).map((l) => l.trim()).filter(Boolean).filter((l) => !/^(aqu[ií] (est[aá]|tienes|tiene)|here (is|are)|here's)\b/i.test(l))
   const inline = (t: string) => t.split(/(\*\*[^*]+\*\*)/g).map((x, i) => (x.startsWith('**') ? <b key={i}>{x.slice(2, -2)}</b> : x))
   let first = true
   return (

@@ -22,22 +22,26 @@ async function resolveOne(link) {
   if (!sg || !ts) return null
   const req = [[['Fbv4je', JSON.stringify(['garturlreq', [['X', 'X', ['X', 'X'], null, null, 1, 1, 'US:en', null, 1, null, null, null, null, null, 0, 1], 'X', 'X', 1, [1, 1, 1], 1, 1, null, 0, 0, null, 0], id, Number(ts), sg]), null, 'generic']]]
   const r = await fetch('https://news.google.com/_/DotsSplashUi/data/batchexecute', { method: 'POST', headers: { ...UA, 'content-type': 'application/x-www-form-urlencoded;charset=UTF-8' }, body: 'f.req=' + encodeURIComponent(JSON.stringify(req)) })
+  if (r.status === 429) throw new Error('rate')
   const t = await r.text()
   const m = t.match(/garturlres\\",\\"(https?:[^\\"]+)\\"/)
   return m ? m[1].replace(/\\\\u003d/g, '=').replace(/\\\\u0026/g, '&') : null
 }
 
 /** Resolves every Google News link in `items` in place; items that can't be resolved are dropped. */
-export async function resolveAll(items, map, concurrency = 6) {
+export async function resolveAll(items, map, concurrency = 3) {
   const todo = [...new Set(items.map((n) => n.link).filter((l) => isGoogle(l) && !(l in map)))]
   let i = 0
+  let limited = false
   const worker = async () => {
-    while (i < todo.length) {
+    while (i < todo.length && !limited) {
       const l = todo[i++]
-      try { map[l] = await resolveOne(l) } catch { map[l] = null }
+      try { map[l] = await resolveOne(l) } catch (e) { if (e.message === 'rate') limited = true; else map[l] = null }
+      await new Promise((r) => setTimeout(r, 150))
     }
   }
   await Promise.all(Array.from({ length: concurrency }, worker))
+  if (limited) console.log('gnews: limite do Google atingido; links restantes ficam para a próxima rodada')
   for (const n of items) if (isGoogle(n.link)) n.link = map[n.link] || null
   return items.filter((n) => n.link)
 }

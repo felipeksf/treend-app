@@ -25,3 +25,7 @@ dist-ssr
 public/news.json
 public/fii.json
 public/news-assets.json
+public/news-en.json
+public/news-es.json
+public/news-assets-en.json
+public/news-assets-es.json

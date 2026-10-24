@@ -1,3 +1,4 @@
+import { LANG, NEWS_SUFFIX } from '../lib/i18n'
 import { useOverviewSearch } from '../components/OverviewSearch'
 import { useGreeting } from '../lib/greet'
 import { LOCALE } from '../lib/i18n'
@@ -45,12 +46,12 @@ export type NewsItem = { title: string; link: string; pubDate: string; source: s
 /** Aggregated RSS feed (scripts/fetch-news.mjs, refreshed every ~10 min); falls back to the backend function. */
 export const useNewsFeed = () =>
   useQuery({
-    queryKey: ['news'],
+    queryKey: ['news', NEWS_SUFFIX],
     refetchInterval: 2 * 60_000,
     staleTime: 60_000,
     queryFn: async (): Promise<{ updatedAt: string | null; news: NewsItem[] }> => {
       try {
-        const r = await fetch(`/news.json?t=${Math.floor(Date.now() / 60_000)}`)
+        const r = await fetch(`/news${NEWS_SUFFIX}.json?t=${Math.floor(Date.now() / 60_000)}`)
         if (r.ok) {
           const j = await r.json()
           if (j.news?.length) return j
@@ -58,7 +59,7 @@ export const useNewsFeed = () =>
       } catch {
         /* fall through */
       }
-      const { data } = await supabase.functions.invoke('fetch-news', { body: { locale: 'pt' } })
+      const { data } = await supabase.functions.invoke('fetch-news', { body: { locale: LANG } })
       return { updatedAt: null, news: (data?.news ?? []) as NewsItem[] }
     },
   })
