@@ -17,7 +17,7 @@ type Plan = { key: string; priceId: string; name: string; price: string; period:
 /** Promotional plans for /oferta. Fill the price IDs after creating the prices in Stripe. */
 export const OFFER_PLANS: Plan[] = [
   { key: 'monthly', priceId: 'price_1UUBc4FCE1ecOeles1vaNBJ9', name: 'Mensal', price: 'R$ 19,90', period: 'mês', note: 'Cobrado mensalmente' },
-  { key: 'annual', priceId: (import.meta.env.VITE_OFFER_ANNUAL as string) || 'price_OFERTA_ANUAL', name: 'Anual', price: 'R$ 129', period: 'ano', note: 'Equivale a R$ 10,75/mês — 46% de economia', hl: true },
+  { key: 'annual', priceId: 'price_1UUBcvFCE1ecOeleFzAe6AjF', name: 'Anual', price: 'R$ 129', period: 'ano', note: 'Equivale a R$ 10,75/mês — 46% de economia', hl: true },
 ]
 
 // plans whose Stripe price isn't created yet stay hidden
