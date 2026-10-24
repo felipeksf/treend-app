@@ -1393,3 +1393,6 @@ tr:hover .row-my,.row-my:has(.on){opacity:1}
 .calc-rows>div span{color:var(--text-2)}
 .calc-rows>div.total{background:var(--brand-soft)}
 .calc-rows>div.total span{color:var(--text);font-weight:600}
+[data-theme="dark"] .conc-go{background:#05070c;color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.14)}
+[data-theme="dark"] .conc-go:hover:not(:disabled){background:#000}
+.conc-go .spin-dot{border-color:rgba(36,83,224,.25);border-top-color:#fff}

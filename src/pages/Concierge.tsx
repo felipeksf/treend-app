@@ -85,7 +85,7 @@ function FxConcierge({ tabs }: { tabs: React.ReactNode }) {
   return (
     <div className="page" style={{ maxWidth: 1080 }}>
       {tabs}
-      <PageHeader eyebrow={<><Sparkles size={13} /> Concierge</>} title="Descreva sua operação." accent="Nós lemos o mercado." sub="Cenário, plano de ação e estimativa de retorno — gerados a partir dos índices Treend em tempo real." />
+      <PageHeader eyebrow={<><Sparkles size={13} /> Concierge</>} title="Descreva sua operação." accent="Nós lemos o mercado." sub="Leitura estatística, simulação de parcelas e estimativas — geradas a partir dos índices Treend em tempo real." />
 
       <div className="card feature" style={{ marginBottom: 16 }}>
         <div className="card-b">
@@ -99,7 +99,7 @@ function FxConcierge({ tabs }: { tabs: React.ReactNode }) {
           />
           <div className="row between wrap" style={{ gap: 12, borderTop: '1px solid var(--line)', paddingTop: 14 }}>
             <span className="tiny faint row gap-8"><span className="kbd">⌘</span><span className="kbd"><CornerDownLeft size={10} /></span> para enviar · quanto mais contexto, melhor</span>
-            <button className="btn primary" onClick={ask} disabled={!text.trim() || thinking}><Sparkles /> {thinking ? 'Analisando…' : 'Gerar análise'}</button>
+            <button className="conc-go" onClick={ask} disabled={!text.trim() || thinking}><span>{thinking ? 'Lendo o mercado…' : 'Ler o mercado'}</span><i>{thinking ? <span className="spin-dot" /> : <ArrowRight size={16} />}</i></button>
           </div>
         </div>
       </div>
