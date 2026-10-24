@@ -52,18 +52,51 @@ export const ASSET_EXAMPLES: Record<Exclude<ClassKey, 'fx'>, string[]> = {
 type Intent = 'buy' | 'sell' | 'average' | 'hold' | 'info'
 type Parsed = { asset: Asset; cls: ClassKey; intent: Intent; amount: number | null; units: number | null; inCur: 'R$' | 'US$' | null; days: number; horizon: string; horizonGiven: boolean; since: string | null; entry: number | null; monthly: boolean }
 
-const STOP = new Set(['quero', 'tenho', 'comprar', 'compro', 'vender', 'vendo', 'aportar', 'aporto', 'investir', 'para', 'pensando', 'agora', 'próximos', 'proximos', 'meses', 'semanas', 'carteira', 'lucro', 'preço', 'preco', 'médio', 'medio', 'parte', 'realizar', 'realizo', 'mantenho', 'hora', 'fazer', 'saber', 'montar', 'posição', 'posicao', 'renda', 'mensal', 'desconto', 'espero', 'entrar', 'hoje', 'vale', 'momento', 'minha', 'empresa', 'compra', 'antecipo', 'antecipar', 'todo', 'safra', 'travo', 'aos', 'poucos', 'tudo', 'escalono', 'pena', 'mil', 'anos', 'dias', 'mês', 'mes', 'cripto', 'ações', 'acoes', 'fiis', 'logística', 'sou', 'produzo', 'exposição', 'exposicao', 'começo', 'comeco'])
-const ALIAS: Record<string, string> = { 'itaú': 'ITUB4', itau: 'ITUB4', bradesco: 'BBDC4', 'banco do brasil': 'BBAS3', ambev: 'ABEV3', magalu: 'MGLU3', 'café': 'Café', cafe: 'Café', ouro: 'Ouro', prata: 'Prata', soja: 'Soja', milho: 'Milho', 'petróleo': 'Petróleo', petroleo: 'Petróleo', diesel: 'Petróleo', boi: 'Boi gordo', eth: 'Ethereum', btc: 'Bitcoin' }
+// words that never name an asset (Portuguese question words, verbs, time words…)
+const STOP = new Set(['de', 'do', 'da', 'dos', 'das', 'em', 'no', 'na', 'um', 'uma', 'ta', 'tá', 'eh', 'e', 'o', 'a', 'os', 'as', 'me', 'se', 'com', 'por', 'pra', 'quero', 'tenho', 'comprar', 'compro', 'vender', 'vendo', 'aportar', 'aporto', 'investir', 'para', 'pensando', 'agora', 'próximos', 'proximos', 'meses', 'semanas', 'carteira', 'lucro', 'preço', 'preco', 'precos', 'preços', 'médio', 'medio', 'parte', 'realizar', 'realizo', 'mantenho', 'hora', 'fazer', 'saber', 'montar', 'posição', 'posicao', 'renda', 'mensal', 'desconto', 'espero', 'entrar', 'hoje', 'momento', 'minha', 'empresa', 'compra', 'antecipo', 'antecipar', 'todo', 'safra', 'travo', 'aos', 'poucos', 'tudo', 'escalono', 'pena', 'mil', 'anos', 'dias', 'mês', 'mes', 'cripto', 'ações', 'acoes', 'ação', 'acao', 'fiis', 'logística', 'sou', 'produzo', 'exposição', 'exposicao', 'começo', 'comeco', 'que', 'acha', 'achas', 'sobre', 'como', 'está', 'esta', 'esse', 'essa', 'isso', 'qual', 'quais', 'opinião', 'opiniao', 'analise', 'análise', 'analisa', 'pensa', 'vale', 'estou', 'comprado', 'comprada', 'posicionado', 'desde', 'cotação', 'cotacao', 'tendência', 'tendencia', 'momento', 'bom', 'boa', 'ruim', 'barato', 'caro', 'dele', 'dela', 'mais', 'menos', 'ainda', 'então', 'entao', 'pode', 'deve', 'devo', 'seria', 'sera', 'será'])
 
+// brand names that don't appear in the official asset names (lower case, accents optional)
+const ALIAS: Record<string, string> = {
+  'itaú': 'ITUB4', itau: 'ITUB4', 'itaú unibanco': 'ITUB4', itausa: 'ITSA4', 'itaúsa': 'ITSA4', bradesco: 'BBDC4', 'banco do brasil': 'BBAS3', bancodobrasil: 'BBAS3', 'do brasil': 'BBAS3', dobrasil: 'BBAS3', bb: 'BBAS3', santander: 'SANB11', btg: 'BPAC11', nubank: 'ROXO34', inter: 'INBR32',
+  petrobras: 'PETR4', petro: 'PETR4', vale: 'VALE3', ambev: 'ABEV3', magalu: 'MGLU3', 'magazine luiza': 'MGLU3', weg: 'WEGE3', embraer: 'EMBR3', localiza: 'RENT3', eletrobras: 'ELET3', sabesp: 'SBSP3', gerdau: 'GGBR4', suzano: 'SUZB3', jbs: 'JBSS3', renner: 'LREN3', 'casas bahia': 'BHIA3', azul: 'AZUL4', gol: 'GOLL4', natura: 'NTCO3', 'raia drogasil': 'RADL3', drogasil: 'RADL3', vivo: 'VIVT3', tim: 'TIMS3', cemig: 'CMIG4', copel: 'CPLE6', b3: 'B3SA3', klabin: 'KLBN11', cosan: 'CSAN3', rumo: 'RAIL3', prio: 'PRIO3', hapvida: 'HAPV3', assai: 'ASAI3', 'assaí': 'ASAI3', totvs: 'TOTS3', cyrela: 'CYRE3', mrv: 'MRVE3', usiminas: 'USIM5', csn: 'CSNA3', braskem: 'BRKM5', minerva: 'BEEF3', marfrig: 'MRFG3', brf: 'BRFS3',
+  google: 'GOOG', alphabet: 'GOOG', apple: 'AAPL', microsoft: 'MSFT', amazon: 'AMZN', nvidia: 'NVDA', tesla: 'TSLA', meta: 'META', facebook: 'META', netflix: 'NFLX', disney: 'DIS', 'coca cola': 'KO', 'coca-cola': 'KO', coca: 'KO', pepsi: 'PEP', mcdonalds: 'MCD', "mcdonald's": 'MCD', nike: 'NKE', boeing: 'BA', intel: 'INTC', amd: 'AMD', uber: 'UBER', airbnb: 'ABNB', paypal: 'PYPL', visa: 'V', mastercard: 'MA', berkshire: 'BRK.B', jpmorgan: 'JPM', walmart: 'WMT', oracle: 'ORCL', salesforce: 'CRM', spotify: 'SPOT', 'mercado livre': 'MELI', mercadolivre: 'MELI', shopify: 'SHOP', palantir: 'PLTR', broadcom: 'AVGO',
+  bitcoin: 'Bitcoin', btc: 'Bitcoin', ethereum: 'Ethereum', eth: 'Ethereum', solana: 'Solana', sol: 'Solana', ripple: 'XRP', xrp: 'XRP', dogecoin: 'Dogecoin', doge: 'Dogecoin', cardano: 'Cardano', bnb: 'BNB',
+  'café': 'Café', cafe: 'Café', ouro: 'Ouro', prata: 'Prata', soja: 'Soja', milho: 'Milho', 'petróleo': 'Petróleo', petroleo: 'Petróleo', diesel: 'Petróleo', boi: 'Boi gordo', 'boi gordo': 'Boi gordo', 'açúcar': 'Açúcar', acucar: 'Açúcar', cobre: 'Cobre', trigo: 'Trigo', algodão: 'Algodão', algodao: 'Algodão',
+  'dólar': 'Dólar', dolar: 'Dólar', euro: 'Euro', libra: 'Libra', yuan: 'Yuan', iene: 'Iene',
+}
+const deaccent = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+
+/** Finds the asset the user is talking about — case-insensitive, accent-insensitive, brand names and n-grams. */
 async function findAsset(text: string, cls: ClassKey): Promise<Asset | null> {
-  const t = text.toLowerCase()
-  for (const [k, v] of Object.entries(ALIAS)) if (new RegExp(`(^|[^a-zà-ú])${k}([^a-zà-ú]|$)`).test(t)) { const r = await searchAssets(v, undefined, cls); if (r[0]) return r[0] }
-  const tickers = text.match(/\b[A-Z]{3,5}\d{1,2}\b|\b[A-Z]{2,5}\b/g) ?? []
-  const words = text.match(/[A-Za-zÀ-ú][A-Za-zÀ-ú0-9.]{2,}/g)?.filter((w) => !STOP.has(w.toLowerCase())) ?? []
-  for (const c of [...tickers, ...words.filter((w) => /^[A-ZÀ-Ú]/.test(w)), ...words]) {
-    const r = await searchAssets(c, undefined, cls)
-    const n = c.toLowerCase()
-    const hit = r.find((a) => a.ticker.toLowerCase().split(/[ ·/]/)[0] === n || a.name.toLowerCase().startsWith(n)) ?? (c.length >= 4 ? r[0] : undefined)
+  const t = deaccent(text)
+  const compact = t.replace(/[^a-z0-9]/g, '')
+  const tryQuery = async (q: string) => {
+    const r = await searchAssets(q, undefined, cls)
+    const root = (a: Asset) => a.ticker.split(/[ ·/]/)[0].toUpperCase()
+    const nq = deaccent(q)
+    return r.find((a) => root(a) === q.toUpperCase())
+      ?? r.find((a) => deaccent(a.name).startsWith(nq) && !/MINI/i.test(a.ticker))
+      ?? r.find((a) => !/MINI/i.test(a.ticker) && (deaccent(a.name).includes(nq) || root(a).startsWith(q.toUpperCase())))
+      ?? null
+  }
+  // 1) explicit ticker in any case: vale3, PETR4, aapl
+  for (const m of t.match(/\b[a-z]{4}\d{1,2}\b/g) ?? []) { const r = await searchAssets(m.toUpperCase(), undefined, cls); const hit = r.find((a) => a.ticker.toLowerCase() === m); if (hit) return hit }
+  // 2) brand aliases (longest first), also written together ("dobrasil", "mercadolivre")
+  const aliases = Object.entries(ALIAS).sort((a, b) => b[0].length - a[0].length)
+  for (const [k, v] of aliases) {
+    const kk = deaccent(k)
+    const hit = kk.length >= 3 && kk.includes(' ') ? t.includes(kk) || compact.includes(kk.replace(/[^a-z0-9]/g, '')) : new RegExp(`(^|[^a-z0-9])${kk.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^a-z0-9]|$)`).test(t)
+    if (hit) { const r = await tryQuery(v); if (r) return r }
+  }
+  // 3) multi-word names, then single words (any case), matching ticker root or name start
+  const words = t.match(/[a-z0-9][a-z0-9.&-]*/g)?.filter((w) => w.length >= 2) ?? []
+  const grams: string[] = []
+  for (let n = 3; n >= 2; n--) for (let i = 0; i + n <= words.length; i++) { const g = words.slice(i, i + n); if (!g.every((w) => STOP.has(w) || w.length < 3)) grams.push(g.join(' ')) }
+  const singles = words.filter((w) => !STOP.has(w) && w.length >= 2)
+  for (const c of [...grams, ...singles]) {
+    const r = await searchAssets(c.length <= 5 && !c.includes(' ') ? c.toUpperCase() : c, undefined, cls)
+    const hit = r.find((a) => { const root = deaccent(a.ticker.split(/[ ·/]/)[0]).replace(/\d+$/, ''); return root === c || deaccent(a.ticker.split(/[ ·/]/)[0]) === c || deaccent(a.name).startsWith(c) })
+      ?? (!c.includes(' ') && c.length >= 4 ? r[0] : undefined)
     if (hit) return hit
   }
   return null
