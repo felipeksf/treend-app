@@ -1,3 +1,4 @@
+import { useOverviewSearch } from '../components/OverviewSearch'
 import { useGreeting } from '../lib/greet'
 import { useMemo, type MouseEvent } from 'react'
 import { Star } from 'lucide-react'
@@ -14,7 +15,7 @@ import MarketHero from '../components/MarketHero'
 
 /* Mode selection (Ações B3 | Stocks | Cripto | Câmbio) and a dedicated overview per asset class. */
 
-const ART: Record<ClassKey, string> = {
+export const ART: Record<ClassKey, string> = {
   b3: 'linear-gradient(145deg, #0b3d2e 0%, #10a36e 100%)',
   us: 'linear-gradient(145deg, #0b1a3a 0%, #2453e0 100%)',
   crypto: 'linear-gradient(145deg, #2a1608 0%, #f7931a 100%)',
@@ -117,6 +118,7 @@ export function Overview({ k, embedded }: { k: ClassKey; embedded?: boolean }) {
   const top = rows.slice(0, 24)
   const cur = c.currency
   const hello = useGreeting()
+  const ov = useOverviewSearch(k)
 
   return (
     <div className="page">
@@ -145,9 +147,11 @@ export function Overview({ k, embedded }: { k: ClassKey; embedded?: boolean }) {
         <Link to={`/mercado?c=${k}`} className="ins ins-cta"><span className="ins-k">Analisar ativo</span><span className="ins-v">Buscar {c.short}</span><span className="ins-s">{num(s.breadth, 0)}% dos ativos em alta hoje</span><ArrowRight className="ins-go" /></Link>
       </div>
 
-      {isLoading ? <Skel h={420} /> : <MarketHero k={k} rows={rows} news={news} />}
+      {ov.bar}
+      {ov.view}
+      {!ov.focused && (isLoading ? <Skel h={420} /> : <MarketHero k={k} rows={rows} news={news} />)}
 
-      {isLoading ? null : (
+      {isLoading || ov.focused ? null : (
         <div className="grid g-2" style={{ alignItems: 'start' }}>
           <div className="card">
             <div className="card-h"><h3><TrendingUp /> Maiores oportunidades<Hint text="Ativos com o maior índice Treend no tempo gráfico diário." /></h3><Link to={c.heatmapRoute} className="btn ghost sm"><Grid3x3 size={14} /> Mapa completo</Link></div>

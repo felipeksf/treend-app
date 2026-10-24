@@ -1,3 +1,4 @@
+import MyAssetButton from '../components/MyAssetButton'
 import { clsOf } from '../lib/market'
 import AssetNews from '../components/AssetNews'
 import { toast } from '../components/ui'
@@ -169,7 +170,7 @@ function SearchHome({ onPick, cls, setCls }: { onPick: (a: Asset) => void; cls: 
   )
 }
 
-function Result({ asset, cls, onBack, onPick }: { asset: Asset; cls: ClassKey; onBack: () => void; onPick: (a: Asset) => void }) {
+export function Result({ asset, cls, onBack, onPick, backLabel }: { asset: Asset; cls: ClassKey; onBack: () => void; onPick: (a: Asset) => void; backLabel?: string }) {
   const [radar, setRadar] = useState<string | null>(null)
   const { data, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ['analysis', asset.symbol],
@@ -183,7 +184,7 @@ function Result({ asset, cls, onBack, onPick }: { asset: Asset; cls: ClassKey; o
   return (
     <>
       <div className="row between wrap" style={{ gap: 12, marginBottom: 22 }}>
-        <button className="btn ghost sm" onClick={onBack}><ArrowLeft /> Nova busca</button>
+        <button className="btn ghost sm" onClick={onBack}><ArrowLeft /> {backLabel ?? 'Nova busca'}</button>
         <div style={{ width: 'min(420px, 100%)' }}><SearchBox onPick={onPick} compact cls={cls} /></div>
       </div>
 
@@ -198,6 +199,7 @@ function Result({ asset, cls, onBack, onPick }: { asset: Asset; cls: ClassKey; o
           <div className="row gap-8" style={{ justifyContent: 'flex-end' }}>{data?.change != null && <Delta v={data.change} />}<span className="tiny faint">hoje</span></div>
         </div>
         <div className="row gap-8 wrap">
+          <MyAssetButton asset={asset} cls={cls} />
           <button className="btn" disabled={!data} onClick={() => { if (!data) return; addHistory({ cls, symbol: asset.symbol, ticker: asset.ticker, name: asset.name, logo: asset.logo, currency: asset.currency, price: data.price, frames: data.frames.map((f) => ({ key: f.key, index: f.index })), source: 'manual' }); toast('Salvo no histórico') }}><HistoryIcon /> Salvar no histórico</button>
           <button className="btn primary" onClick={() => setRadar(best?.key ?? 'd1')}><BellRing /> Criar radar</button>
         </div>

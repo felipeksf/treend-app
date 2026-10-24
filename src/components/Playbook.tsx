@@ -1,3 +1,5 @@
+import { ART } from '../pages/Modos'
+import type { ClassKey } from '../lib/classes'
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ArrowLeft, ArrowRight, BookOpen, Check, X } from 'lucide-react'
@@ -87,12 +89,20 @@ const CHAPTERS: Ch[] = [
     k: '05', t: 'Por classe de ativos',
     body: (<>
       <h2>O mesmo método, <span className="serif">nuances diferentes.</span></h2>
-      <div className="pb-list">
-        <div><b>🇧🇷 Ações B3 · 🇺🇸 Stocks</b><span>Use o fundamento para escolher a empresa e a Treend para o momento. Em Stocks, o resultado em reais também depende do dólar.</span></div>
-        <div><b>R$ Câmbio</b><span>Quem compra moeda (importador, viagem) busca índice alto; quem vende (exportador, renda global) aproveita a moeda esticada.</span></div>
-        <div><b>₿ Cripto</b><span>Mercado 24/7 e volátil: as janelas curtas mudam rápido, as longas dão o contexto.</span></div>
-        <div><b>🏢 FIIs</b><span>Índice lido junto com o P/VP — aqui o timing encontra o fundamento: índice alto com P/VP abaixo de 1 é a assimetria mais interessante.</span></div>
-        <div><b>🛢️ Commodities</b><span>Contratos futuros contínuos, com leitura principal no diário. Úteis para quem compra insumos ou investe.</span></div>
+      <div className="pb-modes">
+        {([
+          ['b3', 'Ações B3 · Stocks', 'Use o fundamento para escolher a empresa e a Treend para o momento. Em Stocks, o resultado em reais também depende do dólar.', '🇧🇷 🇺🇸'],
+          ['fx', 'Câmbio', 'Quem compra moeda (importador, viagem) busca índice alto; quem vende (exportador, renda global) aproveita a moeda esticada.', 'R$'],
+          ['crypto', 'Cripto', 'Mercado 24/7 e volátil: as janelas curtas mudam rápido, as longas dão o contexto.', '₿'],
+          ['fii', 'FIIs', 'Índice lido junto com o P/VP — aqui o timing encontra o fundamento: índice alto com P/VP abaixo de 1 é a assimetria mais interessante.', '🏢'],
+          ['commod', 'Commodities', 'Contratos futuros contínuos, com leitura principal no diário. Úteis para quem compra insumos ou investe.', '🛢️'],
+        ] as [ClassKey, string, string, string][]).map(([k, t, d, e]) => (
+          <div key={k} className="pb-mode" style={{ background: k === 'b3' ? `linear-gradient(145deg, #0b3d2e 0%, #10a36e 55%, #2453e0 130%)` : ART[k] }}>
+            <span className="pb-mode-emoji">{e}</span>
+            <b>{t}</b>
+            <span>{d}</span>
+          </div>
+        ))}
       </div>
     </>),
   },

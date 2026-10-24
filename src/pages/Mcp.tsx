@@ -7,10 +7,10 @@ import { PageHeader, Seg, toast } from '../components/ui'
 import Gate from '../components/Gate'
 import Select from '../components/Select'
 import McpConnect, { AiLabel } from '../components/McpConnect'
-const AI_ID: Record<string, string> = { ChatGPT: 'chatgpt', Claude: 'claude', Gemini: 'gemini', 'Agente próprio': 'agents' }
+const AI_ID: Record<string, string> = { ChatGPT: 'chatgpt', Claude: 'claude', Gemini: 'gemini', Grok: 'grok', 'Agente próprio': 'agents' }
 import { dateBR } from '../lib/format'
 
-const ASSISTANTS = ['ChatGPT', 'Claude', 'Gemini', 'Agente próprio']
+const ASSISTANTS = ['ChatGPT', 'Claude', 'Gemini', 'Grok', 'Agente próprio']
 const EXAMPLES = [
   { q: 'Quais as 5 maiores oportunidades em Ações B3 no diário?', a: 'Pelo índice Treend diário, os destaques são os ativos com índice acima de 90 — zona de oportunidade forte — ordenados do maior para o menor.' },
   { q: 'Analise o HGLG11 considerando o P/VP.', a: 'O fundo está com P/VP de 0,96 e o índice Treend em zona neutra no diário e no semanal: cota levemente descontada, sem assimetria forte no momento.' },
@@ -48,7 +48,7 @@ export default function Mcp() {
 
   return (
     <div className="page">
-      <PageHeader title="A Treend dentro da" accent="sua inteligência artificial." sub="Conecte a Treend ao ChatGPT, Claude, Gemini ou ao seu agente via MCP e consulte o índice Treend de qualquer ativo — Ações B3, Stocks, Cripto, Commodities, Câmbio e FIIs — direto na conversa." />
+      <PageHeader title="A Treend dentro da" accent="sua inteligência artificial." sub="Conecte a Treend ao ChatGPT, Claude, Gemini, Grok ou ao seu agente via MCP e consulte o índice Treend de qualquer ativo — Ações B3, Stocks, Cripto, Commodities, Câmbio e FIIs — direto na conversa." />
 
       <div className="grid g-main" style={{ alignItems: 'start', marginBottom: 16 }}>
         <div className="card mcp-hero">

@@ -1,3 +1,4 @@
+import MyAssetButton from '../components/MyAssetButton'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AssetAlertModal from '../components/AssetAlertModal'
@@ -155,7 +156,7 @@ function Board({ market }: { market: Market }) {
               <tbody>
                 {stocks.slice(page * PAGE, (page + 1) * PAGE).map((s) => (
                   <tr key={s.ticker}>
-                    <td className="lbl"><span className="row gap-8 ticker-link" role="button" title="Abrir análise completa" onClick={() => openAsset(nav, s as unknown as Row, market)}><StockLogo src={s.logo} t={s.ticker} size={22} /><span>{s.ticker}{s.fii && <div className="tiny" style={{ color: s.fii.read.c, fontWeight: 600 }}>P/VP {s.fii.pvp != null ? num(s.fii.pvp, 2) : '—'} · {s.fii.read.label}</div>}</span></span></td>
+                    <td className="lbl"><span className="row gap-8 ticker-link" role="button" title="Abrir análise completa" onClick={() => openAsset(nav, s as unknown as Row, market)}><StockLogo src={s.logo} t={s.ticker} size={22} /><span>{s.ticker}{s.fii && <div className="tiny" style={{ color: s.fii.read.c, fontWeight: 600 }}>P/VP {s.fii.pvp != null ? num(s.fii.pvp, 2) : '—'} · {s.fii.read.label}</div>}</span></span><span className="row-my"><MyAssetButton compact cls={market} asset={{ symbol: (s as unknown as Row).symbol, ticker: s.ticker, name: (s as unknown as Row).name ?? s.ticker, logo: s.logo ?? null, currency: (s as unknown as Row).cur || CLASSES[market].currency, sub: CLASSES[market].label }} /></span></td>
                     {FREQ.map((f) => {
                       const x = s.scores.find((y) => y.frequency === f.key)
                       if (!x) return <td key={f.key}><div className="heat-cell" style={{ ['--c' as string]: 'var(--line-3)', ['--a' as string]: '0%', opacity: 0.45, cursor: 'default' }}><b>—</b><span>Sem dado</span></div></td>
@@ -196,6 +197,7 @@ function Board({ market }: { market: Market }) {
               <div className="card-b stack gap-12">
                 <div className="row between">
                   <span className="row gap-8 ticker-link" role="button" title="Abrir análise completa" onClick={() => openAsset(nav, stock as unknown as Row, market)}><StockLogo src={stock.logo} t={stock.ticker} size={32} /><span><b>{stock.ticker}</b><div className="tiny faint">{nameOf(stock)} · {FREQ.find((f) => f.key === score.frequency)?.label}</div></span></span>
+                  <MyAssetButton compact cls={market} asset={{ symbol: (stock as unknown as Row).symbol, ticker: stock.ticker, name: nameOf(stock), logo: stock.logo ?? null, currency: (stock as unknown as Row).cur || CLASSES[market].currency, sub: CLASSES[market].label }} />
                   <span className="pill tone"><span className="d" />{sg.label}</span>
                 </div>
                 <div style={{ display: 'grid', placeItems: 'center' }}><Gauge value={score.heat_x} color={sg.color} size={168} label={sg.summary.toUpperCase()} /></div>

@@ -1,3 +1,4 @@
+import { useOverviewSearch } from '../components/OverviewSearch'
 import { useGreeting } from '../lib/greet'
 import { LOCALE } from '../lib/i18n'
 import { useMemo, useState } from 'react'
@@ -87,6 +88,7 @@ function Dashboard({ onMarket }: { onMarket: (k: ClassKey) => void }) {
   const { data: hist } = useHistory(ccy, +range)
   const { data: news } = useNews()
   const hello = useGreeting()
+  const ov = useOverviewSearch('fx')
 
   const q = quotes?.[ccy]
   const daily = pick(heat, profile, ccy, 'daily')
@@ -149,6 +151,8 @@ function Dashboard({ onMarket }: { onMarket: (k: ClassKey) => void }) {
           <ArrowRight className="ins-go" />
         </Link>
       </div>
+      {ov.bar}
+      {ov.view}
 
       {/* Hero */}
       <div className="card hero-quote" style={{ marginBottom: 16 }}>

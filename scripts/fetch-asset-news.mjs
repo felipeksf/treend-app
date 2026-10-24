@@ -90,8 +90,8 @@ await resolveAll(flat, gmap, 8)
 const isSearch = (n) => n.link.startsWith('https://www.google.com/search')
 for (const k of Object.keys(bySymbol)) {
   let l = bySymbol[k].filter((n) => n.link && !n.link.startsWith('https://news.google.com/'))
-  // headlines without an article URL (open as a web search) only fill lists with few direct links
-  if (l.filter((n) => !isSearch(n)).length >= 5) l = l.filter((n) => !isSearch(n))
+  // only headlines that open the exact article on the publisher's site
+  l = l.filter((n) => !isSearch(n))
   if (l.length) bySymbol[k] = l; else delete bySymbol[k]
 }
 mkdirSync(dirname(OUT), { recursive: true })
