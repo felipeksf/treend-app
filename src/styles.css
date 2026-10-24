@@ -1245,3 +1245,13 @@ h1, h2, h3, .big-px, .px, .score, .wordmark { letter-spacing: -0.03em; }
 .tn-block-h{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:-.01em;color:#2453e0;margin-bottom:4px}
 .tn-block p{margin:0}
 .tn-body b{color:var(--text);font-weight:650}
+.tn-asset{padding:26px 30px 8px}
+.tn-asset-h{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-bottom:16px;margin-bottom:8px;border-bottom:3px solid var(--text)}
+.tn-asset-title{font-family:var(--display);font-size:clamp(22px,2.6vw,30px);font-weight:700;letter-spacing:-.035em;margin-top:4px}
+.tn-asset .tn-list li:last-child{border-bottom:0}
+.tn-asset.compact{padding:18px 18px 4px}
+.tn-asset.compact .tn-lead h2{font-size:22px}
+.tn-asset.compact .tn-list li{grid-template-columns:40px minmax(0,1fr);padding:14px 0}
+.tn-asset.compact .tn-num{font-size:26px}
+.tn-asset.compact .tn-item h3{font-size:15px}
+@media (max-width:640px){.tn-asset{padding:20px 18px 4px}}

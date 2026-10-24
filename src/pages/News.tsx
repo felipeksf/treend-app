@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowUpRight, ExternalLink, Newspaper, Search, X } from 'lucide-react'
-import { supabase } from '../lib/supabase'
+import SummarySheet from '../components/SummarySheet'
 import { Empty, Hint, PageHeader, Skel } from '../components/ui'
 import { timeAgo } from '../lib/format'
 import { LOCALE } from '../lib/i18n'
@@ -33,7 +33,7 @@ const FX_SUB = [
 // general feed category → asset class
 const CAT: Record<string, ClassKey> = { USD: 'fx', EUR: 'fx', GBP: 'fx', CNY: 'fx', JPY: 'fx', B3: 'b3', US: 'us', CRYPTO: 'crypto', COMMOD: 'commod', FII: 'fii' }
 const EMOJI = Object.fromEntries(TABS.map((t) => [t.key, t.emoji])) as Record<Tab, string>
-const clean = (t: string) => t.replace(/ - [^-]+$/, '')
+export const clean = (t: string) => t.replace(/ - [^-]+$/, '')
 const keyOf = (t: string) => t.toLowerCase().replace(/[^a-z0-9à-ú]+/g, ' ').trim().slice(0, 80)
 const iso = (d: string) => { const t = Date.parse(d); return Number.isNaN(t) ? '1970-01-01T00:00:00.000Z' : new Date(t).toISOString() }
 const readMin = (n: number) => Math.max(1, Math.round(n * 0.35))
@@ -46,7 +46,7 @@ export default function News() {
   const [fx, setFx] = useState('all')
   const [q, setQ] = useState('')
   const [picked, setPicked] = useState<Asset | null>(null)
-  const [summary, setSummary] = useState<{ story: Story; text?: string } | null>(null)
+  const [summary, setSummary] = useState<{ story: Story } | null>(null)
 
   // general feed + per-asset headlines, classified by asset class and deduplicated
   const stories = useMemo(() => {
@@ -75,15 +75,7 @@ export default function News() {
     (!q || n.title.toLowerCase().includes(q.toLowerCase())),
   ).slice(0, 40), [stories, tab, fx, q])
 
-  const summarize = async (story: Story) => {
-    setSummary({ story })
-    try {
-      const { data } = await supabase.functions.invoke('summarize-news', { body: { title: story.title, link: story.link, locale: 'pt' } })
-      setSummary({ story, text: data?.summary || 'Resumo indisponível no momento.' })
-    } catch {
-      setSummary({ story, text: 'Resumo indisponível no momento.' })
-    }
-  }
+  const summarize = (story: Story) => setSummary({ story })
 
   const [lead, ...rest] = list
   const today = new Date().toLocaleDateString(LOCALE, { weekday: 'long', day: 'numeric', month: 'long' })
@@ -162,7 +154,7 @@ export default function News() {
               </div>
             )}
           </div>
-          {picked && <AssetNews asset={picked} />}
+          {picked && <AssetNews asset={picked} compact />}
           <div className="card pad">
             <div className="tn-side-h"><Search size={15} /> Filtrar esta edição</div>
             <input className="input" style={{ height: 38 }} placeholder="Palavra-chave" value={q} onChange={(e) => setQ(e.target.value)} />
@@ -170,44 +162,8 @@ export default function News() {
         </aside>
       </div>
 
-      {summary && (
-        <div className="overlay tn-overlay" onMouseDown={() => setSummary(null)}>
-          <article className="tn-sheet" onMouseDown={(e) => e.stopPropagation()}>
-            <button className="icon-btn tn-x" onClick={() => setSummary(null)} aria-label="Fechar"><X /></button>
-            <div className="tn-kicker">☕ resumo treend · {EMOJI[summary.story.cls]} {label(summary.story.cls)}</div>
-            <h2 data-no-tr>{clean(summary.story.title)}</h2>
-            <div className="tn-meta"><span data-no-tr>{summary.story.source}</span> · {timeAgo(summary.story.pubDate)} · leitura de 1 min</div>
-            <div className="tn-body">
-              {summary.text ? <SummaryBody text={summary.text} /> : (
-                <div className="stack gap-8"><Skel h={18} /><Skel h={18} /><Skel h={18} w="80%" /><Skel h={18} w="60%" /></div>
-              )}
-            </div>
-            <div className="tn-sheet-foot">
-              <span className="tiny faint">Resumo gerado por IA a partir da matéria original. Conteúdo informativo, não constitui recomendação de investimento.</span>
-              <a className="tn-btn primary" href={summary.story.link} target="_blank" rel="noreferrer">Ler matéria completa <ArrowUpRight size={14} /></a>
-            </div>
-          </article>
-        </div>
-      )}
+      {summary && <SummarySheet story={summary.story} kicker={`${EMOJI[summary.story.cls]} ${label(summary.story.cls)}`} onClose={() => setSummary(null)} />}
     </div>
   )
 }
 
-/** Renders the AI summary like a newsletter story: intro paragraph, then labelled blocks ("o que aconteceu", impacts…). */
-function SummaryBody({ text }: { text: string }) {
-  const lines = text.split(/\n+/).map((l) => l.trim()).filter(Boolean).filter((l) => !/^aqui est[aá]/i.test(l))
-  const inline = (t: string) => t.split(/(\*\*[^*]+\*\*)/g).map((x, i) => (x.startsWith('**') ? <b key={i}>{x.slice(2, -2)}</b> : x))
-  let first = true
-  return (
-    <>
-      {lines.map((raw, i) => {
-        const l = raw.replace(/^([*•-]|\d+\.)\s+/, '')
-        const m = l.match(/^\*\*([^*]+?):?\*\*:?\s*(.*)$/)
-        if (m) return <div key={i} className="tn-block"><div className="tn-block-h">{m[1].replace(/:$/, '').toLowerCase()}</div><p>{inline(m[2])}</p></div>
-        const cls = first ? 'lead' : ''
-        first = false
-        return <p key={i} className={cls}>{inline(l)}</p>
-      })}
-    </>
-  )
-}
