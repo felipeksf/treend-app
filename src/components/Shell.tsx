@@ -1,3 +1,4 @@
+import { addHistory } from '../lib/assetHistory'
 import LangPicker from './LangPicker'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
@@ -52,6 +53,7 @@ export default function Shell() {
         const fired = await checkAlerts()
         if (!alive) return
         for (const { alert, index } of fired) {
+          addHistory({ cls: alert.cls, symbol: alert.symbol, ticker: alert.ticker, name: alert.name, logo: alert.logo, currency: '', price: null, frames: [{ key: alert.frame, index }], source: 'radar', note: `Radar ${alert.target}` })
           const label = ALERT_FRAMES.find((f) => f.key === alert.frame)?.label ?? alert.frame
           const msg = `${alert.ticker} · ${label}: índice ${Math.round(index)} atingiu sua meta de ${alert.target}`
           toast(`🔔 ${msg}`)

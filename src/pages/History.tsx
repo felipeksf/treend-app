@@ -6,9 +6,12 @@ import { emailDecision, useDecisions, type Decision } from '../lib/decisions'
 import { useQuotes } from '../lib/rates'
 import { Empty, PageHeader, Seg, Skel, toast, Hint } from '../components/ui'
 import Gate from '../components/Gate'
+import AssetHistory from './HistoryAssets'
+import { CLASSES, CLASS_LIST, type ClassKey } from '../lib/classes'
+import { useAssetHistory } from '../lib/assetHistory'
 import { compact, dateBR, money, num } from '../lib/format'
 
-export default function History() {
+function FxHistory() {
   const { data, isLoading } = useDecisions()
   const { data: quotes } = useQuotes()
   const [ccy, setCcy] = useState('all')
@@ -44,9 +47,8 @@ export default function History() {
   }
 
   return (
-    <div className="page">
-      <PageHeader eyebrow={<><HistoryIcon size={13} /> Histórico</>} title="Cada decisão," accent="contabilizada." sub="Suas operações registradas e a economia acumulada ao longo do tempo." actions={<button className="btn" onClick={exportCsv} disabled={!list.length}><Download /> Exportar CSV</button>} />
-      <Gate what="o seu histórico">
+    <>
+      <div className="row" style={{ justifyContent: 'flex-end', marginBottom: 12 }}><button className="btn sm" onClick={exportCsv} disabled={!list.length}><Download /> Exportar CSV</button></div>
         {isLoading ? <Skel h={300} /> : !data?.length ? (
           <div className="card"><Empty icon={<HistoryIcon size={20} />} title="Nenhuma decisão registrada">Use a Calculadora ou o Simulador e salve suas operações para acompanhar a economia.</Empty></div>
         ) : (
@@ -107,6 +109,45 @@ export default function History() {
             </div>
           </>
         )}
+    </>
+  )
+}
+
+export default function History() {
+  const { data } = useDecisions()
+  const hist = useAssetHistory()
+  const [tab, setTab] = useState<'all' | ClassKey>(() => { try { return (localStorage.getItem('treend-v2-hist-tab') as ClassKey) || 'all' } catch { return 'all' } })
+  const pick = (v: string) => { setTab(v as ClassKey); try { localStorage.setItem('treend-v2-hist-tab', v) } catch { /* ignore */ } }
+  const count = (k: ClassKey) => hist.filter((h) => h.cls === k).length + (k === 'fx' ? data?.length ?? 0 : 0)
+  const assets = (k: ClassKey) => new Set(hist.filter((h) => h.cls === k).map((h) => h.symbol)).size
+  return (
+    <div className="page">
+      <PageHeader eyebrow={<><HistoryIcon size={13} /> Histórico</>} title="Cada decisão," accent="contabilizada." sub="Seu histórico organizado por classe de ativos: operações de câmbio, análises salvas e radares disparados de cada ativo." />
+      <Gate what="o seu histórico">
+        <div className="hist-tabs">
+          <button className={tab === 'all' ? 'on' : ''} onClick={() => pick('all')}><span>Todas</span><b className="mono">{(data?.length ?? 0) + hist.length}</b></button>
+          {CLASS_LIST.map((c) => (
+            <button key={c.key} className={tab === c.key ? 'on' : ''} onClick={() => pick(c.key)}><span>{c.emoji} {c.label}</span><b className="mono">{count(c.key)}</b></button>
+          ))}
+        </div>
+        {tab === 'all' ? (
+          <div className="stack gap-24">
+            <div className="grid g-3">
+              {CLASS_LIST.map((c) => (
+                <button key={c.key} className="card pad stack gap-8 hist-class" onClick={() => pick(c.key)}>
+                  <div className="row between"><b>{c.emoji} {c.label}</b><span className="mono faint">{count(c.key)}</span></div>
+                  <div className="small muted">{c.key === 'fx' ? `${data?.length ?? 0} operações · ${assets('fx')} ativos analisados` : `${assets(c.key)} ativos · ${count(c.key)} registros`}</div>
+                </button>
+              ))}
+            </div>
+            {CLASS_LIST.filter((c) => c.key !== 'fx' && assets(c.key) > 0).map((c) => (
+              <section key={c.key}><h3 className="hist-h">{c.emoji} {c.label}</h3><AssetHistory cls={c.key} /></section>
+            ))}
+            {(data?.length ?? 0) > 0 && <section><h3 className="hist-h">{CLASSES.fx.emoji} Câmbio · operações</h3><FxHistory /></section>}
+          </div>
+        ) : tab === 'fx' ? (
+          <div className="stack gap-24"><AssetHistory cls="fx" quiet /><FxHistory /></div>
+        ) : <AssetHistory cls={tab} />}
       </Gate>
     </div>
   )

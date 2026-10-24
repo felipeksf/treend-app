@@ -1,3 +1,6 @@
+import { toast } from '../components/ui'
+import { addHistory } from '../lib/assetHistory'
+import { History as HistoryIcon } from 'lucide-react'
 import { LOCALE } from '../lib/i18n'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
@@ -189,7 +192,10 @@ function Result({ asset, cls, onBack, onPick }: { asset: Asset; cls: ClassKey; o
           <div className="mono" style={{ fontSize: 30, fontWeight: 700, letterSpacing: '-0.03em', fontFamily: 'var(--display)' }}>{data?.price != null ? `${asset.currency} ${num(data.price, digits)}` : '—'}</div>
           <div className="row gap-8" style={{ justifyContent: 'flex-end' }}>{data?.change != null && <Delta v={data.change} />}<span className="tiny faint">hoje</span></div>
         </div>
-        <button className="btn primary" onClick={() => setRadar(best?.key ?? 'd1')}><BellRing /> Criar radar</button>
+        <div className="row gap-8 wrap">
+          <button className="btn" disabled={!data} onClick={() => { if (!data) return; addHistory({ cls, symbol: asset.symbol, ticker: asset.ticker, name: asset.name, logo: asset.logo, currency: asset.currency, price: data.price, frames: data.frames.map((f) => ({ key: f.key, index: f.index })), source: 'manual' }); toast('Salvo no histórico') }}><HistoryIcon /> Salvar no histórico</button>
+          <button className="btn primary" onClick={() => setRadar(best?.key ?? 'd1')}><BellRing /> Criar radar</button>
+        </div>
       </div>
 
       {cls === 'fii' && <FiiPanel ticker={asset.ticker} />}
