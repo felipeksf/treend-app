@@ -21,3 +21,13 @@ createRoot(document.getElementById('root')!).render(
     </QueryClientProvider>
   </StrictMode>,
 )
+
+// Google News links redirect through a service that some (Workspace) accounts can't open:
+// send any leftover one to a regular web search for the headline instead.
+document.addEventListener('click', (e) => {
+  const a = (e.target as HTMLElement | null)?.closest?.('a[href^="https://news.google.com/"]') as HTMLAnchorElement | null
+  if (!a) return
+  e.preventDefault()
+  const title = (a.closest('article, li, .asset-news-row')?.querySelector('h2, h3, h4, .asset-news-t')?.textContent || a.textContent || '').trim()
+  window.open(`https://www.google.com/search?q=${encodeURIComponent(title)}`, '_blank', 'noopener')
+}, true)

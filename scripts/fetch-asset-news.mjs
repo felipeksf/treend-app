@@ -1,7 +1,8 @@
 // Builds news-assets.json: recent headlines per asset (most traded assets of every class).
 // Runs in GitHub Actions next to fetch-news.mjs. Usage: node scripts/fetch-asset-news.mjs out.json
 import { mkdirSync, writeFileSync } from 'node:fs'
-import { dirname } from 'node:path'
+import { dirname, join } from 'node:path'
+import { loadMap, resolveAll, saveMap } from './gnews.mjs'
 
 const OUT = process.argv[2] || 'news-assets.json'
 const SCAN = 'https://scanner.tradingview.com'
@@ -37,7 +38,7 @@ async function worker() {
       const items = ((await r.json()).items ?? [])
         .filter((n) => n.title && n.published && Date.now() / 1000 - n.published < 30 * 86400)
         .slice(0, 12)
-        .map((n) => ({ title: n.title, link: n.link ? clean(n.link) : `https://news.google.com/search?q=${encodeURIComponent(n.title)}&hl=pt-BR&gl=BR&ceid=BR:pt-419`, source: n.source || n.provider, pubDate: new Date(n.published * 1000).toISOString() }))
+        .map((n) => ({ title: n.title, link: n.link ? clean(n.link) : `https://www.google.com/search?q=${encodeURIComponent(`${n.source || n.provider || ''} ${n.title}`)}`, source: n.source || n.provider, pubDate: new Date(n.published * 1000).toISOString() }))
       if (items.length) bySymbol[s] = items
     } catch { /* ignore */ }
   }
@@ -64,7 +65,7 @@ async function gworker() {
       const r = await fetch(`https://news.google.com/rss/search?q=${encodeURIComponent(query(s) + ' when:30d')}&hl=pt-BR&gl=BR&ceid=BR:pt-419`, { headers: { 'user-agent': 'Mozilla/5.0 (treend-news-bot)' } })
       if (!r.ok) continue
       const xml = await r.text()
-      const got = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].slice(0, 15).map(([, it]) => {
+      const got = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].slice(0, 8).map(([, it]) => {
         const source = tag(it, 'source')
         const title = tag(it, 'title').replace(new RegExp(` - ${source.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`), '')
         return { title, link: tag(it, 'link'), source, pubDate: new Date(tag(it, 'pubDate')).toISOString() }
@@ -79,6 +80,14 @@ async function gworker() {
 }
 await Promise.all(Array.from({ length: 4 }, gworker))
 
+// swap Google News redirect links for the publisher URLs
+const MAP = process.env.GNEWS_MAP || join(dirname(OUT), 'gnews-map.json')
+const gmap = await loadMap(MAP)
+const flat = Object.values(bySymbol).flat()
+await resolveAll(flat, gmap, 8)
+for (const k of Object.keys(bySymbol)) { bySymbol[k] = bySymbol[k].filter((n) => n.link && !n.link.startsWith('https://news.google.com/')); if (!bySymbol[k].length) delete bySymbol[k] }
+mkdirSync(dirname(OUT), { recursive: true })
+await saveMap(MAP, gmap)
 mkdirSync(dirname(OUT), { recursive: true })
 writeFileSync(OUT, JSON.stringify({ updatedAt: new Date().toISOString(), bySymbol }))
 console.log(`news-assets.json: ${Object.keys(bySymbol).length}/${symbols.length} ativos com notícias`)

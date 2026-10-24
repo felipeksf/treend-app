@@ -1,7 +1,8 @@
 // Aggregates FX news from RSS sources into a static news.json.
 // Runs in GitHub Actions on a schedule (and on every deploy). No dependencies.
 import { writeFileSync, mkdirSync } from 'node:fs'
-import { dirname } from 'node:path'
+import { dirname, join } from 'node:path'
+import { loadMap, resolveAll, saveMap } from './gnews.mjs'
 
 const OUT = process.argv[2] || 'dist/news.json'
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36'
@@ -104,7 +105,11 @@ for (const n of items) {
   const prev = seen.get(key)
   if (!prev || t > new Date(prev.pubDate).getTime()) seen.set(key, { ...n, pubDate: new Date(t).toISOString() })
 }
-const news = [...seen.values()].sort((a, b) => b.pubDate.localeCompare(a.pubDate)).slice(0, 240)
+const MAP = process.env.GNEWS_MAP || join(dirname(OUT), 'gnews-map.json')
+const gmap = await loadMap(MAP)
+const news = (await resolveAll([...seen.values()].sort((a, b) => b.pubDate.localeCompare(a.pubDate)).slice(0, 260), gmap)).slice(0, 240)
+mkdirSync(dirname(OUT), { recursive: true })
+await saveMap(MAP, gmap)
 
 mkdirSync(dirname(OUT), { recursive: true })
 writeFileSync(OUT, JSON.stringify({ updatedAt: new Date().toISOString(), news }))
