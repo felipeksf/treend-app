@@ -1,3 +1,4 @@
+import { useGreeting } from '../lib/greet'
 import { useMemo, type MouseEvent } from 'react'
 import { Star } from 'lucide-react'
 import { useMarkets } from '../lib/favorites'
@@ -115,11 +116,12 @@ export function Overview({ k, embedded }: { k: ClassKey; embedded?: boolean }) {
   const news = (feed?.news ?? []).filter((n) => c.news.includes(n.currency ?? '')).slice(0, 6)
   const top = rows.slice(0, 24)
   const cur = c.currency
+  const hello = useGreeting()
 
   return (
     <div className="page">
       <MarketSwitch value={k} onChange={(v) => (embedded ? select(v) : nav(`/mercados/${v}`))} />
-      <PageHeader title={c.label} accent="hoje." sub={<>{c.desc}. {dataUpdatedAt ? <span className="faint">Atualizado há {timeAgo(new Date(dataUpdatedAt).toISOString())}.</span> : null}</>} help={`Visão geral de ${c.label}: destaques do dia, ativos em zona de oportunidade, os mais esticados e as notícias desse mercado.`} />
+      <PageHeader title={hello} accent={`${c.label} hoje.`} sub={<>{c.desc}. {dataUpdatedAt ? <span className="faint">Atualizado há {timeAgo(new Date(dataUpdatedAt).toISOString())}.</span> : null}</>} help={`Visão geral de ${c.label}: destaques do dia, ativos em zona de oportunidade, os mais esticados e as notícias desse mercado.`} />
 
       {top.length > 0 && (
         <div className="slider" style={{ marginBottom: 16 }}>

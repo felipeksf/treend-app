@@ -1,3 +1,4 @@
+import { useGreeting } from '../lib/greet'
 import { LOCALE } from '../lib/i18n'
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -14,7 +15,6 @@ import { MarketSwitch, Overview } from './Modos'
 import { useMarkets } from '../lib/favorites'
 import type { ClassKey } from '../lib/classes'
 import { BrandsSlider, QuotesSlider } from '../components/Sliders'
-import { useAuth } from '../lib/auth'
 import { HELP } from '../lib/help'
 
 const HERO_CCY = ['USD', 'EUR', 'GBP', 'CNY']
@@ -67,10 +67,6 @@ export const useNews = () => {
   return { ...q, data: q.data?.news }
 }
 
-const greeting = () => {
-  const h = new Date().getHours()
-  return h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite'
-}
 
 /** Visão geral follows the market the user picked (Mercados or the switch on top); Câmbio keeps the original FX panel. */
 export default function VisaoGeral() {
@@ -90,8 +86,7 @@ function Dashboard({ onMarket }: { onMarket: (k: ClassKey) => void }) {
   const { data: heat } = useHeatmap()
   const { data: hist } = useHistory(ccy, +range)
   const { data: news } = useNews()
-  const { session } = useAuth()
-  const name = (session?.user.user_metadata?.full_name as string)?.split(' ')[0]
+  const hello = useGreeting()
 
   const q = quotes?.[ccy]
   const daily = pick(heat, profile, ccy, 'daily')
@@ -114,7 +109,7 @@ function Dashboard({ onMarket }: { onMarket: (k: ClassKey) => void }) {
       <MarketSwitch value="fx" onChange={onMarket} />
       <PageHeader
         eyebrow={<><Activity size={13} /> Monitoramento 24h</>}
-        title={`${greeting()}${name ? `, ${name}` : ''}.`}
+        title={hello}
         accent="Seu mercado hoje."
         
         sub={<>Leitura calibrada para o perfil <b style={{ color: 'var(--text)' }}>{prof.label}</b>. {updated && <span className="faint">Atualizado há {timeAgo(updated)}.</span>}</>}

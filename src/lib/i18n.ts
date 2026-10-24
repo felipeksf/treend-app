@@ -49,6 +49,8 @@ export function tr(s: string, l: Lang = lang): string {
   if (m) return s.replace(t, l === 'en' ? `${tr(m[1], l)} ago` : `hace ${tr(m[1], l)}`)
   if (t.includes('SEU_LINK_PESSOAL')) return s.replace('SEU_LINK_PESSOAL', l === 'en' ? 'YOUR_PERSONAL_LINK' : 'TU_ENLACE_PERSONAL')
   if (/\/mês$/.test(t)) return s.replace('/mês', l === 'en' ? '/mo' : '/mes')
+  m = t.match(/^(.+) hoje\.$/)
+  if (m) return s.replace(t, l === 'en' ? `${tr(m[1], l)} today.` : `${tr(m[1], l)} hoy.`)
   m = t.match(/^Buscar (.+)$/)
   if (m) return s.replace(t, `${l === 'en' ? 'Search' : 'Buscar'} ${tr(m[1], l)}`)
   m = t.match(/^Passo (\d+) de (\d+)$/)
