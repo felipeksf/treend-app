@@ -1,3 +1,6 @@
+import { CLASSES, CLASS_LIST, type ClassKey } from '../lib/classes'
+import AssetCalculator from '../components/AssetCalculator'
+import { useSearchParams } from 'react-router-dom'
 import { useMemo, useState } from 'react'
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { Calculator as CalcIcon, CheckCircle2, AlertTriangle, XCircle, Save } from 'lucide-react'
@@ -20,6 +23,24 @@ type Health = 'ok' | 'mid' | 'bad'
 const H = { ok: { c: 'var(--up)', I: CheckCircle2, t: 'Saudável' }, mid: { c: 'var(--amber)', I: AlertTriangle, t: 'Moderado' }, bad: { c: 'var(--down)', I: XCircle, t: 'Crítico' } }
 
 export default function Calculator() {
+  const [params, setParams] = useSearchParams()
+  const k = ((params.get('c') as ClassKey) in CLASSES ? params.get('c') : 'fx') as ClassKey
+  const tabs = (
+    <div className="class-switch heat-switch" role="tablist" aria-label="Classe de ativo">
+      {CLASS_LIST.map((x) => <button key={x.key} role="tab" aria-selected={k === x.key} className={k === x.key ? 'on' : ''} onClick={() => setParams(x.key === 'fx' ? {} : { c: x.key })}>{x.emoji} {x.label}</button>)}
+    </div>
+  )
+  if (k !== 'fx') return (
+    <div className="page">
+      {tabs}
+      <PageHeader eyebrow={<><CalcIcon size={13} /> Calculadora</>} title="Quanto rende a sua" accent="operação?" sub={`${CLASSES[k].label}: informe compra, venda e custos e veja o resultado bruto, os custos, o IR estimado, o resultado líquido e o preço de equilíbrio.`} />
+      <AssetCalculator key={k} cls={k} />
+    </div>
+  )
+  return <FxCalculator tabs={tabs} />
+}
+
+function FxCalculator({ tabs }: { tabs: React.ReactNode }) {
   const { data: quotes } = useQuotes()
   const { data: treendPct = 0.5 } = useTreendRate()
   const [profile] = useProfile()
@@ -63,6 +84,7 @@ export default function Calculator() {
 
   return (
     <div className="page">
+      {tabs}
       <PageHeader eyebrow={<><CalcIcon size={13} /> Calculadora</>} title="Quanto custa o seu" accent="spread?" sub="Compare a taxa que você paga hoje com a referência Treend e veja o impacto real em 12 e 24 meses." actions={<button className="btn primary" onClick={save} disabled={add.isPending}><Save /> Salvar no histórico</button>} />
 
       <div className="grid g-side" style={{ alignItems: 'start' }}>
