@@ -44,6 +44,7 @@ export function tr(s: string, l: Lang = lang): string {
   if (!t || !/[a-zà-ú]/i.test(t)) return s
   const hit = D[t]?.[l]
   if (hit) return s.replace(t, hit)
+  if (t.includes('\n\n')) return s.replace(t, t.split('\n\n').map((x) => tr(x, l)).join('\n\n'))
   let m = t.match(/^há (.+)$/)
   if (m) return s.replace(t, l === 'en' ? `${tr(m[1], l)} ago` : `hace ${tr(m[1], l)}`)
   if (t.includes('SEU_LINK_PESSOAL')) return s.replace('SEU_LINK_PESSOAL', l === 'en' ? 'YOUR_PERSONAL_LINK' : 'TU_ENLACE_PERSONAL')

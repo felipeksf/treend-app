@@ -202,7 +202,7 @@ export function Hint({ text, side = 'top' }: { text: ReactNode; side?: 'top' | '
     const r = ref.current?.getBoundingClientRect()
     if (!r) return
     const below = side === 'bottom' || r.top < 140
-    setPos({ x: Math.min(Math.max(r.left + r.width / 2, 150), window.innerWidth - 150), y: below ? r.bottom + 10 : r.top - 10, below })
+    setPos({ x: Math.min(Math.max(r.left + r.width / 2, 180), window.innerWidth - 180), y: below ? r.bottom + 10 : r.top - 10, below })
   }
   const hide = () => setPos(null)
   useEffect(() => {
