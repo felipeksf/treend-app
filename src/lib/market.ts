@@ -36,14 +36,11 @@ export const zoneOf = (i: number | null) =>
 /* Curated TradingView symbols for FX (FX_IDC, the default BRL feed on TradingView) and crypto (Binance). */
 const FX: Asset[] = [
   ['USD', 'Dólar americano', 'US'], ['EUR', 'Euro', 'EU'], ['GBP', 'Libra esterlina', 'GB'], ['CNY', 'Yuan chinês', 'CN'],
-  ['JPY', 'Iene japonês', 'JP'], ['CAD', 'Dólar canadense', 'CA'], ['AUD', 'Dólar australiano', 'AU'], ['CHF', 'Franco suíço', 'CH'], ['ARS', 'Peso argentino', 'AR'],
+  ['JPY', 'Iene japonês', 'JP'], ['CAD', 'Dólar canadense', 'CA'], ['AUD', 'Dólar australiano', 'AU'], ['CHF', 'Franco suíço', 'CH'], ['ARS', 'Peso argentino', 'AR'], ['MXN', 'Peso mexicano', 'MX'], ['CLP', 'Peso chileno', 'CL'],
 ].map(([c, n, cc]) => ({ symbol: `FX_IDC:${c}BRL`, ticker: `${c}/BRL`, name: n, logo: tvLogo(`country/${cc}`), sub: 'Câmbio', currency: 'R$' }))
 
-const CRYPTO: Asset[] = [
-  ['BTCUSDT', 'Bitcoin', 'XTVCBTC', 'US$'], ['BTCBRL', 'Bitcoin em reais', 'XTVCBTC', 'R$'], ['ETHUSDT', 'Ethereum', 'XTVCETH', 'US$'],
-  ['USDTBRL', 'Tether (USDT/BRL)', 'XTVCUSDT', 'R$'], ['SOLUSDT', 'Solana', 'XTVCSOL', 'US$'], ['XRPUSDT', 'XRP', 'XTVCXRP', 'US$'],
-  ['BNBUSDT', 'BNB', 'XTVCBNB', 'US$'], ['DOGEUSDT', 'Dogecoin', 'XTVCDOGE', 'US$'], ['ADAUSDT', 'Cardano', 'XTVCADA', 'US$'],
-].map(([t, n, l, cur]) => ({ symbol: `BINANCE:${t}`, ticker: t, name: n, logo: tvLogo(`crypto/${l}`), sub: 'Cripto · Binance', currency: cur }))
+
+import { CLASSES, scanClass, type ClassKey, type Row } from './classes'
 
 const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
 
@@ -55,29 +52,20 @@ async function scan(market: string, body: object, signal?: AbortSignal): Promise
   return (await r.json()).data ?? []
 }
 
-/** Typeahead: B3 + US stocks from the TradingView scanner, plus curated FX and crypto. */
-export async function searchAssets(q: string, signal?: AbortSignal): Promise<Asset[]> {
+/** Typeahead scoped to one asset class (B3, US stocks, crypto, FX). Without a class, searches everything. */
+export async function searchAssets(q: string, signal?: AbortSignal, cls?: ClassKey): Promise<Asset[]> {
   const s = norm(q.trim())
   if (s.length < 1) return []
-  const local = [...FX, ...CRYPTO].filter((a) => norm(`${a.ticker} ${a.name} ${a.symbol}`).includes(s) || (s.startsWith('dol') && a.symbol === 'FX_IDC:USDBRL'))
-  const body = (limit: number) => ({
-    filter: [{ left: 'name,description', operation: 'match', right: q.trim() }],
-    columns: ['name', 'description', 'logoid', 'type', 'exchange', 'currency'],
-    sort: { sortBy: 'volume', sortOrder: 'desc' },
-    range: [0, limit],
+  const fx = FX.filter((a) => norm(`${a.ticker} ${a.name} ${a.symbol}`).includes(s) || (s.startsWith('dol') && a.symbol === 'FX_IDC:USDBRL'))
+  if (cls === 'fx') return fx
+  const toAsset = (k: ClassKey) => (r: Row): Asset => ({
+    symbol: r.symbol, ticker: r.ticker, name: r.name, logo: r.logo, currency: CLASSES[k].currency,
+    sub: k === 'crypto' ? 'Cripto' : `${CLASSES[k].label}${r.sector ? ` · ${r.sector}` : ''}`,
   })
-  const map = (rows: ScanRow[], region: string) => rows
-    .filter((r) => !/F$/.test(String(r.d[0])) || String(r.d[3]) !== 'stock') // drop B3 fractional tickers (…F)
-    .map((r) => {
-      const type = String(r.d[3] ?? '')
-      const label = type === 'fund' ? 'Fundo' : type === 'dr' ? 'BDR' : type === 'stock' ? 'Ação' : type
-      return { symbol: r.s, ticker: String(r.d[0]), name: String(r.d[1] ?? r.d[0]), logo: tvLogo(r.d[2] as string), sub: `${label} · ${region}`, currency: region === 'B3' ? 'R$' : 'US$' }
-    })
-  const [br, us] = await Promise.all([
-    scan('brazil', body(8), signal).then((x) => map(x, 'B3')).catch(() => []),
-    scan('america', body(4), signal).then((x) => map(x, 'EUA')).catch(() => []),
-  ])
-  return [...local, ...br, ...us].slice(0, 12)
+  const run = (k: ClassKey, n: number) => scanClass(k, { search: q.trim(), limit: n, signal }).then((x) => x.map(toAsset(k))).catch(() => [] as Asset[])
+  if (cls) return run(cls, 12)
+  const [b3, us, cr] = await Promise.all([run('b3', 6), run('us', 4), run('crypto', 4)])
+  return [...fx, ...b3, ...us, ...cr].slice(0, 12)
 }
 
 /** Fetch TradingView's RSI for every timeframe of one symbol. */

@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 import { BellRing, Boxes, Lock, RefreshCw, Search, Trash2, TriangleAlert } from 'lucide-react'
 import { CLASSIC_URL } from '../lib/supabase'
 import { signal } from '../lib/heatmap'
-import { indexFromRsi } from '../lib/market'
+import { CLASSES, priceDigits, useClassScan, type ClassKey } from '../lib/classes'
 import { useRoles } from '../lib/roles'
 import { Delta, Empty, Gauge, Modal, PageHeader, Seg, Skel, toast, Hint } from '../components/ui'
 import Gate from '../components/Gate'
@@ -14,7 +14,7 @@ import { HELP } from '../lib/help'
    { mode: 'invest' } — buy-zone scores. */
 type Score = { frequency: string; rsi: number | null; heat_x: number; heat_y: number; change_pct: number; volatility_pct: number; momentum: number }
 type Stock = { ticker: string; name?: string | null; sector?: string | null; logo?: string | null; price: number | null; change_pct: number | null; scores: Score[] }
-export type Market = 'us' | 'b3'
+export type Market = ClassKey
 
 const NAMES: Record<string, string> = { AMZN: 'Amazon', AAPL: 'Apple', GOOGL: 'Alphabet', META: 'Meta', MSFT: 'Microsoft', NVDA: 'NVIDIA', TSLA: 'Tesla' }
 const FREQ_US = [
@@ -41,42 +41,6 @@ const saveAlerts = (a: StockAlert[]) => {
   }
 }
 
-
-/** B3 scores straight from the TradingView scanner (official base): top 50 stocks by volume, TradingView RSI(14) per timeframe → Treend index. */
-const B3_COLS = [['h1', 'RSI|60'], ['h4', 'RSI|240'], ['d1', 'RSI'], ['w1', 'RSI|1W'], ['m1', 'RSI|1M']] as const
-const useScanner = (market: Market) =>
-  useQuery({
-    queryKey: ['stocks-scan', market],
-    staleTime: 60_000,
-    refetchInterval: 2 * 60_000,
-    queryFn: async () => {
-      const r = await fetch(`https://scanner.tradingview.com/${market === 'b3' ? 'brazil' : 'america'}/scan`, {
-        method: 'POST',
-        headers: { 'content-type': 'text/plain;charset=UTF-8' },
-        body: JSON.stringify({
-          filter: [
-            { left: 'type', operation: 'equal', right: 'stock' },
-            { left: 'is_primary', operation: 'equal', right: true },
-            ...(market === 'us' ? [{ left: 'exchange', operation: 'in_range', right: ['NASDAQ', 'NYSE'] }] : []),
-          ],
-          columns: ['name', 'description', 'logoid', 'close', 'change', 'sector', ...B3_COLS.map((c) => c[1])],
-          sort: { sortBy: 'Value.Traded', sortOrder: 'desc' },
-          range: [0, market === 'b3' ? 400 : 6000],
-        }),
-      })
-      if (!r.ok) throw new Error('Dados de mercado indisponíveis no momento.')
-      const j: { data: { s: string; d: (string | number | null)[] }[] } = await r.json()
-      const stocks: Stock[] = j.data.map(({ d }) => ({
-        ticker: String(d[0]), name: String(d[1] ?? d[0]), logo: d[2] ? `https://s3-symbol-logo.tradingview.com/${d[2]}.svg` : null,
-        price: d[3] as number | null, change_pct: d[4] == null ? null : Math.round((d[4] as number) * 100) / 100, sector: (d[5] as string) ?? null,
-        scores: B3_COLS.map(([f], i) => {
-          const rsi = d[6 + i] as number | null
-          return { frequency: f, rsi: rsi == null ? null : Math.round(rsi * 10) / 10, heat_x: indexFromRsi(rsi) ?? 50, heat_y: 55, change_pct: 0, volatility_pct: 0, momentum: 0 }
-        }),
-      }))
-      return { at: Date.now(), stocks, updated: new Date().toISOString() }
-    },
-  })
 
 export function StockLogo({ t, size = 28, src }: { t: string; size?: number; src?: string | null }) {
   const [err, setErr] = useState(false)
@@ -105,6 +69,7 @@ export default function StocksInvest() {
 
 export function Access({ market = 'us' }: { market?: Market }) {
   const { hasStocksAccess, loading } = useRoles()
+  if (market === 'crypto' || market === 'fx') return <Board market={market} />
   if (loading) return <Skel h={420} />
   if (!hasStocksAccess)
     return (
@@ -119,13 +84,15 @@ export function Access({ market = 'us' }: { market?: Market }) {
 
 function Board({ market }: { market: Market }) {
   const qc = useQueryClient()
-  const { data, isLoading, isError, isFetching } = useScanner(market)
+  const scan = useClassScan(market)
+  const data = useMemo(() => (scan.data ? { stocks: scan.data as unknown as Stock[], updated: new Date(scan.dataUpdatedAt).toISOString() } : undefined), [scan.data, scan.dataUpdatedAt])
+  const { isLoading, isError, isFetching } = scan
   const [page, setPage] = useState(0)
   const PAGE = 100
   const [query, setQuery] = useState('')
   const all = useMemo(() => data?.stocks ?? [], [data])
   const stocks = useMemo(() => all.filter((s) => !query || `${s.ticker} ${s.name ?? ''}`.toLowerCase().includes(query.toLowerCase())), [all, query])
-  const cur = market === 'b3' ? 'R$' : 'US$'
+  const cur = CLASSES[market].currency
   FREQ = FREQ_B3
   const nameOf = (s?: Stock) => (s ? s.name || NAMES[s.ticker] || s.ticker : '')
   const [sel, setSel] = useState<{ t: string; f: string }>({ t: market === 'b3' ? 'PETR4' : 'AAPL', f: 'd1' })
@@ -156,7 +123,7 @@ function Board({ market }: { market: Market }) {
     } catch {
       /* ignore */
     }
-    qc.invalidateQueries({ queryKey: ['stocks-scan', market] })
+    qc.invalidateQueries({ queryKey: ['class-scan', market] })
   }
 
   const stock = stocks.find((s) => s.ticker === sel.t) ?? stocks[0]
@@ -183,9 +150,9 @@ function Board({ market }: { market: Market }) {
         <div className="row between wrap" style={{ gap: 12, marginBottom: 16 }}>
           <div className="input-affix" style={{ width: 320, maxWidth: '100%' }}>
             <span><Search size={15} /></span>
-            <input className="input" style={{ fontFamily: 'var(--font)' }} placeholder={market === 'b3' ? 'Buscar ticker ou empresa (ex.: PETR4, Vale)' : 'Buscar ticker ou empresa (ex.: AAPL, Nvidia)'} value={query} onChange={(e) => { setQuery(e.target.value); setPage(0) }} />
+            <input className="input" style={{ fontFamily: 'var(--font)' }} placeholder={`Buscar ${CLASSES[market].placeholder}`} value={query} onChange={(e) => { setQuery(e.target.value); setPage(0) }} />
           </div>
-          <span className="tiny faint">{all.length} ações {market === 'b3' ? 'da B3' : 'da NASDAQ e NYSE'} · ordenadas por volume · atualização a cada 2 min</span>
+          <span className="tiny faint">{all.length} ativos · ordenados por volume · atualização a cada 2 min</span>
         </div>
       )}
       {false && <div className="stock-chips">
@@ -194,7 +161,7 @@ function Board({ market }: { market: Market }) {
             <StockLogo src={s.logo} t={s.ticker} />
             <div style={{ minWidth: 0, textAlign: 'left' }}>
               <b>{s.ticker}</b>
-              <div className="tiny faint mono">{s.price != null ? `${cur} ${num(s.price, 2)}` : nameOf(s)}</div>
+              <div className="tiny faint mono">{s.price != null ? `${cur} ${num(s.price, priceDigits(s.price))}` : nameOf(s)}</div>
             </div>
             {s.change_pct != null && <span style={{ marginLeft: 'auto' }}><Delta v={s.change_pct} /></span>}
           </button>
@@ -267,7 +234,7 @@ function Board({ market }: { market: Market }) {
                   <div className="kv"><span>Variação na janela</span><b className={`mono ${score.change_pct >= 0 ? 'up' : 'down'}`}>{score.change_pct >= 0 ? '+' : ''}{num(score.change_pct, 2)}%</b></div>
                   <div className="kv"><span>Volatilidade<Hint text={HELP.volatility} /></span><b className="mono">{num(score.volatility_pct, 1)}%</b></div>
                   <div className="kv"><span>Momentum<Hint text={HELP.momentum} /></span><b className={`mono ${score.momentum >= 0 ? 'up' : 'down'}`}>{score.momentum >= 0 ? '+' : ''}{num(score.momentum, 1)}</b></div>
-                  {stock.price != null && <div className="kv"><span>Preço</span><b className="mono">{cur} {num(stock.price, 2)}</b></div>}
+                  {stock.price != null && <div className="kv"><span>Preço</span><b className="mono">{cur} {num(stock.price, priceDigits(stock.price))}</b></div>}
                 </div>
               </div>
             </div>

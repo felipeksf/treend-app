@@ -12,6 +12,8 @@ const CURRENCIES = {
   GBP: { q: ['libra esterlina câmbio', 'libra esterlina cotação'], re: /libra|\bGBP\b|banco da inglaterra|\bBoE\b/i },
   CNY: { q: ['yuan câmbio China', 'yuan moeda chinesa'], re: /yuan|renminbi|\bCNY\b|banco do povo/i },
   JPY: { q: ['iene câmbio Japão', 'iene moeda japonesa'], re: /\biene|\byen\b|\bJPY\b|banco do jap/i },
+  B3: { q: ['Ibovespa ações hoje', 'bolsa brasileira B3 ações'], re: /ibovespa|\bB3\b|bolsa brasileira|petrobras|\bvale\b|ita[uú] unibanco|bradesco|ambev|weg\b|magazine luiza/i },
+  US: { q: ['Wall Street ações Nasdaq', 'S&P 500 bolsa americana'], re: /wall street|nasdaq|s&p ?500|dow jones|nyse|bolsas? (de )?nova york|bolsa americana|nvidia|apple|tesla|microsoft|amazon/i },
   CRYPTO: { q: ['bitcoin cotação', 'USDT stablecoin real'], re: /bitcoin|\bBTC\b|cripto|stablecoin|tether|\bUSDT\b|ethereum/i },
 }
 

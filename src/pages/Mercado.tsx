@@ -3,10 +3,24 @@ import { useSearchParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { ArrowLeft, Loader2, Mic, RefreshCw, Search } from 'lucide-react'
 import { analyze, searchAssets, zoneOf, type Asset } from '../lib/market'
+import { CLASSES, CLASS_LIST, type ClassKey, type Row } from '../lib/classes'
+import type { NavigateFunction } from 'react-router-dom'
 import { Delta, Gauge, Hint, Toaster } from '../components/ui'
 import { num, timeAgo } from '../lib/format'
 
-const SUGGESTIONS = ['PETR4', 'VALE3', 'Dólar', 'Bitcoin', 'ITUB4', 'Euro', 'WEGE3', 'AAPL']
+const SUGGESTIONS: Record<ClassKey, string[]> = {
+  b3: ['PETR4', 'VALE3', 'ITUB4', 'BBAS3', 'WEGE3', 'B3SA3'],
+  us: ['AAPL', 'NVDA', 'MSFT', 'TSLA', 'AMZN', 'GOOGL'],
+  crypto: ['Bitcoin', 'Ethereum', 'Solana', 'XRP', 'BNB', 'Dogecoin'],
+  fx: ['Dólar', 'Euro', 'Libra', 'Yuan', 'Iene', 'Franco'],
+}
+
+/** Open the analysis of a row coming from any class list (overview, heatmaps). */
+export function openAsset(nav: NavigateFunction, r: Row, k: ClassKey) {
+  const a: Asset = { symbol: r.symbol, ticker: r.ticker, name: r.name, logo: r.logo, currency: CLASSES[k].currency, sub: CLASSES[k].label }
+  try { sessionStorage.setItem('treend-v2-asset', JSON.stringify(a)) } catch { /* ignore */ }
+  nav(`/mercado?c=${k}&s=${encodeURIComponent(r.symbol)}`)
+}
 
 function AssetLogo({ a, size = 36 }: { a: Asset; size?: number }) {
   const [err, setErr] = useState(false)
@@ -28,19 +42,21 @@ export default function Mercado() {
   const choose = (a: Asset) => {
     setPicked(a)
     try { sessionStorage.setItem('treend-v2-asset', JSON.stringify(a)) } catch { /* ignore */ }
-    setParams({ s: a.symbol })
+    setParams({ c: cls, s: a.symbol })
   }
-  const back = () => setParams({})
+  const cls = (params.get('c') as ClassKey) in CLASSES ? (params.get('c') as ClassKey) : 'b3'
+  const setCls = (c: ClassKey) => setParams({ c })
+  const back = () => setParams({ c: cls })
 
   return (
     <div className="page mercado">
-      {asset ? <Result asset={asset} onBack={back} onPick={choose} /> : <SearchHome onPick={choose} />}
+      {asset ? <Result asset={asset} cls={cls} onBack={back} onPick={choose} /> : <SearchHome cls={cls} setCls={setCls} onPick={choose} />}
       <Toaster />
     </div>
   )
 }
 
-function SearchBox({ onPick, autoFocus, compact }: { onPick: (a: Asset) => void; autoFocus?: boolean; compact?: boolean }) {
+function SearchBox({ onPick, autoFocus, compact, cls }: { onPick: (a: Asset) => void; autoFocus?: boolean; compact?: boolean; cls: ClassKey }) {
   const [q, setQ] = useState('')
   const [debounced, setDebounced] = useState('')
   const [open, setOpen] = useState(false)
@@ -50,10 +66,10 @@ function SearchBox({ onPick, autoFocus, compact }: { onPick: (a: Asset) => void;
 
   useEffect(() => { const t = setTimeout(() => setDebounced(q), 220); return () => clearTimeout(t) }, [q])
   const { data: results = [], isFetching } = useQuery({
-    queryKey: ['asset-search', debounced],
+    queryKey: ['asset-search', cls, debounced],
     enabled: debounced.trim().length > 0,
     staleTime: 60_000,
-    queryFn: ({ signal }) => searchAssets(debounced, signal),
+    queryFn: ({ signal }) => searchAssets(debounced, signal, cls),
   })
   useEffect(() => setHi(0), [debounced])
   useEffect(() => {
@@ -94,7 +110,7 @@ function SearchBox({ onPick, autoFocus, compact }: { onPick: (a: Asset) => void;
           onChange={(e) => { setQ(e.target.value); setOpen(true) }}
           onFocus={() => setOpen(true)}
           onKeyDown={onKey}
-          placeholder="Qual ativo você deseja analisar?"
+          placeholder={CLASSES[cls].placeholder}
           aria-label="Buscar ativo"
           role="combobox"
           aria-expanded={open}
@@ -118,25 +134,30 @@ function SearchBox({ onPick, autoFocus, compact }: { onPick: (a: Asset) => void;
   )
 }
 
-function SearchHome({ onPick }: { onPick: (a: Asset) => void }) {
+function SearchHome({ onPick, cls, setCls }: { onPick: (a: Asset) => void; cls: ClassKey; setCls: (c: ClassKey) => void }) {
+  const q = CLASSES[cls].question
+  const cut = q.lastIndexOf(' ')
   const run = async (s: string) => {
-    const r = await searchAssets(s)
+    const r = await searchAssets(s, undefined, cls)
     if (r[0]) onPick(r[0])
   }
   return (
     <div className="mercado-home">
-      <h1>Qual ativo deseja <span className="serif">analisar?</span><Hint text="Pesquise ações da B3 e dos EUA, moedas e criptomoedas e veja o índice Treend de 0 a 100 em cada tempo gráfico." side="bottom" /></h1>
+      <div className="class-switch" role="tablist" aria-label="Classe de ativo">
+        {CLASS_LIST.map((c) => <button key={c.key} role="tab" aria-selected={cls === c.key} className={cls === c.key ? 'on' : ''} onClick={() => setCls(c.key)}>{c.label}</button>)}
+      </div>
+      <h1 key={cls} className="q-anim">{q.slice(0, cut)} <span className="serif">{q.slice(cut + 1)}</span><Hint text="Pesquise ações da B3 e dos EUA, moedas e criptomoedas e veja o índice Treend de 0 a 100 em cada tempo gráfico." side="bottom" /></h1>
       <p>Digite o nome ou o código do ativo e veja o índice Treend em cada tempo gráfico.</p>
-      <SearchBox onPick={onPick} autoFocus />
+      <SearchBox key={cls} onPick={onPick} autoFocus cls={cls} />
       <div className="mercado-sugs">
         <span className="tiny faint">Sugestões</span>
-        {SUGGESTIONS.map((s) => <button key={s} className="chip" onClick={() => run(s)}>{s}</button>)}
+        {SUGGESTIONS[cls].map((s) => <button key={s} className="chip" onClick={() => run(s)}>{s}</button>)}
       </div>
     </div>
   )
 }
 
-function Result({ asset, onBack, onPick }: { asset: Asset; onBack: () => void; onPick: (a: Asset) => void }) {
+function Result({ asset, cls, onBack, onPick }: { asset: Asset; cls: ClassKey; onBack: () => void; onPick: (a: Asset) => void }) {
   const { data, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ['analysis', asset.symbol],
     queryFn: () => analyze(asset),
@@ -150,7 +171,7 @@ function Result({ asset, onBack, onPick }: { asset: Asset; onBack: () => void; o
     <>
       <div className="row between wrap" style={{ gap: 12, marginBottom: 22 }}>
         <button className="btn ghost sm" onClick={onBack}><ArrowLeft /> Nova busca</button>
-        <div style={{ width: 'min(420px, 100%)' }}><SearchBox onPick={onPick} compact /></div>
+        <div style={{ width: 'min(420px, 100%)' }}><SearchBox onPick={onPick} compact cls={cls} /></div>
       </div>
 
       <div className="card pad row wrap" style={{ gap: 18, marginBottom: 16 }}>

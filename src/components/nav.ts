@@ -1,6 +1,6 @@
 import {
   BarChart3, BookOpen, Calculator, CalendarDays, Compass, FlaskConical, Gauge, Grid3x3, History, LifeBuoy,
-  MessagesSquare, Newspaper, Radar, Cpu, Search, ScrollText, Sparkles, LineChart, Shield, Boxes, PlayCircle,
+  MessagesSquare, Newspaper, Radar, Cpu, Search, LayoutGrid, Bitcoin, Coins, ScrollText, Sparkles, LineChart, Shield, Boxes, PlayCircle,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -30,12 +30,15 @@ export const NAV: { group: string; items: NavItem[] }[] = [
   {
     group: 'Mercado',
     items: [
+      { to: '/mercados', label: 'Mercados', icon: LayoutGrid, desc: 'Ações B3, Stocks, Cripto e Câmbio' },
       { to: '/mercado', label: 'Analisar ativo', icon: Search, desc: 'Busque qualquer ativo e veja o índice Treend por tempo gráfico' },
       { to: '/noticias', label: 'Notícias', icon: Newspaper, kbd: '9', desc: 'Feed de câmbio em tempo real' },
       { to: '/reports', label: 'Reports', icon: ScrollText, desc: 'Análises semanais da Treend' },
       { to: '/agenda', label: 'Agenda', icon: CalendarDays, desc: 'Eventos, reports e mentorias' },
       { to: '/stocks-invest', label: 'Stocks Invest', icon: Boxes, desc: 'Zonas de compra de ações' },
       { to: '/acoes-b3', label: 'Ações B3', icon: Boxes, desc: 'Índice Treend para a bolsa brasileira' },
+      { to: '/cripto', label: 'Cripto', icon: Bitcoin, desc: 'Índice Treend para criptomoedas' },
+      { to: '/cambio', label: 'Câmbio', icon: Coins, desc: 'Índice Treend para moedas contra o real' },
     ],
   },
   {

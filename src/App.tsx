@@ -30,6 +30,9 @@ const Admin = lazy(() => import('./pages/Admin'))
 const Mcp = lazy(() => import('./pages/Mcp'))
 const StocksB3 = lazy(() => import('./pages/StocksB3'))
 const Mercado = lazy(() => import('./pages/Mercado'))
+const Modos = lazy(() => import('./pages/Modos'))
+const Cripto = lazy(() => import('./pages/Cripto'))
+const Cambio = lazy(() => import('./pages/Cambio'))
 const Onboarding = lazy(() => import('./pages/Onboarding'))
 const Planos = lazy(() => import('./pages/Planos'))
 const Assinatura = lazy(() => import('./pages/Assinatura'))
@@ -82,7 +85,7 @@ export default function App() {
             ['/', Dashboard], ['/concierge', Concierge], ['/projecoes', Projections], ['/mapa', Heatmap], ['/radar', RadarPage],
             ['/calculadora', CalculatorPage], ['/simulador', Simulator], ['/historico', HistoryPage], ['/noticias', News],
             ['/reports', Reports], ['/agenda', Agenda], ['/academy', Academy], ['/tutoriais', Tutorials], ['/suporte', Support],
-            ['/cmp', Cmp], ['/chat', Chat], ['/stocks-invest', StocksInvest], ['/admin/*', Admin], ['/mcp', Mcp], ['/acoes-b3', StocksB3], ['/mercado', Mercado], ['/conta', Conta],
+            ['/cmp', Cmp], ['/chat', Chat], ['/stocks-invest', StocksInvest], ['/admin/*', Admin], ['/mcp', Mcp], ['/acoes-b3', StocksB3], ['/mercado', Mercado], ['/mercados', Modos], ['/mercados/:cls', Modos], ['/cripto', Cripto], ['/cambio', Cambio], ['/conta', Conta],
           ] as const
         ).map(([p, C]) => (
           <Route key={p} path={p} element={<Suspense fallback={<Fallback />}><C /></Suspense>} />
