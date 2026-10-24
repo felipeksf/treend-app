@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { ArrowRight, BellRing, Maximize2, Minimize2, Orbit, TrendingDown, TrendingUp, X } from 'lucide-react'
+import { ArrowRight, BellRing, Maximize2, Minimize2, Orbit, Search, TrendingDown, TrendingUp, X } from 'lucide-react'
 import { CLASSES, CLASS_LIST, priceDigits, useClassScan, type ClassKey, type Row } from '../lib/classes'
 import { zoneOf, type Asset } from '../lib/market'
-import { openAsset, SearchBox } from './Mercado'
+import { openAsset } from './Mercado'
 import { Delta, Hint, PageHeader, Skel } from '../components/ui'
 import { num } from '../lib/format'
 import Gate from '../components/Gate'
@@ -18,6 +18,7 @@ import AssetAlertModal from '../components/AssetAlertModal'
    or when the tab is hidden. */
 
 type Side = 'buy' | 'sell'
+const norm = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 const FRAMES: [string, string][] = [['h1', '1 hora'], ['h4', '4 horas'], ['d1', 'Diário'], ['w1', 'Semanal'], ['m1', 'Mensal']]
 const MAX = 32
 
@@ -38,23 +39,26 @@ export default function Cenarios() {
   const side: Side = params.get('lado') === 'vender' ? 'sell' : 'buy'
   const set = (patch: Record<string, string>) => setParams({ c: k, lado: side === 'sell' ? 'vender' : 'comprar', ...patch })
   const { data, isLoading } = useClassScan(k)
-  const [only, setOnly] = useState<string | null>(null) // symbol picked in the search
+  const [q, setQ] = useState('') // live search: bubbles filter as the user types
   const [open, setOpen] = useState<Row | null>(null)
   const [full, setFull] = useState(false)
   const wrap = useRef<HTMLDivElement>(null)
-  useEffect(() => { setOnly(null); setOpen(null) }, [k])
+  useEffect(() => { setQ(''); setOpen(null) }, [k])
 
   const items = useMemo(() => {
     const all = (data ?? []).map((r) => scoreOf(r, side)).filter((x): x is Item => !!x)
-    if (only) return all.filter((x) => x.r.symbol === only)
+    const s = norm(q.trim())
+    if (s) {
+      // ticker/name first; the sector only when nothing matches directly
+      const direct = all.filter((x) => norm(`${x.r.ticker} ${x.r.name}`).includes(s))
+      const pool = direct.length ? direct : all.filter((x) => norm(x.r.category ?? '').includes(s))
+      const rank = (x: Item) => (norm(x.r.ticker).startsWith(s) ? 0 : norm(x.r.name).startsWith(s) ? 1 : 2)
+      return pool.sort((a, b) => rank(a) - rank(b) || b.strength - a.strength).slice(0, MAX)
+    }
     return all.sort((a, b) => b.strength - a.strength).slice(0, MAX)
-  }, [data, side, only])
+  }, [data, side, q])
   const extremes = items.filter((x) => x.hits > 0).length
 
-  const pick = (a: Asset) => {
-    const row = (data ?? []).find((r) => r.symbol === a.symbol)
-    if (row) { setOnly(row.symbol); setOpen(row) }
-  }
   const toggleFull = async () => {
     try {
       if (!document.fullscreenElement) await wrap.current?.requestFullscreen()
@@ -76,18 +80,21 @@ export default function Cenarios() {
           <button role="tab" aria-selected={side === 'buy'} className={`buy ${side === 'buy' ? 'on' : ''}`} onClick={() => set({ lado: 'comprar' })}><TrendingDown size={16} /> Quero comprar</button>
           <button role="tab" aria-selected={side === 'sell'} className={`sell ${side === 'sell' ? 'on' : ''}`} onClick={() => set({ lado: 'vender' })}><TrendingUp size={16} /> Quero vender</button>
         </div>
-        <div className="cen-search"><SearchBox key={k} cls={k} compact onPick={pick} placeholder={`Buscar ativo em ${CLASSES[k].label}…`} /></div>
-        {only && <button className="btn sm" onClick={() => { setOnly(null); setOpen(null) }}><X /> Ver todos</button>}
+        <div className="cen-search input-affix">
+          <span><Search size={16} /></span>
+          <input className="input" value={q} onChange={(e) => setQ(e.target.value)} placeholder={`Buscar ativo em ${CLASSES[k].label}…`} />
+          {q && <button className="icon-btn cen-clear" onClick={() => setQ('')} aria-label="Limpar"><X size={14} /></button>}
+        </div>
       </div>
 
       <Gate what="os cenários">
         {isLoading ? <Skel h={620} /> : (
           <div className={`cen-wrap ${full ? 'full' : ''}`} ref={wrap}>
             <div className="cen-top">
-              <span className="small muted">{only ? 'Ativo selecionado' : <><b style={{ color: side === 'buy' ? 'var(--up)' : 'var(--down)' }}>{extremes}</b> de {items.length} em leitura extrema {side === 'buy' ? '(≥ 90)' : '(≤ 20)'} · {CLASSES[k].label}<Hint text="O ponto colorido indica pelo menos um tempo gráfico em extremo." /></>}</span>
+              <span className="small muted">{q.trim() ? <>{items.length ? <><b>{items.length}</b> {items.length === 1 ? 'ativo encontrado' : 'ativos encontrados'} para “{q.trim()}”</> : <>Nenhum ativo de {CLASSES[k].label} encontrado para “{q.trim()}”</>}</> : <><b style={{ color: side === 'buy' ? 'var(--up)' : 'var(--down)' }}>{extremes}</b> de {items.length} em leitura extrema {side === 'buy' ? '(≥ 90)' : '(≤ 20)'} · {CLASSES[k].label}<Hint text="O ponto colorido indica pelo menos um tempo gráfico em extremo." /></>}</span>
               <button className="icon-btn" onClick={toggleFull} title={full ? 'Sair da tela cheia' : 'Tela cheia'} aria-label="Tela cheia">{full ? <Minimize2 size={16} /> : <Maximize2 size={16} />}</button>
             </div>
-            <Field key={`${k}-${side}-${only ?? ''}-${full}`} items={items} side={side} onPick={setOpen} />
+            <Field key={`${k}-${side}-${items.map((x) => x.r.symbol).join()}-${full}`} items={items} side={side} onPick={setOpen} />
             {open && <AssetPop r={open} k={k} side={side} onClose={() => setOpen(null)} />}
           </div>
         )}
