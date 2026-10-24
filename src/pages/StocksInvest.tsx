@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { BellRing, Boxes, Lock, RefreshCw, Search, Trash2, TriangleAlert } from 'lucide-react'
-import { supabase, CLASSIC_URL } from '../lib/supabase'
+import { CLASSIC_URL } from '../lib/supabase'
 import { signal } from '../lib/heatmap'
 import { indexFromRsi } from '../lib/market'
 import { useRoles } from '../lib/roles'
@@ -40,58 +40,28 @@ const saveAlerts = (a: StockAlert[]) => {
     /* ignore */
   }
 }
-const TTL = 15 * 60_000
 
-const readCache = (): { at: number; stocks: Stock[]; updated?: string } | null => {
-  try {
-    return JSON.parse(localStorage.getItem(CACHE) || 'null')
-  } catch {
-    return null
-  }
-}
-
-const useStocks = (enabled: boolean) =>
-  useQuery({
-    queryKey: ['stocks-invest'],
-    enabled,
-    staleTime: TTL,
-    refetchInterval: TTL,
-    refetchOnWindowFocus: false,
-    retry: 1,
-    queryFn: async () => {
-      const c = readCache()
-      if (c?.stocks?.length && Date.now() - c.at < TTL) return c
-      const { data, error } = await supabase.functions.invoke('stocks-heatmap', { body: { mode: 'invest' } })
-      if (error || data?.error) {
-        if (c?.stocks?.length) return c
-        throw error ?? new Error(data.error)
-      }
-      const out = { at: Date.now(), stocks: (data?.stocks ?? []) as Stock[], updated: data?.updated_at as string | undefined }
-      try {
-        if (out.stocks.length) localStorage.setItem(CACHE, JSON.stringify(out))
-      } catch {
-        /* ignore */
-      }
-      return out
-    },
-  })
 
 /** B3 scores straight from the TradingView scanner (official base): top 50 stocks by volume, TradingView RSI(14) per timeframe → Treend index. */
 const B3_COLS = [['h1', 'RSI|60'], ['h4', 'RSI|240'], ['d1', 'RSI'], ['w1', 'RSI|1W'], ['m1', 'RSI|1M']] as const
-const useB3 = () =>
+const useScanner = (market: Market) =>
   useQuery({
-    queryKey: ['stocks-b3'],
+    queryKey: ['stocks-scan', market],
     staleTime: 60_000,
     refetchInterval: 2 * 60_000,
     queryFn: async () => {
-      const r = await fetch('https://scanner.tradingview.com/brazil/scan', {
+      const r = await fetch(`https://scanner.tradingview.com/${market === 'b3' ? 'brazil' : 'america'}/scan`, {
         method: 'POST',
         headers: { 'content-type': 'text/plain;charset=UTF-8' },
         body: JSON.stringify({
-          filter: [{ left: 'type', operation: 'equal', right: 'stock' }, { left: 'is_primary', operation: 'equal', right: true }],
+          filter: [
+            { left: 'type', operation: 'equal', right: 'stock' },
+            { left: 'is_primary', operation: 'equal', right: true },
+            ...(market === 'us' ? [{ left: 'exchange', operation: 'in_range', right: ['NASDAQ', 'NYSE'] }] : []),
+          ],
           columns: ['name', 'description', 'logoid', 'close', 'change', 'sector', ...B3_COLS.map((c) => c[1])],
           sort: { sortBy: 'Value.Traded', sortOrder: 'desc' },
-          range: [0, 400],
+          range: [0, market === 'b3' ? 400 : 6000],
         }),
       })
       if (!r.ok) throw new Error('Dados de mercado indisponíveis no momento.')
@@ -124,7 +94,7 @@ export default function StocksInvest() {
         eyebrow={<><Boxes size={13} /> Treend Stocks Invest</>}
         title="Zonas de compra"
         accent="em tempo real."
-        sub="Quanto maior o índice Treend, mais atrativa a janela de compra. Sete ações americanas, cinco janelas."
+        sub="Quanto maior o índice Treend, mais atrativa a janela de compra. Todas as ações da NASDAQ e da NYSE, em cinco tempos gráficos."
       />
       <Gate what="o Stocks Invest">
         <Access />
@@ -149,14 +119,14 @@ export function Access({ market = 'us' }: { market?: Market }) {
 
 function Board({ market }: { market: Market }) {
   const qc = useQueryClient()
-  const us = useStocks(market === 'us')
-  const b3 = useB3()
-  const { data, isLoading, isError, isFetching } = market === 'us' ? us : b3
+  const { data, isLoading, isError, isFetching } = useScanner(market)
+  const [page, setPage] = useState(0)
+  const PAGE = 100
   const [query, setQuery] = useState('')
   const all = useMemo(() => data?.stocks ?? [], [data])
   const stocks = useMemo(() => all.filter((s) => !query || `${s.ticker} ${s.name ?? ''}`.toLowerCase().includes(query.toLowerCase())), [all, query])
   const cur = market === 'b3' ? 'R$' : 'US$'
-  FREQ = market === 'b3' ? FREQ_B3 : FREQ_US
+  FREQ = FREQ_B3
   const nameOf = (s?: Stock) => (s ? s.name || NAMES[s.ticker] || s.ticker : '')
   const [sel, setSel] = useState<{ t: string; f: string }>({ t: market === 'b3' ? 'PETR4' : 'AAPL', f: 'd1' })
   const [alertFor, setAlertFor] = useState<{ t: string; f: string } | null>(null)
@@ -186,7 +156,7 @@ function Board({ market }: { market: Market }) {
     } catch {
       /* ignore */
     }
-    qc.invalidateQueries({ queryKey: [market === 'us' ? 'stocks-invest' : 'stocks-b3'] })
+    qc.invalidateQueries({ queryKey: ['stocks-scan', market] })
   }
 
   const stock = stocks.find((s) => s.ticker === sel.t) ?? stocks[0]
@@ -209,16 +179,16 @@ function Board({ market }: { market: Market }) {
 
   return (
     <>
-      {market === 'b3' && (
+      {(
         <div className="row between wrap" style={{ gap: 12, marginBottom: 16 }}>
           <div className="input-affix" style={{ width: 320, maxWidth: '100%' }}>
             <span><Search size={15} /></span>
-            <input className="input" style={{ fontFamily: 'var(--font)' }} placeholder="Buscar ticker ou empresa (ex.: PETR4, Vale)" value={query} onChange={(e) => setQuery(e.target.value)} />
+            <input className="input" style={{ fontFamily: 'var(--font)' }} placeholder={market === 'b3' ? 'Buscar ticker ou empresa (ex.: PETR4, Vale)' : 'Buscar ticker ou empresa (ex.: AAPL, Nvidia)'} value={query} onChange={(e) => { setQuery(e.target.value); setPage(0) }} />
           </div>
-          <span className="tiny faint">{all.length} ações da B3 · ordenadas por volume · atualização a cada 2 min</span>
+          <span className="tiny faint">{all.length} ações {market === 'b3' ? 'da B3' : 'da NASDAQ e NYSE'} · ordenadas por volume · atualização a cada 2 min</span>
         </div>
       )}
-      {market === 'us' && <div className="stock-chips">
+      {false && <div className="stock-chips">
         {stocks.map((s) => (
           <button key={s.ticker} className={`card stock-chip ${stock?.ticker === s.ticker ? 'on' : ''}`} onClick={() => setSel({ t: s.ticker, f: sel.f })}>
             <StockLogo src={s.logo} t={s.ticker} />
@@ -246,7 +216,7 @@ function Board({ market }: { market: Market }) {
                 <tr><th />{FREQ.map((f) => <th key={f.key}>{f.label}</th>)}</tr>
               </thead>
               <tbody>
-                {stocks.map((s) => (
+                {stocks.slice(page * PAGE, (page + 1) * PAGE).map((s) => (
                   <tr key={s.ticker}>
                     <td className="lbl"><span className="row gap-8"><StockLogo src={s.logo} t={s.ticker} size={22} />{s.ticker}</span></td>
                     {FREQ.map((f) => {
@@ -271,6 +241,15 @@ function Board({ market }: { market: Market }) {
                 ))}
               </tbody>
             </table>
+            {stocks.length > PAGE && (
+              <div className="row between" style={{ marginTop: 12 }}>
+                <span className="tiny faint">{page * PAGE + 1}–{Math.min(stocks.length, (page + 1) * PAGE)} de {stocks.length}</span>
+                <span className="row gap-8">
+                  <button className="btn sm" disabled={page === 0} onClick={() => setPage(page - 1)}>Anterior</button>
+                  <button className="btn sm" disabled={(page + 1) * PAGE >= stocks.length} onClick={() => setPage(page + 1)}>Próxima</button>
+                </span>
+              </div>
+            )}
           </div>
         </div>
 

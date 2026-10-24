@@ -4,8 +4,6 @@ import { useQuery } from '@tanstack/react-query'
 import { ArrowLeft, Loader2, Mic, RefreshCw, Search } from 'lucide-react'
 import { analyze, searchAssets, zoneOf, type Asset } from '../lib/market'
 import { Delta, Gauge, Hint, Toaster } from '../components/ui'
-import TradingViewChart from '../components/TradingViewChart'
-import { useRoles } from '../lib/roles'
 import { num, timeAgo } from '../lib/format'
 
 const SUGGESTIONS = ['PETR4', 'VALE3', 'Dólar', 'Bitcoin', 'ITUB4', 'Euro', 'WEGE3', 'AAPL']
@@ -145,8 +143,6 @@ function Result({ asset, onBack, onPick }: { asset: Asset; onBack: () => void; o
     refetchInterval: 60_000,
     staleTime: 30_000,
   })
-  const { isAdmin } = useRoles()
-  const dark = typeof document !== 'undefined' && document.documentElement.dataset.theme === 'dark'
   const best = useMemo(() => (data?.frames ?? []).filter((f) => f.index != null).sort((a, b) => (b.index ?? 0) - (a.index ?? 0))[0], [data])
   const digits = (data?.price ?? 0) < 10 ? 4 : 2
 
@@ -195,14 +191,6 @@ function Result({ asset, onBack, onPick }: { asset: Asset; onBack: () => void; o
         </>
       )}
 
-      {isAdmin && (
-      <div className="card" style={{ marginTop: 16 }}>
-        <div className="card-h"><h3>Gráfico TradingView <span className="pill" style={{ marginLeft: 6 }}>Somente admin</span></h3><span className="tiny faint">{asset.symbol}</span></div>
-        <div style={{ height: 'min(70vh, 620px)', padding: '12px 24px 24px' }}>
-          <TradingViewChart symbol={asset.symbol} interval="D" dark={dark} />
-        </div>
-      </div>
-      )}
       <p className="tiny faint" style={{ marginTop: 16 }}>Conteúdo informativo, não constitui recomendação de investimento.</p>
     </>
   )
