@@ -49,12 +49,14 @@ await Promise.all(Array.from({ length: 8 }, worker))
 const decode = (s = '') => s.replace(/<!\[CDATA\[|\]\]>/g, '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim()
 const tag = (xml, t) => decode(xml.match(new RegExp(`<${t}[^>]*>([\\s\\S]*?)</${t}>`, 'i'))?.[1])
 const FXQ = { USD: 'dólar', EUR: 'euro', GBP: 'libra esterlina', CNY: 'yuan', JPY: 'iene', CAD: 'dólar canadense', AUD: 'dólar australiano', CHF: 'franco suíço', ARS: 'peso argentino', MXN: 'peso mexicano', CLP: 'peso chileno' }
-const names = Object.fromEntries([...b3, ...co].map((x) => [x.s, String(x.d[1] ?? '')]))
-const local = [...b3.map((x) => x.s).filter((x) => !x.endsWith('F')), ...fiis, ...FX, ...co.map((x) => x.s)]
+const names = Object.fromEntries([...b3, ...co, ...us, ...cr].map((x) => [x.s, String(x.d[1] ?? '')]))
+const local = [...b3.map((x) => x.s).filter((x) => !x.endsWith('F')), ...fiis, ...FX, ...co.map((x) => x.s), ...us.map((x) => x.s), ...cr.map((x) => x.s)]
 const query = (s) => {
   const code = s.split(':')[1]
   if (s.startsWith('FX_IDC:')) return `"${FXQ[code.slice(0, 3)]}" câmbio real`
   if (s.startsWith('BMFBOVESPA:')) return `"${code}"`
+  if (s.startsWith('NASDAQ:') || s.startsWith('NYSE:')) return `"${(names[s] || code).replace(/,? (Inc|Corp|Corporation|Ltd|Plc|Co|Company|Holdings?)\.?\b.*$/i, '')}" ações`
+  if (s.startsWith('BINANCE:')) return `"${names[s] || code.replace(/USDT$/, '')}" cripto`
   return `"${names[s]?.replace(/ Futures?$/i, '') || code}" preço`
 }
 let j = 0
@@ -85,7 +87,13 @@ const MAP = process.env.GNEWS_MAP || join(dirname(OUT), 'gnews-map.json')
 const gmap = await loadMap(MAP)
 const flat = Object.values(bySymbol).flat()
 await resolveAll(flat, gmap, 8)
-for (const k of Object.keys(bySymbol)) { bySymbol[k] = bySymbol[k].filter((n) => n.link && !n.link.startsWith('https://news.google.com/')); if (!bySymbol[k].length) delete bySymbol[k] }
+const isSearch = (n) => n.link.startsWith('https://www.google.com/search')
+for (const k of Object.keys(bySymbol)) {
+  let l = bySymbol[k].filter((n) => n.link && !n.link.startsWith('https://news.google.com/'))
+  // headlines without an article URL (open as a web search) only fill lists with few direct links
+  if (l.filter((n) => !isSearch(n)).length >= 5) l = l.filter((n) => !isSearch(n))
+  if (l.length) bySymbol[k] = l; else delete bySymbol[k]
+}
 mkdirSync(dirname(OUT), { recursive: true })
 await saveMap(MAP, gmap)
 mkdirSync(dirname(OUT), { recursive: true })
