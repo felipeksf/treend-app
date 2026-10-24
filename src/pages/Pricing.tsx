@@ -16,17 +16,18 @@ type Plan = { key: string; priceId: string; name: string; price: string; period:
 
 /** Promotional plans for /oferta. Fill the price IDs after creating the prices in Stripe. */
 export const OFFER_PLANS: Plan[] = [
-  { key: 'monthly', priceId: (import.meta.env.VITE_OFFER_MONTHLY as string) || 'price_OFERTA_MENSAL', name: 'Mensal', price: 'R$ 19,90', period: 'mês', note: 'Cobrado mensalmente' },
+  { key: 'monthly', priceId: 'price_1UUBc4FCE1ecOeles1vaNBJ9', name: 'Mensal', price: 'R$ 19,90', period: 'mês', note: 'Cobrado mensalmente' },
   { key: 'annual', priceId: (import.meta.env.VITE_OFFER_ANNUAL as string) || 'price_OFERTA_ANUAL', name: 'Anual', price: 'R$ 129', period: 'ano', note: 'Equivale a R$ 10,75/mês — 46% de economia', hl: true },
 ]
 
-export function Oferta() { return <Pricing plans={OFFER_PLANS} lead="oferta" quotes /> }
+// plans whose Stripe price isn't created yet stay hidden
+export function Oferta() { return <Pricing plans={OFFER_PLANS.filter((p) => !p.priceId.startsWith('price_OFERTA'))} lead="oferta" quotes /> }
 
 export default function Pricing({ plans = STRIPE_PLANS as Plan[], lead = '', quotes = false }: { plans?: Plan[]; lead?: string; quotes?: boolean }) {
   const STRIPE_PLANS_ = plans
   const { session } = useAuth()
   const [params] = useSearchParams()
-  const [plan, setPlan] = useState<string>('annual')
+  const [plan, setPlan] = useState<string>(plans.find((x) => x.hl)?.key ?? plans[0]?.key ?? 'monthly')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [busy, setBusy] = useState(false)
