@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
+import { CLASSES, CLASS_LIST, type ClassKey } from '../lib/classes'
+import AssetConcierge from '../components/AssetConcierge'
 import { ArrowRight, CheckCircle2, CornerDownLeft, Sparkles, Target, TrendingUp } from 'lucide-react'
 import { useQuotes } from '../lib/rates'
 import { FREQUENCIES, PROFILES, momentum, pick, signal, useHeatmap, volatility } from '../lib/heatmap'
@@ -33,6 +35,24 @@ function parse(text: string): Parsed {
 }
 
 export default function Concierge() {
+  const [params, setParams] = useSearchParams()
+  const k = ((params.get('c') as ClassKey) in CLASSES ? params.get('c') : 'fx') as ClassKey
+  const tabs = (
+    <div className="class-switch heat-switch" role="tablist" aria-label="Classe de ativo">
+      {CLASS_LIST.map((x) => <button key={x.key} role="tab" aria-selected={k === x.key} className={k === x.key ? 'on' : ''} onClick={() => setParams(x.key === 'fx' ? {} : { c: x.key })}>{x.emoji} {x.label}</button>)}
+    </div>
+  )
+  if (k !== 'fx') return (
+    <div className="page" style={{ maxWidth: 1080 }}>
+      {tabs}
+      <PageHeader eyebrow={<><Sparkles size={13} /> Concierge</>} title="Descreva sua operação." accent="Nós lemos o mercado." sub={`${CLASSES[k].label}: diga o ativo, o valor, o prazo e o que pretende fazer. Você recebe a leitura em cinco tempos gráficos, o plano de ação em partes, os cenários e as notícias do ativo.`} />
+      <AssetConcierge key={k} cls={k} />
+    </div>
+  )
+  return <FxConcierge tabs={tabs} />
+}
+
+function FxConcierge({ tabs }: { tabs: React.ReactNode }) {
   const [text, setText] = useState('')
   const [asked, setAsked] = useState<Parsed | null>(null)
   const [thinking, setThinking] = useState(false)
@@ -64,6 +84,7 @@ export default function Concierge() {
 
   return (
     <div className="page" style={{ maxWidth: 1080 }}>
+      {tabs}
       <PageHeader eyebrow={<><Sparkles size={13} /> Concierge</>} title="Descreva sua operação." accent="Nós lemos o mercado." sub="Cenário, plano de ação e estimativa de retorno — gerados a partir dos índices Treend em tempo real." />
 
       <div className="card feature" style={{ marginBottom: 16 }}>
