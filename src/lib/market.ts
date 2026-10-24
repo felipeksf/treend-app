@@ -27,7 +27,7 @@ export const indexFromRsi = (r: number | null) => {
 
 export const zoneOf = (i: number | null) =>
   i == null ? { label: 'Sem dados', c: 'var(--text-3)' }
-    : i >= 90 ? { label: 'Oportunidade forte', c: 'var(--up)' }
+    : i >= 90 ? { label: 'Desconto extremo', c: 'var(--up)' }
     : i >= 70 ? { label: 'Oportunidade', c: 'var(--up)' }
     : i > 20 && i < 45 ? { label: 'Atenção', c: 'var(--orange)' }
     : i <= 20 ? { label: 'Esticado', c: 'var(--down)' }

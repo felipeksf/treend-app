@@ -3,6 +3,7 @@
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { loadMap, resolveAll, saveMap } from './gnews.mjs'
+import { addImages, loadOg, saveOg } from './og.mjs'
 
 const OUT = process.argv[2] || 'dist/news.json'
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36'
@@ -112,6 +113,12 @@ mkdirSync(dirname(OUT), { recursive: true })
 await saveMap(MAP, gmap)
 
 mkdirSync(dirname(OUT), { recursive: true })
+// cover images for the portal view
+const OGP = process.env.OG_MAP || join(dirname(OUT), 'og-map.json')
+const ogmap = await loadOg(OGP)
+const fetchedOg = await addImages(news, ogmap)
+await saveOg(OGP, ogmap)
+console.log(`imagens: ${fetchedOg} novas consultas`)
 writeFileSync(OUT, JSON.stringify({ updatedAt: new Date().toISOString(), news }))
 const counts = news.reduce((a, n) => ((a[n.currency] = (a[n.currency] || 0) + 1), a), {})
 console.log(`news.json: ${news.length} itens`, counts)

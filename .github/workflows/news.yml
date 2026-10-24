@@ -23,13 +23,14 @@ jobs:
         with:
           node-version: 20
       - run: curl -sf https://novo.treend.com.br/gnews-map.json -o /tmp/gnews-map.json || echo '{}' > /tmp/gnews-map.json
-      - run: GNEWS_MAP=/tmp/gnews-map.json node scripts/fetch-news.mjs /tmp/news.json
-      - run: GNEWS_MAP=/tmp/gnews-map.json node scripts/fetch-asset-news.mjs /tmp/news-assets.json || echo 'aviso: notícias por ativo não atualizadas'
+      - run: curl -sf https://novo.treend.com.br/og-map.json -o /tmp/og-map.json || echo '{}' > /tmp/og-map.json
+      - run: OG_MAP=/tmp/og-map.json GNEWS_MAP=/tmp/gnews-map.json node scripts/fetch-news.mjs /tmp/news.json
+      - run: OG_MAP=/tmp/og-map.json GNEWS_MAP=/tmp/gnews-map.json node scripts/fetch-asset-news.mjs /tmp/news-assets.json || echo 'aviso: notícias por ativo não atualizadas'
       - name: Notícias em inglês e espanhol
         run: |
           for L in en es; do
-            GNEWS_MAP=/tmp/gnews-map.json node scripts/fetch-news-intl.mjs $L /tmp/news-$L.json || echo "aviso: news-$L"
-            NEWS_LANG=$L GNEWS_MAP=/tmp/gnews-map.json node scripts/fetch-asset-news.mjs /tmp/news-assets-$L.json || echo "aviso: news-assets-$L"
+            OG_MAP=/tmp/og-map.json GNEWS_MAP=/tmp/gnews-map.json node scripts/fetch-news-intl.mjs $L /tmp/news-$L.json || echo "aviso: news-$L"
+            NEWS_LANG=$L OG_MAP=/tmp/og-map.json GNEWS_MAP=/tmp/gnews-map.json node scripts/fetch-asset-news.mjs /tmp/news-assets-$L.json || echo "aviso: news-assets-$L"
           done
       - name: Publicar news.json no gh-pages
         run: |
@@ -38,6 +39,7 @@ jobs:
           cp /tmp/news.json /tmp/site/news.json
           [ -f /tmp/news-assets.json ] && cp /tmp/news-assets.json /tmp/site/news-assets.json
           cp /tmp/gnews-map.json /tmp/site/gnews-map.json
+          cp /tmp/og-map.json /tmp/site/og-map.json
           for f in news-en.json news-es.json news-assets-en.json news-assets-es.json; do [ -f /tmp/$f ] && cp /tmp/$f /tmp/site/$f; done
           cd /tmp/site
           git config user.name "treend-bot"

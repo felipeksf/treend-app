@@ -3,6 +3,7 @@
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { loadMap, resolveAll, saveMap } from './gnews.mjs'
+import { addImages, loadOg, saveOg } from './og.mjs'
 
 const LANG = process.argv[2] === 'es' ? 'es' : 'en'
 const OUT = process.argv[3] || `dist/news-${LANG}.json`
@@ -65,5 +66,11 @@ const gmap = await loadMap(MAP)
 const news = (await resolveAll(picked, gmap)).sort((a, b) => b.pubDate.localeCompare(a.pubDate)).slice(0, 240)
 mkdirSync(dirname(OUT), { recursive: true })
 await saveMap(MAP, gmap)
+// cover images for the portal view
+const OGP = process.env.OG_MAP || join(dirname(OUT), 'og-map.json')
+const ogmap = await loadOg(OGP)
+const fetchedOg = await addImages(news, ogmap)
+await saveOg(OGP, ogmap)
+console.log(`imagens: ${fetchedOg} novas consultas`)
 writeFileSync(OUT, JSON.stringify({ updatedAt: new Date().toISOString(), lang: LANG, news }))
 console.log(`news-${LANG}.json: ${news.length} itens`, Object.fromEntries(Object.entries(byCat).map(([k, v]) => [k, v.length])))

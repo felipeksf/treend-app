@@ -41,7 +41,7 @@ export const useProfile = () => {
   return [p, set] as const
 }
 
-export type NewsItem = { title: string; link: string; pubDate: string; source: string; currency?: string }
+export type NewsItem = { title: string; link: string; pubDate: string; source: string; currency?: string; image?: string }
 
 /** Aggregated RSS feed (scripts/fetch-news.mjs, refreshed every ~10 min); falls back to the backend function. */
 export const useNewsFeed = () =>

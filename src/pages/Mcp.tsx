@@ -12,7 +12,7 @@ import { dateBR } from '../lib/format'
 
 const ASSISTANTS = ['ChatGPT', 'Claude', 'Gemini', 'Grok', 'Agente próprio']
 const EXAMPLES = [
-  { q: 'Quais as 5 maiores oportunidades em Ações B3 no diário?', a: 'Pelo índice Treend diário, os destaques são os ativos com índice acima de 90 — zona de oportunidade forte — ordenados do maior para o menor.' },
+  { q: 'Quais as 5 maiores oportunidades em Ações B3 no diário?', a: 'Pelo índice Treend diário, os destaques são os ativos com índice acima de 90 — zona de desconto extremo — ordenados do maior para o menor.' },
   { q: 'Analise o HGLG11 considerando o P/VP.', a: 'O fundo está com P/VP de 0,96 e o índice Treend em zona neutra no diário e no semanal: cota levemente descontada, sem assimetria forte no momento.' },
   { q: 'Como está o Bitcoin em todos os tempos gráficos?', a: 'O Bitcoin aparece neutro no diário e no semanal, com o 4 horas mais pressionado. Veja a melhor janela antes de decidir.' },
 ]

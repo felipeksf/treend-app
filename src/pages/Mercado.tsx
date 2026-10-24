@@ -212,7 +212,7 @@ export function Result({ asset, cls, onBack, onPick, backLabel }: { asset: Asset
       ) : (
         <>
           <div className="row between wrap" style={{ marginBottom: 12, gap: 8 }}>
-            <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Índice Treend por tempo gráfico<Hint text="O índice Treend vai de 0 a 100 em cada tempo gráfico. Acima de 90, oportunidade forte; abaixo de 20, preço esticado. Use a melhor janela para planejar a sua operação." /></h2>
+            <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Índice Treend por tempo gráfico<Hint text="O índice Treend vai de 0 a 100 em cada tempo gráfico. Acima de 90, desconto extremo; abaixo de 20, preço esticado. Use a melhor janela para planejar a sua operação." /></h2>
             <span className="row gap-8 tiny faint">{data && `Atualizado há ${timeAgo(new Date(data.at).toISOString())}`}<button className="icon-btn" title="Atualizar" onClick={() => refetch()}><RefreshCw className={isFetching ? 'spin' : ''} /></button></span>
           </div>
           <div className="frame-grid">

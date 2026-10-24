@@ -3,6 +3,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { loadMap, resolveAll, saveMap } from './gnews.mjs'
+import { addImages, loadOg, saveOg } from './og.mjs'
 
 const OUT = process.argv[2] || 'news-assets.json'
 const SCAN = 'https://scanner.tradingview.com'
@@ -114,5 +115,11 @@ for (const k of Object.keys(bySymbol)) {
 mkdirSync(dirname(OUT), { recursive: true })
 await saveMap(MAP, gmap)
 mkdirSync(dirname(OUT), { recursive: true })
+// cover images for the portal view
+const OGP = process.env.OG_MAP || join(dirname(OUT), 'og-map.json')
+const ogmap = await loadOg(OGP)
+const fetchedOg = await addImages(Object.values(bySymbol).flatMap((l) => l.slice(0, 8)), ogmap)
+await saveOg(OGP, ogmap)
+console.log(`imagens: ${fetchedOg} novas consultas`)
 writeFileSync(OUT, JSON.stringify({ updatedAt: new Date().toISOString(), bySymbol }))
 console.log(`news-assets.json: ${Object.keys(bySymbol).length}/${symbols.length} ativos com notícias`)

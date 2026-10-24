@@ -103,7 +103,7 @@ export default function MarketHero({ k, rows, news }: { k: ClassKey; rows: Row[]
         </div>
         <div className="r">
           <div className="row between">
-            <span className="small muted">Índice Treend · Diário<Hint text="Índice de 0 a 100: acima de 90, oportunidade forte; abaixo de 20, preço esticado." /></span>
+            <span className="small muted">Índice Treend · Diário<Hint text="Índice de 0 a 100: acima de 90, desconto extremo; abaixo de 20, preço esticado." /></span>
             <span className="pill tone" style={{ ['--c' as string]: z.c }}>{z.label}</span>
           </div>
           <div style={{ display: 'grid', placeItems: 'center', padding: '4px 0' }}><Gauge value={di ?? 0} color={z.c} size={190} label="ÍNDICE TREEND" /></div>

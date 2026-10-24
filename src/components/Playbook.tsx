@@ -64,7 +64,7 @@ const CHAPTERS: Ch[] = [
       <h2>Um número, <span className="serif">cinco zonas.</span></h2>
       <p className="pb-lead">Quanto maior o índice, mais descontado o preço está naquela janela — e mais rara é a situação.</p>
       <div className="stack gap-8">
-        <Zone c="var(--up)" r="90+" l="Oportunidade forte" d="Desconto estatisticamente raro em relação ao padrão recente do ativo." />
+        <Zone c="var(--up)" r="90+" l="Desconto extremo" d="Desconto estatisticamente raro em relação ao padrão recente do ativo." />
         <Zone c="#5fbf8f" r="70–89" l="Oportunidade" d="Preço abaixo do comportamento usual, sem atingir o nível mais raro." />
         <Zone c="var(--amber)" r="45–69" l="Neutro" d="Preço próximo do comportamento usual: sem desconto nem excesso relevantes." />
         <Zone c="var(--orange)" r="21–44" l="Atenção" d="Preço acima do comportamento usual na janela." />
