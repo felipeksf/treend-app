@@ -14,6 +14,7 @@ export const PAGE_HELP: Record<string, string> = {
   '/agenda': 'Calendário de reports, eventos macroeconômicos e mentorias da comunidade.',
   '/stocks-invest': 'Índice de oportunidade de compra para ações americanas em cinco janelas. Clique em um bloco para criar um alerta.',
   '/acoes-b3': 'Índice de oportunidade de compra para todas as ações da B3, em cinco tempos gráficos. Dados com cerca de 15 minutos de atraso. Clique em um bloco para criar um alerta.',
+  '/commodities': 'Índice Treend para todas as commodities de energia, metais e agrícolas, em cinco tempos gráficos. Clique em um bloco para criar um alerta.',
   '/academy': 'Aulas em vídeo para dominar o câmbio na prática.',
   '/tutoriais': 'Vídeos curtos explicando como usar cada tela da Treend.',
   '/suporte': 'Abra um chamado — você recebe a confirmação e a resposta por e-mail.',

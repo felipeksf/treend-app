@@ -1052,3 +1052,8 @@ h1, h2, h3, .big-px, .px, .score, .wordmark { letter-spacing: -0.03em; }
 .mode-go { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 14px; margin-top: 18px; }
 @media (max-width: 1100px) { .modes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .modes { grid-template-columns: 1fr; } .mode { min-height: 180px; } }
+
+.modes { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+@media (max-width: 1300px) { .modes { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 800px) { .modes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .modes { grid-template-columns: 1fr; } }

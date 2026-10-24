@@ -1,6 +1,6 @@
 import {
   BarChart3, BookOpen, Calculator, CalendarDays, Compass, FlaskConical, Gauge, Grid3x3, History, LifeBuoy,
-  MessagesSquare, Newspaper, Radar, Cpu, Search, LayoutGrid, Bitcoin, Coins, ScrollText, Sparkles, LineChart, Shield, Boxes, PlayCircle,
+  MessagesSquare, Newspaper, Radar, Cpu, Search, LayoutGrid, Bitcoin, Coins, Fuel, ScrollText, Sparkles, LineChart, Shield, Boxes, PlayCircle,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -38,6 +38,7 @@ export const NAV: { group: string; items: NavItem[] }[] = [
       { to: '/stocks-invest', label: 'Stocks Invest', icon: Boxes, desc: 'Zonas de compra de ações' },
       { to: '/acoes-b3', label: 'Ações B3', icon: Boxes, desc: 'Índice Treend para a bolsa brasileira' },
       { to: '/cripto', label: 'Cripto', icon: Bitcoin, desc: 'Índice Treend para criptomoedas' },
+      { to: '/commodities', label: 'Commodities', icon: Fuel, desc: 'Índice Treend para energia, metais e agrícolas' },
       { to: '/cambio', label: 'Câmbio', icon: Coins, desc: 'Índice Treend para moedas contra o real' },
     ],
   },

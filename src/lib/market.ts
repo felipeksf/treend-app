@@ -59,13 +59,17 @@ export async function searchAssets(q: string, signal?: AbortSignal, cls?: ClassK
   const fx = FX.filter((a) => norm(`${a.ticker} ${a.name} ${a.symbol}`).includes(s) || (s.startsWith('dol') && a.symbol === 'FX_IDC:USDBRL'))
   if (cls === 'fx') return fx
   const toAsset = (k: ClassKey) => (r: Row): Asset => ({
-    symbol: r.symbol, ticker: r.ticker, name: r.name, logo: r.logo, currency: CLASSES[k].currency,
+    symbol: r.symbol, ticker: r.ticker, name: r.name, logo: r.logo, currency: r.cur || CLASSES[k].currency,
     sub: k === 'crypto' ? 'Cripto' : `${CLASSES[k].label}${r.sector ? ` · ${r.sector}` : ''}`,
   })
-  const run = (k: ClassKey, n: number) => scanClass(k, { search: q.trim(), limit: n, signal }).then((x) => x.map(toAsset(k))).catch(() => [] as Asset[])
+  const run = (k: ClassKey, n: number) =>
+    k === 'commod'
+      // Commodity names are translated locally, so search the full list in PT and EN instead of the scanner text match.
+      ? scanClass('commod', { signal }).then((x) => x.filter((r) => norm(`${r.name} ${r.ticker} ${r.alt ?? ''} ${r.sector ?? ''}`).includes(s)).slice(0, n).map(toAsset(k))).catch(() => [] as Asset[])
+      : scanClass(k, { search: q.trim(), limit: n, signal }).then((x) => x.map(toAsset(k))).catch(() => [] as Asset[])
   if (cls) return run(cls, 12)
-  const [b3, us, cr] = await Promise.all([run('b3', 6), run('us', 4), run('crypto', 4)])
-  return [...fx, ...b3, ...us, ...cr].slice(0, 12)
+  const [b3, us, cr, co] = await Promise.all([run('b3', 6), run('us', 4), run('crypto', 4), run('commod', 3)])
+  return [...fx, ...b3, ...us, ...cr, ...co].slice(0, 12)
 }
 
 /** Fetch TradingView's RSI for every timeframe of one symbol. */

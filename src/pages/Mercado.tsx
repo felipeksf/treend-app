@@ -12,12 +12,13 @@ const SUGGESTIONS: Record<ClassKey, string[]> = {
   b3: ['PETR4', 'VALE3', 'ITUB4', 'BBAS3', 'WEGE3', 'B3SA3'],
   us: ['AAPL', 'NVDA', 'MSFT', 'TSLA', 'AMZN', 'GOOGL'],
   crypto: ['Bitcoin', 'Ethereum', 'Solana', 'XRP', 'BNB', 'Dogecoin'],
+  commod: ['Petróleo', 'Ouro', 'Soja', 'Café', 'Milho', 'Boi gordo'],
   fx: ['Dólar', 'Euro', 'Libra', 'Yuan', 'Iene', 'Franco'],
 }
 
 /** Open the analysis of a row coming from any class list (overview, heatmaps). */
 export function openAsset(nav: NavigateFunction, r: Row, k: ClassKey) {
-  const a: Asset = { symbol: r.symbol, ticker: r.ticker, name: r.name, logo: r.logo, currency: CLASSES[k].currency, sub: CLASSES[k].label }
+  const a: Asset = { symbol: r.symbol, ticker: r.ticker, name: r.name, logo: r.logo, currency: r.cur || CLASSES[k].currency, sub: r.sector ? `${CLASSES[k].label} · ${r.sector}` : CLASSES[k].label }
   try { sessionStorage.setItem('treend-v2-asset', JSON.stringify(a)) } catch { /* ignore */ }
   nav(`/mercado?c=${k}&s=${encodeURIComponent(r.symbol)}`)
 }

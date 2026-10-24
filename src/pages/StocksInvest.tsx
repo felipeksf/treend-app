@@ -13,7 +13,7 @@ import { HELP } from '../lib/help'
 /* Same source as the classic Stocks Invest: edge function `stocks-heatmap` with
    { mode: 'invest' } — buy-zone scores. */
 type Score = { frequency: string; rsi: number | null; heat_x: number; heat_y: number; change_pct: number; volatility_pct: number; momentum: number }
-type Stock = { ticker: string; name?: string | null; sector?: string | null; logo?: string | null; price: number | null; change_pct: number | null; scores: Score[] }
+type Stock = { cur?: string | null; ticker: string; name?: string | null; sector?: string | null; logo?: string | null; price: number | null; change_pct: number | null; scores: Score[] }
 export type Market = ClassKey
 
 const NAMES: Record<string, string> = { AMZN: 'Amazon', AAPL: 'Apple', GOOGL: 'Alphabet', META: 'Meta', MSFT: 'Microsoft', NVDA: 'NVIDIA', TSLA: 'Tesla' }
@@ -69,7 +69,7 @@ export default function StocksInvest() {
 
 export function Access({ market = 'us' }: { market?: Market }) {
   const { hasStocksAccess, loading } = useRoles()
-  if (market === 'crypto' || market === 'fx') return <Board market={market} />
+  if (market === 'crypto' || market === 'fx' || market === 'commod') return <Board market={market} />
   if (loading) return <Skel h={420} />
   if (!hasStocksAccess)
     return (
@@ -161,7 +161,7 @@ function Board({ market }: { market: Market }) {
             <StockLogo src={s.logo} t={s.ticker} />
             <div style={{ minWidth: 0, textAlign: 'left' }}>
               <b>{s.ticker}</b>
-              <div className="tiny faint mono">{s.price != null ? `${cur} ${num(s.price, priceDigits(s.price))}` : nameOf(s)}</div>
+              <div className="tiny faint mono">{s.price != null ? `${s.cur || cur} ${num(s.price, priceDigits(s.price))}` : nameOf(s)}</div>
             </div>
             {s.change_pct != null && <span style={{ marginLeft: 'auto' }}><Delta v={s.change_pct} /></span>}
           </button>
@@ -188,7 +188,7 @@ function Board({ market }: { market: Market }) {
                     <td className="lbl"><span className="row gap-8"><StockLogo src={s.logo} t={s.ticker} size={22} />{s.ticker}</span></td>
                     {FREQ.map((f) => {
                       const x = s.scores.find((y) => y.frequency === f.key)
-                      if (!x) return <td key={f.key} />
+                      if (!x) return <td key={f.key}><div className="heat-cell" style={{ ['--c' as string]: 'var(--line-3)', ['--a' as string]: '0%', opacity: 0.45, cursor: 'default' }}><b>—</b><span>Sem dado</span></div></td>
                       const c = signal(x.heat_x)
                       const on = stock?.ticker === s.ticker && score?.frequency === f.key
                       return (
@@ -234,7 +234,7 @@ function Board({ market }: { market: Market }) {
                   <div className="kv"><span>Variação na janela</span><b className={`mono ${score.change_pct >= 0 ? 'up' : 'down'}`}>{score.change_pct >= 0 ? '+' : ''}{num(score.change_pct, 2)}%</b></div>
                   <div className="kv"><span>Volatilidade<Hint text={HELP.volatility} /></span><b className="mono">{num(score.volatility_pct, 1)}%</b></div>
                   <div className="kv"><span>Momentum<Hint text={HELP.momentum} /></span><b className={`mono ${score.momentum >= 0 ? 'up' : 'down'}`}>{score.momentum >= 0 ? '+' : ''}{num(score.momentum, 1)}</b></div>
-                  {stock.price != null && <div className="kv"><span>Preço</span><b className="mono">{cur} {num(stock.price, priceDigits(stock.price))}</b></div>}
+                  {stock.price != null && <div className="kv"><span>Preço</span><b className="mono">{stock.cur || cur} {num(stock.price, priceDigits(stock.price))}</b></div>}
                 </div>
               </div>
             </div>

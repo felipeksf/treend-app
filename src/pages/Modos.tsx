@@ -14,6 +14,7 @@ const ART: Record<ClassKey, string> = {
   b3: 'linear-gradient(145deg, #0b3d2e 0%, #10a36e 100%)',
   us: 'linear-gradient(145deg, #0b1a3a 0%, #2453e0 100%)',
   crypto: 'linear-gradient(145deg, #2a1608 0%, #f7931a 100%)',
+  commod: 'linear-gradient(145deg, #2b1d0e 0%, #b8862b 100%)',
   fx: 'linear-gradient(145deg, #1d1446 0%, #7b61ff 100%)',
 }
 
@@ -94,7 +95,7 @@ function Overview({ k }: { k: ClassKey }) {
               <span className="slide" key={r.symbol + i}>
                 {r.logo && <img src={r.logo} alt="" width={18} height={18} style={{ borderRadius: '50%' }} />}
                 <span className="slide-name">{r.ticker}</span>
-                <b className="mono">{cur} {num(r.price ?? 0, priceDigits(r.price))}</b>
+                <b className="mono">{r.cur || cur} {num(r.price ?? 0, priceDigits(r.price))}</b>
                 <span className={`mono slide-d ${(r.change_pct ?? 0) > 0 ? 'up' : (r.change_pct ?? 0) < 0 ? 'down' : 'faint'}`}>{(r.change_pct ?? 0) >= 0 ? '+' : ''}{num(r.change_pct ?? 0, 2)}%</span>
               </span>
             ))}
@@ -125,11 +126,11 @@ function Overview({ k }: { k: ClassKey }) {
           </div>
           <div className="card">
             <div className="card-h"><h3>Maiores altas do dia</h3></div>
-            <div style={{ marginTop: 8 }}>{s.gainers.map((r) => <AssetRow key={r.symbol} r={r} k={k} right={<span className="row gap-8"><span className="mono small">{cur} {num(r.price ?? 0, priceDigits(r.price))}</span><Delta v={r.change_pct ?? 0} /></span>} />)}</div>
+            <div style={{ marginTop: 8 }}>{s.gainers.map((r) => <AssetRow key={r.symbol} r={r} k={k} right={<span className="row gap-8"><span className="mono small">{r.cur || cur} {num(r.price ?? 0, priceDigits(r.price))}</span><Delta v={r.change_pct ?? 0} /></span>} />)}</div>
           </div>
           <div className="card">
             <div className="card-h"><h3>Maiores baixas do dia</h3></div>
-            <div style={{ marginTop: 8 }}>{s.losers.map((r) => <AssetRow key={r.symbol} r={r} k={k} right={<span className="row gap-8"><span className="mono small">{cur} {num(r.price ?? 0, priceDigits(r.price))}</span><Delta v={r.change_pct ?? 0} /></span>} />)}</div>
+            <div style={{ marginTop: 8 }}>{s.losers.map((r) => <AssetRow key={r.symbol} r={r} k={k} right={<span className="row gap-8"><span className="mono small">{r.cur || cur} {num(r.price ?? 0, priceDigits(r.price))}</span><Delta v={r.change_pct ?? 0} /></span>} />)}</div>
           </div>
         </div>
       )}

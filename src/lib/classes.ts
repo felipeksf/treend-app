@@ -4,9 +4,9 @@ import { indexFromRsi } from './market'
 /* The four asset classes of the platform. Every list comes from the same market-data scanner
    (official base), with the index computed per timeframe (1h, 4h, D, W, M). */
 
-export type ClassKey = 'b3' | 'us' | 'crypto' | 'fx'
+export type ClassKey = 'b3' | 'us' | 'crypto' | 'fx' | 'commod'
 export type Row = {
-  symbol: string; ticker: string; name: string; logo: string | null; sector: string | null
+  symbol: string; ticker: string; name: string; logo: string | null; sector: string | null; cur?: string | null; alt?: string
   price: number | null; change_pct: number | null; value_traded: number | null
   scores: { frequency: string; rsi: number | null; heat_x: number; heat_y: number; change_pct: number; volatility_pct: number; momentum: number }[]
 }
@@ -24,25 +24,27 @@ export const CLASSES: Record<ClassKey, {
   b3: { key: 'b3', label: 'Ações B3', short: 'B3', currency: 'R$', question: 'Qual ação da B3 deseja analisar?', placeholder: 'Ex.: PETR4, Vale, Itaú', desc: '287 ações da bolsa brasileira', heatmapRoute: '/acoes-b3', news: ['B3'], emoji: '🇧🇷' },
   us: { key: 'us', label: 'Stocks', short: 'EUA', currency: 'US$', question: 'Qual ação americana deseja analisar?', placeholder: 'Ex.: AAPL, Nvidia, Tesla', desc: '4.790 ações da NASDAQ e NYSE', heatmapRoute: '/stocks-invest', news: ['US'], emoji: '🇺🇸' },
   crypto: { key: 'crypto', label: 'Cripto', short: 'Cripto', currency: 'US$', question: 'Qual criptomoeda deseja analisar?', placeholder: 'Ex.: Bitcoin, ETH, Solana', desc: 'Todas as criptomoedas negociadas em USDT', heatmapRoute: '/cripto', news: ['CRYPTO'], emoji: '₿' },
+  commod: { key: 'commod', label: 'Commodities', short: 'Commodities', currency: 'US$', question: 'Qual commodity deseja analisar?', placeholder: 'Ex.: Petróleo, Ouro, Soja, Café', desc: '232 commodities: energia, metais e agrícolas', heatmapRoute: '/commodities', news: ['COMMOD'], emoji: '🛢️' },
   fx: { key: 'fx', label: 'Câmbio', short: 'Câmbio', currency: 'R$', question: 'Qual moeda deseja analisar?', placeholder: 'Ex.: Dólar, Euro, Libra', desc: '11 moedas contra o real', heatmapRoute: '/cambio', news: ['USD', 'EUR', 'GBP', 'CNY', 'JPY'], emoji: 'R$' },
 }
-export const CLASS_LIST = [CLASSES.b3, CLASSES.us, CLASSES.crypto, CLASSES.fx]
+export const CLASS_LIST = [CLASSES.b3, CLASSES.us, CLASSES.crypto, CLASSES.commod, CLASSES.fx]
 
 const logoUrl = (id: unknown) => (id ? `https://s3-symbol-logo.tradingview.com/${id}.svg` : null)
 
 export async function scanClass(key: ClassKey, opts: { limit?: number; search?: string; signal?: AbortSignal } = {}): Promise<Row[]> {
   const { limit = 6000, search, signal } = opts
-  const market = key === 'b3' ? 'brazil' : key === 'us' ? 'america' : key === 'crypto' ? 'crypto' : 'forex'
-  const valueCol = key === 'crypto' ? '24h_vol|5' : 'Value.Traded'
+  const market = key === 'b3' ? 'brazil' : key === 'us' ? 'america' : key === 'crypto' ? 'crypto' : key === 'commod' ? 'futures' : 'forex'
+  const valueCol = key === 'crypto' ? '24h_vol|5' : key === 'commod' ? 'volume' : 'Value.Traded'
   const logoCol = key === 'crypto' ? 'base_currency_logoid' : key === 'fx' ? 'base_currency_logoid' : 'logoid'
   const filter: object[] =
     key === 'b3' ? [{ left: 'type', operation: 'equal', right: 'stock' }, { left: 'is_primary', operation: 'equal', right: true }]
     : key === 'us' ? [{ left: 'type', operation: 'equal', right: 'stock' }, { left: 'is_primary', operation: 'equal', right: true }, { left: 'exchange', operation: 'in_range', right: ['NASDAQ', 'NYSE'] }]
     : key === 'crypto' ? [{ left: 'exchange', operation: 'equal', right: 'BINANCE' }, { left: 'type', operation: 'equal', right: 'spot' }, { left: 'currency', operation: 'equal', right: 'USDT' }]
+    : key === 'commod' ? [{ left: 'subtype', operation: 'equal', right: 'continuous' }, { left: 'sector', operation: 'in_range', right: ['Energy', 'Metals', 'Agricultural'] }]
     : []
   if (search) filter.push({ left: 'name,description', operation: 'match', right: search })
   const body: Record<string, unknown> = {
-    columns: ['name', key === 'crypto' ? 'base_currency_desc' : 'description', logoCol, 'close', 'change', 'sector', valueCol, ...COLS.map((c) => c[1])],
+    columns: ['name', key === 'crypto' ? 'base_currency_desc' : 'description', logoCol, 'close', 'change', 'sector', valueCol, ...COLS.map((c) => c[1]), 'currency', 'exchange'],
     range: [0, limit],
   }
   if (key === 'fx') body.symbols = { tickers: FX_CODES.map((c) => `FX_IDC:${c}BRL`) }
@@ -57,18 +59,22 @@ export async function scanClass(key: ClassKey, opts: { limit?: number; search?: 
   return data.map(({ s, d }) => {
     const raw = String(d[0])
     const fxCode = raw.replace('BRL', '')
-    const ticker = key === 'crypto' ? raw.replace(/USDT$/, '') : key === 'fx' ? `${fxCode}/BRL` : raw
-    const name = key === 'fx' ? FX_NAMES[fxCode] ?? raw : String(d[1] ?? raw)
+    const ticker = key === 'crypto' ? raw.replace(/USDT$/, '') : key === 'fx' ? `${fxCode}/BRL` : key === 'commod' ? `${raw.replace(/1!$/, '')} · ${d[13] ?? ''}` : raw
+    const name = key === 'fx' ? FX_NAMES[fxCode] ?? raw : key === 'commod' ? commodityName(String(d[1] ?? raw)) : String(d[1] ?? raw)
     return {
       symbol: s, ticker, name,
       logo: key === 'fx' ? logoUrl(`country/${FX_FLAG[fxCode] ?? 'US'}`) : logoUrl(d[2]),
       price: d[3] as number | null,
       change_pct: d[4] == null ? null : Math.round((d[4] as number) * 100) / 100,
-      sector: (d[5] as string) ?? null,
+      sector: key === 'commod' ? `${SECTOR_PT[String(d[5])] ?? d[5]} · ${d[13] ?? ''}` : (d[5] as string) ?? null,
+      alt: String(d[1] ?? ''),
+      cur: key === 'commod' ? CUR_SYMBOL[String(d[12])] ?? String(d[12] ?? '') : null,
       value_traded: (d[6] as number) ?? null,
-      scores: COLS.map(([f], i) => {
+      // Only timeframes the data source actually provides (futures expose the daily one only) — never a filler value.
+      scores: COLS.flatMap(([f], i) => {
         const rsi = d[7 + i] as number | null
-        return { frequency: f, rsi: rsi == null ? null : Math.round(rsi * 10) / 10, heat_x: indexFromRsi(rsi) ?? 50, heat_y: 55, change_pct: 0, volatility_pct: 0, momentum: 0 }
+        if (rsi == null) return []
+        return [{ frequency: f, rsi: Math.round(rsi * 10) / 10, heat_x: indexFromRsi(rsi) as number, heat_y: 55, change_pct: 0, volatility_pct: 0, momentum: 0 }]
       }),
     }
   })
@@ -83,3 +89,22 @@ export const useClassScan = (key: ClassKey, limit?: number) =>
   })
 
 export const priceDigits = (p: number | null | undefined) => (p == null ? 2 : p < 0.01 ? 8 : p < 1 ? 4 : p < 10 ? 4 : 2)
+
+/* Commodity naming: TradingView descriptions are in English; translate the common terms. */
+const SECTOR_PT: Record<string, string> = { Energy: 'Energia', Metals: 'Metais', Agricultural: 'Agrícola' }
+const CUR_SYMBOL: Record<string, string> = { USD: 'US$', USX: 'US¢', BRL: 'R$', EUR: '€', GBP: '£', GBX: 'p', CNY: '¥', JPY: '¥', INR: '₹', RUB: '₽', MYR: 'RM', CAD: 'C$', AUD: 'A$', SGD: 'S$' }
+const TERMS: [RegExp, string][] = [
+  [/Brent Crude( Oil)?/i, 'Petróleo Brent'], [/WTI Crude( Oil)?|Light Sweet Crude Oil|Crude Oil/i, 'Petróleo'], [/Natural Gas/i, 'Gás natural'], [/Heating Oil/i, 'Óleo de aquecimento'],
+  [/RBOB Gasoline|Gasoline/i, 'Gasolina'], [/Fuel Oil/i, 'Óleo combustível'], [/Gasoil|Gas Oil/i, 'Gasóleo'], [/Coal/i, 'Carvão'], [/Ethanol/i, 'Etanol'], [/Electricity|Power/i, 'Energia elétrica'], [/Carbon|EUA\b/i, 'Carbono'],
+  [/Gold/i, 'Ouro'], [/Silver/i, 'Prata'], [/Platinum/i, 'Platina'], [/Palladium/i, 'Paládio'], [/Copper/i, 'Cobre'], [/Aluminium|Aluminum/i, 'Alumínio'], [/Nickel/i, 'Níquel'],
+  [/Zinc/i, 'Zinco'], [/Lead/i, 'Chumbo'], [/Tin\b/i, 'Estanho'], [/Iron Ore/i, 'Minério de ferro'], [/Steel Rebar/i, 'Vergalhão de aço'], [/Hot[- ]Rolled Coil/i, 'Bobina de aço'], [/Steel/i, 'Aço'], [/Lithium/i, 'Lítio'], [/Cobalt/i, 'Cobalto'],
+  [/Soybean Oil/i, 'Óleo de soja'], [/Soybean Meal/i, 'Farelo de soja'], [/Soybeans?/i, 'Soja'], [/Corn/i, 'Milho'], [/Wheat/i, 'Trigo'], [/Oats?/i, 'Aveia'], [/Rough Rice|Rice/i, 'Arroz'],
+  [/Coffee/i, 'Café'], [/Cocoa/i, 'Cacau'], [/Sugar/i, 'Açúcar'], [/Cotton/i, 'Algodão'], [/Orange Juice/i, 'Suco de laranja'], [/Live Cattle/i, 'Boi gordo'], [/Feeder Cattle/i, 'Bezerro'],
+  [/Lean Hogs?/i, 'Suínos'], [/Lumber/i, 'Madeira'], [/Milk/i, 'Leite'], [/Butter/i, 'Manteiga'], [/Cheese/i, 'Queijo'], [/Canola/i, 'Canola'], [/Rapeseed Meal/i, 'Farelo de colza'], [/Rapeseed/i, 'Colza'],
+  [/Palm Oil/i, 'Óleo de palma'], [/Rubber/i, 'Borracha'], [/Fresh Apple/i, 'Maçã'], [/Eggs?/i, 'Ovos'], [/Cotton Yarn/i, 'Fio de algodão'], [/Red Dates|Jujube/i, 'Tâmaras'], [/Peanuts?/i, 'Amendoim'],
+]
+export function commodityName(desc: string) {
+  const mini = /\b(Micro|Mini|E-mini)\b/i.test(desc) ? ' (mini)' : ''
+  for (const [re, pt] of TERMS) if (re.test(desc)) return `${pt}${mini}`
+  return desc.replace(/\s*Futures?$/i, '')
+}

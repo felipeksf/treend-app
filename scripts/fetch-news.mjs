@@ -14,6 +14,7 @@ const CURRENCIES = {
   JPY: { q: ['iene câmbio Japão', 'iene moeda japonesa'], re: /\biene|\byen\b|\bJPY\b|banco do jap/i },
   B3: { q: ['Ibovespa ações hoje', 'bolsa brasileira B3 ações'], re: /ibovespa|\bB3\b|bolsa brasileira|petrobras|\bvale\b|ita[uú] unibanco|bradesco|ambev|weg\b|magazine luiza/i },
   US: { q: ['Wall Street ações Nasdaq', 'S&P 500 bolsa americana'], re: /wall street|nasdaq|s&p ?500|dow jones|nyse|bolsas? (de )?nova york|bolsa americana|nvidia|apple|tesla|microsoft|amazon/i },
+  COMMOD: { q: ['petróleo ouro commodities', 'soja café milho preço commodities'], re: /petr[oó]leo|brent|\bouro\b|\bprata\b|min[eé]rio de ferro|\bcobre\b|\bsoja\b|\bmilho\b|\bcaf[eé]\b|a[cç][uú]car|\bboi gordo|commodit|g[aá]s natural|\btrigo\b|algod[aã]o|cacau/i },
   CRYPTO: { q: ['bitcoin cotação', 'USDT stablecoin real'], re: /bitcoin|\bBTC\b|cripto|stablecoin|tether|\bUSDT\b|ethereum/i },
 }
 
