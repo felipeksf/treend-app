@@ -1,7 +1,7 @@
 import {
   BarChart3, BookOpen, Calculator, CalendarDays, Compass, FlaskConical, Gauge, Grid3x3, History, LifeBuoy,
   MessagesSquare, Newspaper, Radar, Cpu, Search, LayoutGrid, Bitcoin, Coins, Fuel, Building2, ScrollText, Sparkles, LineChart, Shield, Boxes, PlayCircle,
-  Briefcase, type LucideIcon,
+  Briefcase, Orbit, type LucideIcon,
 } from 'lucide-react'
 
 export type NavItem = { to: string; label: string; icon: LucideIcon; kbd?: string; desc: string; classic?: string; adminOnly?: boolean }
@@ -12,6 +12,7 @@ export const NAV: { group: string; items: NavItem[] }[] = [
     items: [
       { to: '/mercado', label: 'Analisar ativo', icon: Search, kbd: '1', desc: 'Busque qualquer ativo e veja o índice Treend por tempo gráfico' },
       { to: '/meus-ativos', label: 'Meus ativos', icon: Briefcase, desc: 'Sua lista de ativos com preço e índice Treend' },
+      { to: '/cenarios', label: 'Cenários', icon: Orbit, desc: 'Bolhas dos ativos em extremo para comprar ou vender' },
       { to: '/', label: 'Visão geral', icon: Gauge, kbd: '2', desc: 'Cotações, índices e contexto do dia' },
       { to: '/concierge', label: 'Concierge', icon: Sparkles, kbd: '3', desc: 'Análise guiada da sua operação' },
       { to: '/projecoes', label: 'Projeções', icon: LineChart, kbd: '4', desc: 'Zonas de preço por perfil' },

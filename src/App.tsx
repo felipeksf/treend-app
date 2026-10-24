@@ -11,6 +11,7 @@ import { useRoles } from './lib/roles'
 
 const Oferta = lazy(() => import('./pages/Pricing').then((m) => ({ default: m.Oferta })))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Cenarios = lazy(() => import('./pages/Cenarios'))
 const MeusAtivos = lazy(() => import('./pages/MeusAtivos'))
 const Concierge = lazy(() => import('./pages/Concierge'))
 const Projections = lazy(() => import('./pages/Projections'))
@@ -90,7 +91,7 @@ export default function App() {
             ['/', Dashboard], ['/concierge', Concierge], ['/projecoes', Projections], ['/mapa', Heatmap], ['/radar', RadarPage],
             ['/calculadora', CalculatorPage], ['/simulador', Simulator], ['/historico', HistoryPage], ['/noticias', News],
             ['/reports', Reports], ['/agenda', Agenda], ['/academy', Academy], ['/tutoriais', Tutorials], ['/suporte', Support],
-            ['/cmp', Cmp], ['/chat', Chat], ['/stocks-invest', StocksInvest], ['/admin/*', Admin], ['/mcp', Mcp], ['/acoes-b3', StocksB3], ['/mercado', Mercado], ['/meus-ativos', MeusAtivos], ['/mercados', Modos], ['/mercados/:cls', Modos], ['/cripto', Cripto], ['/cambio', Cambio], ['/commodities', Commodities], ['/fiis', Fiis], ['/conta', Conta],
+            ['/cmp', Cmp], ['/chat', Chat], ['/stocks-invest', StocksInvest], ['/admin/*', Admin], ['/mcp', Mcp], ['/acoes-b3', StocksB3], ['/mercado', Mercado], ['/meus-ativos', MeusAtivos], ['/cenarios', Cenarios], ['/mercados', Modos], ['/mercados/:cls', Modos], ['/cripto', Cripto], ['/cambio', Cambio], ['/commodities', Commodities], ['/fiis', Fiis], ['/conta', Conta],
           ] as const
         ).map(([p, C]) => (
           <Route key={p} path={p} element={<Suspense fallback={<Fallback />}><C /></Suspense>} />
