@@ -7,15 +7,26 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/auth'
 
 /* Stripe subscriptions — same edge function and price IDs as the classic pricing page (live account). */
-export const STRIPE_PLANS = [
+export const STRIPE_PLANS: Plan[] = [
   { key: 'monthly', priceId: 'price_1SzMoKFCE1ecOeleuxhrSHsu', name: 'Mensal', price: 'R$ 49,90', period: 'mês', note: 'Cobrado mensalmente' },
   { key: 'annual', priceId: 'price_1SzMobFCE1ecOeleYtgjspEe', name: 'Anual', price: 'R$ 299', period: 'ano', note: 'Equivale a R$ 24,92/mês — 50% de economia', hl: true },
-] as const
+]
 
-export default function Pricing() {
+type Plan = { key: string; priceId: string; name: string; price: string; period: string; note: string; hl?: boolean }
+
+/** Promotional plans for /oferta. Fill the price IDs after creating the prices in Stripe. */
+export const OFFER_PLANS: Plan[] = [
+  { key: 'monthly', priceId: (import.meta.env.VITE_OFFER_MONTHLY as string) || 'price_OFERTA_MENSAL', name: 'Mensal', price: 'R$ 19,90', period: 'mês', note: 'Cobrado mensalmente' },
+  { key: 'annual', priceId: (import.meta.env.VITE_OFFER_ANNUAL as string) || 'price_OFERTA_ANUAL', name: 'Anual', price: 'R$ 129', period: 'ano', note: 'Equivale a R$ 10,75/mês — 46% de economia', hl: true },
+]
+
+export function Oferta() { return <Pricing plans={OFFER_PLANS} lead="oferta" /> }
+
+export default function Pricing({ plans = STRIPE_PLANS as Plan[], lead = '' }: { plans?: Plan[]; lead?: string }) {
+  const STRIPE_PLANS_ = plans
   const { session } = useAuth()
   const [params] = useSearchParams()
-  const [plan, setPlan] = useState<'monthly' | 'annual'>('annual')
+  const [plan, setPlan] = useState<string>('annual')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [busy, setBusy] = useState(false)
@@ -23,12 +34,12 @@ export default function Pricing() {
   const checkout = async () => {
     if (!session && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return toast('Informe um e-mail válido para receber seus dados de acesso.')
     setBusy(true)
-    const p = STRIPE_PLANS.find((x) => x.key === plan)!
+    const p = STRIPE_PLANS_.find((x) => x.key === plan)!
     // Capture the lead before leaving for Stripe (Admin → Leads Stripe). Never blocks the checkout.
     if (!session) {
       try {
         await Promise.race([
-          supabase.from('stripe_leads').insert({ name: name.trim() || null, email: email.trim().toLowerCase(), plan: p.key, coupon: params.get('coupon') || null }),
+          supabase.from('stripe_leads').insert({ name: name.trim() || null, email: email.trim().toLowerCase(), plan: lead ? `${lead}-${p.key}` : p.key, coupon: params.get('coupon') || null }),
           new Promise((r) => setTimeout(r, 2500)),
         ])
       } catch { /* ignore */ }
@@ -49,7 +60,7 @@ export default function Pricing() {
   return (
     <PurchaseShell eyebrow="" title="Acesso completo" accent="à Treend." description="Todas as ferramentas de inteligência cambial em um só lugar. Cancele quando quiser." payment="Pagamento seguro processado pelo Stripe">
       <div className="plan-list">
-        {STRIPE_PLANS.map((p) => (
+        {STRIPE_PLANS_.map((p) => (
           <button key={p.key} className={`plan-row selectable ${plan === p.key ? 'on' : ''}`} onClick={() => setPlan(p.key)}>
             <span className={`radio ${plan === p.key ? 'on' : ''}`}>{plan === p.key && <Check size={13} />}</span>
             <span style={{ flex: 1, textAlign: 'left' }}><b>{p.name}</b>{'hl' in p && p.hl && <span className="plan-chip">Melhor valor</span>}<div className="small muted">{p.note}</div></span>

@@ -9,6 +9,7 @@ import { ONBOARDED_KEY } from './pages/Onboarding'
 import { useSubscription } from './lib/subscription'
 import { useRoles } from './lib/roles'
 
+const Oferta = lazy(() => import('./pages/Pricing').then((m) => ({ default: m.Oferta })))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const MeusAtivos = lazy(() => import('./pages/MeusAtivos'))
 const Concierge = lazy(() => import('./pages/Concierge'))
@@ -74,6 +75,7 @@ export default function App() {
       <Route path="/planos" element={<Suspense fallback={<Fallback />}><Planos /></Suspense>} />
       <Route path="/assinatura" element={<Suspense fallback={<Fallback />}><Assinatura /></Suspense>} />
       <Route path="/pricing" element={<Suspense fallback={<Fallback />}><Pricing /></Suspense>} />
+      <Route path="/oferta" element={<Suspense fallback={<Fallback />}><Oferta /></Suspense>} />
       <Route path="/dashboard" element={<Navigate to="/" replace />} />
       <Route path="/onboarding" element={<Suspense fallback={<Fallback />}><Onboarding /></Suspense>} />
       <Route
