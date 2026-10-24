@@ -57,6 +57,16 @@ export default function Shell() {
           nav(item.to)
         }
       }
+      // ⌘/Ctrl + A toggles light/dark — except while typing, where it keeps selecting text.
+      if (mod && !e.shiftKey && !e.altKey && e.key.toLowerCase() === 'a') {
+        const t = e.target as HTMLElement | null
+        const typing = !!t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))
+        if (!typing) {
+          e.preventDefault()
+          setTheme((th) => (th === 'dark' ? 'light' : 'dark'))
+          return
+        }
+      }
       if (mod && e.key === '.') {
         e.preventDefault()
         setCollapsed((c) => !c)
@@ -103,6 +113,7 @@ export default function Shell() {
           <button className="nav-item" style={{ border: 0, background: 'none', width: '100%' }} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
             {theme === 'dark' ? <Sun /> : <Moon />}
             <span className="nav-text">{theme === 'dark' ? 'Modo claro' : 'Modo escuro'}</span>
+            <span className="kbd hide-m" style={{ display: 'inline-block', marginLeft: 'auto' }}>⌘A</span>
           </button>
           <div className="user-chip">
             <div className="avatar">{name.slice(0, 1).toUpperCase()}</div>

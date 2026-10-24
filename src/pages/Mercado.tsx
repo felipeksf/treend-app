@@ -146,9 +146,9 @@ function SearchHome({ onPick, cls, setCls }: { onPick: (a: Asset) => void; cls: 
       <div className="class-switch" role="tablist" aria-label="Classe de ativo">
         {CLASS_LIST.map((c) => <button key={c.key} role="tab" aria-selected={cls === c.key} className={cls === c.key ? 'on' : ''} onClick={() => setCls(c.key)}>{c.label}</button>)}
       </div>
-      <h1 key={cls} className="q-anim">{q.slice(0, cut)} <span className="serif">{q.slice(cut + 1)}</span><Hint text="Pesquise ações da B3 e dos EUA, moedas e criptomoedas e veja o índice Treend de 0 a 100 em cada tempo gráfico." side="bottom" /></h1>
+      <h1 key={`q-${cls}`} className="q-anim">{q.slice(0, cut)} <span className="serif">{q.slice(cut + 1)}</span><Hint text="Pesquise ações da B3 e dos EUA, moedas e criptomoedas e veja o índice Treend de 0 a 100 em cada tempo gráfico." side="bottom" /></h1>
       <p>Digite o nome ou o código do ativo e veja o índice Treend em cada tempo gráfico.</p>
-      <SearchBox key={cls} onPick={onPick} autoFocus cls={cls} />
+      <SearchBox key={`s-${cls}`} onPick={onPick} autoFocus cls={cls} />
       <div className="mercado-sugs">
         <span className="tiny faint">Sugestões</span>
         {SUGGESTIONS[cls].map((s) => <button key={s} className="chip" onClick={() => run(s)}>{s}</button>)}
