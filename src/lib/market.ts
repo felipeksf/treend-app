@@ -92,8 +92,9 @@ export async function searchAssets(q: string, signal?: AbortSignal, cls?: ClassK
     return out.map(toAsset(k))
   }
   if (cls) return run(cls, 12)
-  const [b3, us, cr, co] = await Promise.all([run('b3', 6), run('us', 4), run('crypto', 4), run('commod', 3)])
-  return [...fx, ...b3, ...us, ...cr, ...co].slice(0, 12)
+  const [b3, us, cr, co, fi] = await Promise.all([run('b3', 5), run('us', 4), run('crypto', 4), run('commod', 3), run('fii', 3)])
+  const rank = (a: Asset) => { const t = norm(a.ticker.split(/[ ·/]/)[0]), n = norm(a.name); return t === s || n === s ? 0 : n.startsWith(s) ? 1 : t.startsWith(s) ? 2 : 3 }
+  return [...fx, ...b3, ...fi, ...cr, ...us, ...co].map((a, i) => ({ a, i, r: rank(a) })).sort((x, y) => x.r - y.r || x.i - y.i).map((x) => x.a).slice(0, 14)
 }
 
 /** Fetch TradingView's RSI for every timeframe of one symbol. */
@@ -111,4 +112,14 @@ export async function analyze(asset: Asset): Promise<Analysis> {
     }),
     at: Date.now(),
   }
+}
+
+/** Asset class of an analysed asset, from its symbol (FIIs are B3 tickers flagged in their sub label). */
+export function clsOf(a: Pick<Asset, 'symbol' | 'sub'>): ClassKey {
+  const ex = a.symbol.split(':')[0]
+  if (ex === 'FX_IDC') return 'fx'
+  if (ex === 'BINANCE') return 'crypto'
+  if (ex === 'NASDAQ' || ex === 'NYSE') return 'us'
+  if (ex === 'BMFBOVESPA') return /^FIIs/.test(a.sub) ? 'fii' : 'b3'
+  return 'commod'
 }

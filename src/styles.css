@@ -1191,3 +1191,7 @@ h1, h2, h3, .big-px, .px, .score, .wordmark { letter-spacing: -0.03em; }
 .disclaimer svg{flex:none;margin-top:2px}
 .disclaimer b{color:var(--text-2);font-weight:600}
 .pb-stat{display:flex;align-items:center;gap:16px;margin:-4px 0 18px;padding:14px 18px;border-radius:16px;background:linear-gradient(135deg,#0b1640,#1e3a8a);color:rgba(255,255,255,.8);font-size:13.5px;line-height:1.5}.pb-stat>b{font-size:28px;font-weight:700;color:#fff;letter-spacing:-.03em;white-space:nowrap}.pb-stat span b{color:#fff}
+.asset-news{display:flex;flex-direction:column}
+.asset-news-row{display:flex;align-items:center;gap:14px;padding:14px 20px;border-top:1px solid var(--line);color:inherit;text-decoration:none;transition:background .15s}
+.asset-news-row:hover{background:var(--brand-soft)}
+.asset-news-t{font-size:14px;font-weight:500;line-height:1.45;margin-bottom:3px}

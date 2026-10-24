@@ -30,6 +30,11 @@ export default function Shell() {
   const loc = useLocation()
   const { session, signOut } = useAuth()
   const { isAdmin } = useRoles()
+  // after signing in (Google returns to the site root) land on Analisar ativo
+  useEffect(() => {
+    if (!session) return
+    try { if (sessionStorage.getItem('treend-v2-land')) { sessionStorage.removeItem('treend-v2-land'); if (loc.pathname === '/') nav('/mercado', { replace: true }) } } catch { /* ignore */ }
+  }, [session]) // eslint-disable-line react-hooks/exhaustive-deps
   const { data: menu } = useSidebarVisibility()
   // Admin-only items follow roles; any other item can be hidden from Admin → Menu lateral (Admin itself is never hidden).
   const visible = (i: { to: string; adminOnly?: boolean }) => (i.adminOnly ? isAdmin : menu?.[navKey(i.to)] !== false)

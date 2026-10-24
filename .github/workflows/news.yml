@@ -23,14 +23,16 @@ jobs:
         with:
           node-version: 20
       - run: node scripts/fetch-news.mjs /tmp/news.json
+      - run: node scripts/fetch-asset-news.mjs /tmp/news-assets.json || echo 'aviso: notícias por ativo não atualizadas'
       - name: Publicar news.json no gh-pages
         run: |
           git fetch origin gh-pages --depth=1
           git worktree add /tmp/site gh-pages
           cp /tmp/news.json /tmp/site/news.json
+          [ -f /tmp/news-assets.json ] && cp /tmp/news-assets.json /tmp/site/news-assets.json
           cd /tmp/site
           git config user.name "treend-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add news.json
+          git add news.json news-assets.json
           git commit -m "news: $(date -u '+%Y-%m-%d %H:%M')" || exit 0
           git push origin gh-pages

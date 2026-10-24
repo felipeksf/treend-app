@@ -18,7 +18,7 @@ export default function Login() {
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
 
-  if (session) return <Navigate to="/" replace />
+  if (session) return <Navigate to="/mercado" replace />
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -27,10 +27,10 @@ export default function Login() {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     setBusy(false)
     if (error) setErr(error.message === 'Invalid login credentials' ? 'E-mail ou senha incorretos.' : error.message)
-    else nav('/')
+    else nav('/mercado')
   }
 
-  const google = () => supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } })
+  const google = () => { try { sessionStorage.setItem('treend-v2-land', '1') } catch { /* ignore */ } return supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } }) }
 
   return (
     <div className="auth">

@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 public/news.json
 public/fii.json
+public/news-assets.json

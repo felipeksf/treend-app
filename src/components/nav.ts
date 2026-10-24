@@ -10,11 +10,12 @@ export const NAV: { group: string; items: NavItem[] }[] = [
   {
     group: 'Inteligência',
     items: [
-      { to: '/', label: 'Visão geral', icon: Gauge, kbd: '1', desc: 'Cotações, índices e contexto do dia' },
-      { to: '/concierge', label: 'Concierge', icon: Sparkles, kbd: '2', desc: 'Análise guiada da sua operação' },
-      { to: '/projecoes', label: 'Projeções', icon: LineChart, kbd: '3', desc: 'Zonas de preço por perfil' },
-      { to: '/mapa', label: 'Mapa de calor', icon: Grid3x3, kbd: '4', desc: 'Índice de todas as moedas e janelas' },
-      { to: '/radar', label: 'Radar', icon: Radar, kbd: '5', desc: 'Alertas automáticos de cenário' },
+      { to: '/mercado', label: 'Analisar ativo', icon: Search, kbd: '1', desc: 'Busque qualquer ativo e veja o índice Treend por tempo gráfico' },
+      { to: '/', label: 'Visão geral', icon: Gauge, kbd: '2', desc: 'Cotações, índices e contexto do dia' },
+      { to: '/concierge', label: 'Concierge', icon: Sparkles, kbd: '3', desc: 'Análise guiada da sua operação' },
+      { to: '/projecoes', label: 'Projeções', icon: LineChart, kbd: '4', desc: 'Zonas de preço por perfil' },
+      { to: '/mapa', label: 'Mapa de calor', icon: Grid3x3, kbd: '5', desc: 'Índice de todas as moedas e janelas' },
+      { to: '/radar', label: 'Radar', icon: Radar, kbd: '6', desc: 'Alertas automáticos de cenário' },
       { to: '/mcp', label: 'MCP', icon: Cpu, desc: 'A inteligência Treend dentro da sua IA' },
     ],
   },
@@ -31,7 +32,6 @@ export const NAV: { group: string; items: NavItem[] }[] = [
     group: 'Mercado',
     items: [
       { to: '/mercados', label: 'Mercados', icon: LayoutGrid, desc: 'Ações B3, Stocks, Cripto e Câmbio' },
-      { to: '/mercado', label: 'Analisar ativo', icon: Search, desc: 'Busque qualquer ativo e veja o índice Treend por tempo gráfico' },
       { to: '/noticias', label: 'Notícias', icon: Newspaper, kbd: '9', desc: 'Feed de câmbio em tempo real' },
       { to: '/reports', label: 'Reports', icon: ScrollText, desc: 'Análises semanais da Treend' },
       { to: '/agenda', label: 'Agenda', icon: CalendarDays, desc: 'Eventos, reports e mentorias' },

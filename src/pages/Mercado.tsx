@@ -1,3 +1,4 @@
+import AssetNews from '../components/AssetNews'
 import { toast } from '../components/ui'
 import { addHistory } from '../lib/assetHistory'
 import { History as HistoryIcon } from 'lucide-react'
@@ -63,7 +64,7 @@ export default function Mercado() {
   )
 }
 
-function SearchBox({ onPick, autoFocus, compact, cls }: { onPick: (a: Asset) => void; autoFocus?: boolean; compact?: boolean; cls: ClassKey }) {
+export function SearchBox({ onPick, autoFocus, compact, cls, placeholder }: { onPick: (a: Asset) => void; autoFocus?: boolean; compact?: boolean; cls?: ClassKey; placeholder?: string }) {
   const [q, setQ] = useState('')
   const [debounced, setDebounced] = useState('')
   const [open, setOpen] = useState(false)
@@ -117,7 +118,7 @@ function SearchBox({ onPick, autoFocus, compact, cls }: { onPick: (a: Asset) => 
           onChange={(e) => { setQ(e.target.value); setOpen(true) }}
           onFocus={() => setOpen(true)}
           onKeyDown={onKey}
-          placeholder={CLASSES[cls].placeholder}
+          placeholder={placeholder ?? (cls ? CLASSES[cls].placeholder : 'Ex.: PETR4, Solana, Apple, Dólar, Ouro')}
           aria-label="Buscar ativo"
           role="combobox"
           aria-expanded={open}
@@ -225,6 +226,8 @@ function Result({ asset, cls, onBack, onPick }: { asset: Asset; cls: ClassKey; o
           </div>
         </>
       )}
+
+      <div style={{ marginTop: 16 }}><AssetNews asset={asset} /></div>
 
       {radar && <AssetAlertModal asset={{ symbol: asset.symbol, ticker: asset.ticker, name: asset.name, logo: asset.logo, cls }} frame={radar} current={data?.frames.find((f) => f.key === radar)?.index ?? null} onClose={() => setRadar(null)} />}
       <p className="tiny faint" style={{ marginTop: 16 }}>Conteúdo informativo, não constitui recomendação de investimento.</p>

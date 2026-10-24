@@ -1,3 +1,9 @@
+import { Hint } from '../components/ui'
+import { useNavigate } from 'react-router-dom'
+import { ExternalLink, X } from 'lucide-react'
+import { SearchBox } from './Mercado'
+import AssetNews from '../components/AssetNews'
+import { clsOf, type Asset } from '../lib/market'
 import { useMemo, useState } from 'react'
 import { ArrowUpRight, Newspaper, Search, Sparkles } from 'lucide-react'
 import { supabase } from '../lib/supabase'
@@ -18,6 +24,8 @@ const FILTERS = [
 const initials = (s: string) => s.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase()
 
 export default function News() {
+  const [picked, setPicked] = useState<Asset | null>(null)
+  const nav = useNavigate()
   const { data: feed, isLoading, dataUpdatedAt } = useNewsFeed()
   const data = feed?.news
   const [f, setF] = useState('all')
@@ -50,6 +58,25 @@ export default function News() {
   return (
     <div className="page">
       <PageHeader eyebrow={<><Newspaper size={13} /> Notícias</>} title="O que move o câmbio," accent="agora." sub={<>Manchetes de dólar, euro, libra, yuan, iene e cripto, atualizadas continuamente. {feed?.updatedAt && <span className="faint">Feed atualizado há {timeAgo(feed.updatedAt)} · verificado há {timeAgo(new Date(dataUpdatedAt).toISOString())}.</span>}</>} />
+
+      <div className="card pad news-asset-search" style={{ marginBottom: 16 }}>
+        <div className="row between wrap gap-8" style={{ marginBottom: 12 }}>
+          <b className="row gap-8"><Search size={16} style={{ color: 'var(--brand)' }} /> Notícias por ativo<Hint text="Digite o nome ou o código de qualquer ativo — ações da B3 e dos EUA, cripto, commodities, FIIs ou moedas — e veja as manchetes recentes sobre ele." /></b>
+          {picked && <button className="btn sm ghost" onClick={() => setPicked(null)}><X /> Limpar</button>}
+        </div>
+        <SearchBox onPick={setPicked} compact placeholder="Digite um ativo: PETR4, Solana, Apple, Dólar, Ouro, MXRF11…" />
+      </div>
+
+      {picked && (
+        <div className="stack gap-12" style={{ marginBottom: 24 }}>
+          <div className="card pad row wrap gap-12">
+            <span className="asset-logo" style={{ width: 44, height: 44 }}>{picked.logo ? <img src={picked.logo} alt="" /> : <b>{picked.ticker.slice(0, 2)}</b>}</span>
+            <div style={{ flex: 1, minWidth: 160 }}><b style={{ fontSize: 18 }}>{picked.ticker}</b><div className="small muted">{picked.name} · {picked.sub}</div></div>
+            <button className="btn primary sm" onClick={() => { try { sessionStorage.setItem('treend-v2-asset', JSON.stringify(picked)) } catch { /* ignore */ } nav(`/mercado?c=${clsOf(picked)}&s=${encodeURIComponent(picked.symbol)}`) }}><ExternalLink /> Abrir análise completa</button>
+          </div>
+          <AssetNews asset={picked} />
+        </div>
+      )}
 
       <div className="row between wrap" style={{ marginBottom: 20, gap: 12 }}>
         <Seg value={f} onChange={setF} options={FILTERS} />

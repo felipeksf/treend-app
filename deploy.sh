@@ -5,6 +5,7 @@ cd "$(dirname "$0")"
 npm run build
 node scripts/fetch-fii.mjs dist/fii.json || curl -sf https://novo.treend.com.br/fii.json -o dist/fii.json || echo 'aviso: fii.json não atualizado'
 node scripts/fetch-news.mjs dist/news.json || echo 'aviso: feed de notícias não atualizado'
+node scripts/fetch-asset-news.mjs dist/news-assets.json || curl -sf https://novo.treend.com.br/news-assets.json -o dist/news-assets.json || echo 'aviso: notícias por ativo não atualizadas'
 cp dist/index.html dist/404.html   # SPA deep links on GitHub Pages
 touch dist/.nojekyll
 cd dist
