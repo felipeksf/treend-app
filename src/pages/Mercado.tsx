@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { ArrowLeft, Loader2, Mic, RefreshCw, Search } from 'lucide-react'
 import { analyze, searchAssets, zoneOf, type Asset } from '../lib/market'
-import { CLASSES, CLASS_LIST, type ClassKey, type Row } from '../lib/classes'
+import { CLASSES, CLASS_LIST, scanClass, type ClassKey, type Row } from '../lib/classes'
 import type { NavigateFunction } from 'react-router-dom'
 import { Delta, Gauge, Hint, Toaster } from '../components/ui'
 import { num, timeAgo } from '../lib/format'
@@ -13,6 +13,7 @@ const SUGGESTIONS: Record<ClassKey, string[]> = {
   us: ['AAPL', 'NVDA', 'MSFT', 'TSLA', 'AMZN', 'GOOGL'],
   crypto: ['Bitcoin', 'Ethereum', 'Solana', 'XRP', 'BNB', 'Dogecoin'],
   commod: ['Petróleo', 'Ouro', 'Soja', 'Café', 'Milho', 'Boi gordo'],
+  fii: ['MXRF11', 'HGLG11', 'KNRI11', 'XPML11', 'VISC11', 'KNCR11'],
   fx: ['Dólar', 'Euro', 'Libra', 'Yuan', 'Iene', 'Franco'],
 }
 
@@ -187,6 +188,8 @@ function Result({ asset, cls, onBack, onPick }: { asset: Asset; cls: ClassKey; o
         </div>
       </div>
 
+      {cls === 'fii' && <FiiPanel ticker={asset.ticker} />}
+
       {error ? (
         <div className="card pad">Não foi possível carregar os dados deste ativo agora. <button className="btn sm" onClick={() => refetch()}>Tentar de novo</button></div>
       ) : (
@@ -215,5 +218,22 @@ function Result({ asset, cls, onBack, onPick }: { asset: Asset; cls: ClassKey; o
 
       <p className="tiny faint" style={{ marginTop: 16 }}>Conteúdo informativo, não constitui recomendação de investimento.</p>
     </>
+  )
+}
+
+function FiiPanel({ ticker }: { ticker: string }) {
+  const { data } = useQuery({ queryKey: ['fii-one', ticker], queryFn: ({ signal }) => scanClass('fii', { search: ticker, signal }), staleTime: 60_000 })
+  const f = data?.find((r) => r.ticker === ticker)?.fii
+  if (!f) return null
+  return (
+    <div className="card pad fii-panel" style={{ marginBottom: 16, ['--c' as string]: f.read.c }}>
+      <div className="fii-read"><span className="small muted">Leitura Treend para FIIs<Hint text="Combina o índice Treend (com mais peso no diário e no semanal) com o P/VP. Índice alto com P/VP abaixo de 1 indica cota com desconto em momento de pessimismo." /></span><b style={{ color: f.read.c }}>{f.read.label}</b><span className="small muted">{f.read.note}</span></div>
+      <div className="fii-kpis">
+        <div><span className="tiny faint">P/VP<Hint text="Preço da cota dividido pelo valor patrimonial por cota. Abaixo de 1, a cota está com desconto sobre o patrimônio." /></span><b className="mono" style={{ color: f.pvp != null && f.pvp < 1 ? 'var(--up)' : f.pvp != null && f.pvp > 1.1 ? 'var(--orange)' : 'var(--text)' }}>{f.pvp != null ? num(f.pvp, 2) : '—'}</b></div>
+        <div><span className="tiny faint">Valor patrimonial/cota</span><b className="mono">{f.vp != null ? `R$ ${num(f.vp, 2)}` : '—'}</b></div>
+        <div><span className="tiny faint">Dividend yield 12m</span><b className="mono">{f.dy12m != null ? `${num(f.dy12m, 2)}%` : '—'}</b></div>
+        <div><span className="tiny faint">Segmento</span><b>{f.segment ?? '—'}</b></div>
+      </div>
+    </div>
   )
 }

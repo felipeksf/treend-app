@@ -1,0 +1,33 @@
+name: Atualizar FIIs
+
+on:
+  schedule:
+    - cron: '30 22 * * 1-5'   # 19h30 BRT, após o fechamento da B3
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['scripts/fetch-fii.mjs', '.github/workflows/fii.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  fii:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/fetch-fii.mjs /tmp/fii.json
+      - name: Publicar fii.json no gh-pages
+        run: |
+          git fetch origin gh-pages --depth=1
+          git worktree add /tmp/site gh-pages
+          cp /tmp/fii.json /tmp/site/fii.json
+          cd /tmp/site
+          git config user.name "treend-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add fii.json
+          git commit -m "fii: $(date -u '+%Y-%m-%d %H:%M')" || exit 0
+          git push origin gh-pages

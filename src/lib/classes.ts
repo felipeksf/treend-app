@@ -4,9 +4,10 @@ import { indexFromRsi } from './market'
 /* The four asset classes of the platform. Every list comes from the same market-data scanner
    (official base), with the index computed per timeframe (1h, 4h, D, W, M). */
 
-export type ClassKey = 'b3' | 'us' | 'crypto' | 'fx' | 'commod'
+export type ClassKey = 'b3' | 'us' | 'crypto' | 'fx' | 'commod' | 'fii'
 export type Row = {
   symbol: string; ticker: string; name: string; logo: string | null; sector: string | null; cur?: string | null; alt?: string
+  fii?: { pvp: number | null; vp: number | null; dy12m: number | null; segment: string | null; read: FiiRead }
   price: number | null; change_pct: number | null; value_traded: number | null
   scores: { frequency: string; rsi: number | null; heat_x: number; heat_y: number; change_pct: number; volatility_pct: number; momentum: number }[]
 }
@@ -24,15 +25,17 @@ export const CLASSES: Record<ClassKey, {
   b3: { key: 'b3', label: 'Ações B3', short: 'B3', currency: 'R$', question: 'Qual ação da B3 deseja analisar?', placeholder: 'Ex.: PETR4, Vale, Itaú', desc: '287 ações da bolsa brasileira', heatmapRoute: '/acoes-b3', news: ['B3'], emoji: '🇧🇷' },
   us: { key: 'us', label: 'Stocks', short: 'EUA', currency: 'US$', question: 'Qual ação americana deseja analisar?', placeholder: 'Ex.: AAPL, Nvidia, Tesla', desc: '4.790 ações da NASDAQ e NYSE', heatmapRoute: '/stocks-invest', news: ['US'], emoji: '🇺🇸' },
   crypto: { key: 'crypto', label: 'Cripto', short: 'Cripto', currency: 'US$', question: 'Qual criptomoeda deseja analisar?', placeholder: 'Ex.: Bitcoin, ETH, Solana', desc: 'Todas as criptomoedas negociadas em USDT', heatmapRoute: '/cripto', news: ['CRYPTO'], emoji: '₿' },
+  fii: { key: 'fii', label: 'FIIs', short: 'FIIs', currency: 'R$', question: 'Qual FII deseja analisar?', placeholder: 'Ex.: MXRF11, HGLG11, KNRI11', desc: 'Fundos imobiliários e Fiagros com P/VP', heatmapRoute: '/fiis', news: ['FII'], emoji: '🏢' },
   commod: { key: 'commod', label: 'Commodities', short: 'Commodities', currency: 'US$', question: 'Qual commodity deseja analisar?', placeholder: 'Ex.: Petróleo, Ouro, Soja, Café', desc: '232 commodities: energia, metais e agrícolas', heatmapRoute: '/commodities', news: ['COMMOD'], emoji: '🛢️' },
   fx: { key: 'fx', label: 'Câmbio', short: 'Câmbio', currency: 'R$', question: 'Qual moeda deseja analisar?', placeholder: 'Ex.: Dólar, Euro, Libra', desc: '11 moedas contra o real', heatmapRoute: '/cambio', news: ['USD', 'EUR', 'GBP', 'CNY', 'JPY'], emoji: 'R$' },
 }
-export const CLASS_LIST = [CLASSES.b3, CLASSES.us, CLASSES.crypto, CLASSES.commod, CLASSES.fx]
+export const CLASS_LIST = Object.values(CLASSES).sort((a, b) => a.label.localeCompare(b.label, 'pt'))
 
 const logoUrl = (id: unknown) => (id ? `https://s3-symbol-logo.tradingview.com/${id}.svg` : null)
 
 export async function scanClass(key: ClassKey, opts: { limit?: number; search?: string; signal?: AbortSignal } = {}): Promise<Row[]> {
   const { limit = 6000, search, signal } = opts
+  if (key === 'fii') return scanFii(signal, search)
   const market = key === 'b3' ? 'brazil' : key === 'us' ? 'america' : key === 'crypto' ? 'crypto' : key === 'commod' ? 'futures' : 'forex'
   const valueCol = key === 'crypto' ? '24h_vol|5' : key === 'commod' ? 'volume' : 'Value.Traded'
   const logoCol = key === 'crypto' ? 'base_currency_logoid' : key === 'fx' ? 'base_currency_logoid' : 'logoid'
@@ -107,4 +110,55 @@ export function commodityName(desc: string) {
   const mini = /\b(Micro|Mini|E-mini)\b/i.test(desc) ? ' (mini)' : ''
   for (const [re, pt] of TERMS) if (re.test(desc)) return `${pt}${mini}`
   return desc.replace(/\s*Futures?$/i, '')
+}
+
+/* ── FIIs: index per timeframe + P/VP (book value per share refreshed daily by scripts/fetch-fii.mjs) ── */
+
+export type FiiRead = { label: string; c: string; note: string }
+
+/** Combines the Treend index (daily/weekly carry the most weight for FIIs) with P/VP. */
+export function fiiRead(d1: number | null, w1: number | null, pvp: number | null): FiiRead {
+  const hi = Math.max(d1 ?? 0, w1 ?? 0)
+  const lo = Math.min(d1 ?? 100, w1 ?? 100)
+  if (pvp != null && pvp < 1 && hi >= 90) return { label: 'Assimetria de compra', c: 'var(--up)', note: 'Momento de forte pessimismo com a cota abaixo do valor patrimonial. Confirme se não houve perda de inquilino ou alta de vacância.' }
+  if (pvp != null && pvp < 1 && hi >= 70) return { label: 'Desconto com oportunidade', c: 'var(--up)', note: 'Índice favorável e cota negociada com desconto sobre o patrimônio.' }
+  if (pvp != null && pvp > 1.05 && lo <= 20) return { label: 'Ágio esticado', c: 'var(--down)', note: 'Euforia de curto prazo com a cota acima do valor patrimonial.' }
+  if (hi >= 90) return { label: 'Oportunidade com ágio', c: 'var(--amber)', note: 'Índice favorável, mas a cota está acima do valor patrimonial. Avalie o prêmio pago.' }
+  if (pvp != null && pvp > 1.15) return { label: 'Ágio elevado', c: 'var(--orange)', note: 'Cota bem acima do valor patrimonial.' }
+  if (pvp != null && pvp < 0.85) return { label: 'Desconto patrimonial', c: 'var(--lime)', note: 'Desconto relevante sobre o patrimônio. Verifique se não é uma armadilha de valor (vacância, inadimplência).' }
+  return { label: 'Neutro', c: 'var(--text-3)', note: 'Sem assimetria relevante entre momento e preço.' }
+}
+
+type FiiBase = { updated_at: string; funds: Record<string, { name: string; segment: string | null; dy12m: number | null; pvp: number | null; vp: number | null }> }
+let fiiCache: Promise<FiiBase> | null = null
+const fiiBase = () => (fiiCache ??= fetch(`/fii.json?t=${new Date().toISOString().slice(0, 13)}`).then((r) => { if (!r.ok) throw new Error('Base de FIIs indisponível'); return r.json() }))
+
+async function scanFii(signal?: AbortSignal, search?: string): Promise<Row[]> {
+  const base = await fiiBase()
+  const tickers = Object.keys(base.funds)
+  const body = { symbols: { tickers: tickers.map((t) => `BMFBOVESPA:${t}`) }, columns: ['name', 'description', 'logoid', 'close', 'change', 'Value.Traded', ...COLS.map((c) => c[1])], range: [0, tickers.length] }
+  const r = await fetch('https://scanner.tradingview.com/global/scan', { method: 'POST', headers: { 'content-type': 'text/plain;charset=UTF-8' }, body: JSON.stringify(body), signal })
+  if (!r.ok) throw new Error('Dados de mercado indisponíveis no momento.')
+  const j: { data: { s: string; d: (string | number | null)[] }[] } = await r.json()
+  const q = search ? search.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() : ''
+  return j.data
+    .map(({ s, d }) => {
+      const t = String(d[0])
+      const f = base.funds[t]
+      const price = d[3] as number | null
+      const pvp = f?.vp && price ? Math.round((price / f.vp) * 100) / 100 : f?.pvp ?? null
+      const scores = COLS.flatMap(([fr], i) => {
+        const rsi = d[6 + i] as number | null
+        return rsi == null ? [] : [{ frequency: fr, rsi: Math.round(rsi * 10) / 10, heat_x: indexFromRsi(rsi) as number, heat_y: 55, change_pct: 0, volatility_pct: 0, momentum: 0 }]
+      })
+      const idx = (k: string) => scores.find((x) => x.frequency === k)?.heat_x ?? null
+      return {
+        symbol: s, ticker: t, name: f?.name || String(d[1] ?? t), logo: logoUrl(d[2]), sector: f?.segment ?? null, cur: 'R$',
+        price, change_pct: d[4] == null ? null : Math.round((d[4] as number) * 100) / 100, value_traded: (d[5] as number) ?? null, scores,
+        fii: { pvp, vp: f?.vp ?? null, dy12m: f?.dy12m ?? null, segment: f?.segment ?? null, read: fiiRead(idx('d1'), idx('w1'), pvp) },
+      } as Row
+    })
+    .filter((x) => !q || `${x.ticker} ${x.name} ${x.sector ?? ''}`.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().includes(q))
+    // Funds with the index first (by traded value); funds the source doesn't score go to the end.
+    .sort((a, b) => Number(b.scores.length > 0) - Number(a.scores.length > 0) || (b.value_traded ?? 0) - (a.value_traded ?? 0))
 }

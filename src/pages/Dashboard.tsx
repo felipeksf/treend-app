@@ -9,6 +9,9 @@ import { Delta, Gauge, Meter, PageHeader, Seg, Skel, Sparkline, Hint } from '../
 import { num, timeAgo } from '../lib/format'
 import { supabase } from '../lib/supabase'
 import AlertModal from '../components/AlertModal'
+import { MarketSwitch, Overview } from './Modos'
+import { useMarkets } from '../lib/favorites'
+import type { ClassKey } from '../lib/classes'
 import { BrandsSlider, QuotesSlider } from '../components/Sliders'
 import { useAuth } from '../lib/auth'
 import { HELP } from '../lib/help'
@@ -68,7 +71,14 @@ const greeting = () => {
   return h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite'
 }
 
-export default function Dashboard() {
+/** Visão geral follows the market the user picked (Mercados or the switch on top); Câmbio keeps the original FX panel. */
+export default function VisaoGeral() {
+  const { selected, select } = useMarkets()
+  if (selected !== 'fx') return <Overview k={selected} embedded />
+  return <Dashboard onMarket={select} />
+}
+
+function Dashboard({ onMarket }: { onMarket: (k: ClassKey) => void }) {
   const [params, setParams] = useSearchParams()
   const ccy = HERO_CCY.includes(params.get('ccy') || '') ? params.get('ccy')! : 'USD'
   const setCcy = (c: string) => setParams({ ccy: c }, { replace: true })
@@ -100,6 +110,7 @@ export default function Dashboard() {
 
   return (
     <div className="page">
+      <MarketSwitch value="fx" onChange={onMarket} />
       <PageHeader
         eyebrow={<><Activity size={13} /> Monitoramento 24h</>}
         title={`${greeting()}${name ? `, ${name}` : ''}.`}

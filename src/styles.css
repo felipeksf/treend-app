@@ -1057,3 +1057,24 @@ h1, h2, h3, .big-px, .px, .score, .wordmark { letter-spacing: -0.03em; }
 @media (max-width: 1300px) { .modes { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 800px) { .modes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 520px) { .modes { grid-template-columns: 1fr; } }
+.fii-panel { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 20px; align-items: center; box-shadow: inset 4px 0 0 var(--c); }
+.fii-read { display: flex; flex-direction: column; gap: 6px; }
+.fii-read b { font-family: var(--display); font-size: 24px; letter-spacing: -0.02em; }
+.fii-kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.fii-kpis > div { display: flex; flex-direction: column; gap: 4px; background: var(--surface-2); border-radius: 14px; padding: 12px 14px; }
+.fii-kpis b { font-size: 18px; }
+@media (max-width: 800px) { .fii-panel { grid-template-columns: 1fr; } }
+
+/* Market switch (Visão geral) */
+.market-switch { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 18px; }
+.market-switch button { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border-radius: 999px; border: 0; background: var(--surface); color: var(--text-2); font-size: 13.5px; font-weight: 600; box-shadow: 0 0 0 1px var(--line); }
+.market-switch button:hover { color: var(--text); }
+.market-switch button.on { background: var(--brand); color: #fff; box-shadow: none; }
+.market-switch button svg { color: #f5b83d; }
+.market-switch button.on svg { color: #fff; }
+.market-switch-more { margin-left: auto; font-size: 13px; font-weight: 600; color: var(--brand); }
+.mode { border: 0; text-align: left; cursor: pointer; font: inherit; }
+.mode-star { position: absolute; top: 16px; right: 16px; z-index: 2; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: rgba(255, 255, 255, 0.14); color: #fff; transition: background 0.15s, transform 0.15s; }
+.mode-star:hover { background: rgba(255, 255, 255, 0.26); transform: scale(1.06); }
+.mode-star.on { background: #fff; color: #f5b83d; }
+.mode-star.on svg { fill: #f5b83d; }

@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { BellRing, Boxes, Lock, RefreshCw, Search, Trash2, TriangleAlert } from 'lucide-react'
 import { CLASSIC_URL } from '../lib/supabase'
 import { signal } from '../lib/heatmap'
-import { CLASSES, priceDigits, useClassScan, type ClassKey } from '../lib/classes'
+import { CLASSES, priceDigits, useClassScan, type ClassKey, type Row } from '../lib/classes'
 import { useRoles } from '../lib/roles'
 import { Delta, Empty, Gauge, Modal, PageHeader, Seg, Skel, toast, Hint } from '../components/ui'
 import Gate from '../components/Gate'
@@ -13,7 +13,7 @@ import { HELP } from '../lib/help'
 /* Same source as the classic Stocks Invest: edge function `stocks-heatmap` with
    { mode: 'invest' } — buy-zone scores. */
 type Score = { frequency: string; rsi: number | null; heat_x: number; heat_y: number; change_pct: number; volatility_pct: number; momentum: number }
-type Stock = { cur?: string | null; ticker: string; name?: string | null; sector?: string | null; logo?: string | null; price: number | null; change_pct: number | null; scores: Score[] }
+type Stock = { fii?: Row['fii']; cur?: string | null; ticker: string; name?: string | null; sector?: string | null; logo?: string | null; price: number | null; change_pct: number | null; scores: Score[] }
 export type Market = ClassKey
 
 const NAMES: Record<string, string> = { AMZN: 'Amazon', AAPL: 'Apple', GOOGL: 'Alphabet', META: 'Meta', MSFT: 'Microsoft', NVDA: 'NVIDIA', TSLA: 'Tesla' }
@@ -69,7 +69,7 @@ export default function StocksInvest() {
 
 export function Access({ market = 'us' }: { market?: Market }) {
   const { hasStocksAccess, loading } = useRoles()
-  if (market === 'crypto' || market === 'fx' || market === 'commod') return <Board market={market} />
+  if (market !== 'b3' && market !== 'us') return <Board market={market} />
   if (loading) return <Skel h={420} />
   if (!hasStocksAccess)
     return (
@@ -185,7 +185,7 @@ function Board({ market }: { market: Market }) {
               <tbody>
                 {stocks.slice(page * PAGE, (page + 1) * PAGE).map((s) => (
                   <tr key={s.ticker}>
-                    <td className="lbl"><span className="row gap-8"><StockLogo src={s.logo} t={s.ticker} size={22} />{s.ticker}</span></td>
+                    <td className="lbl"><span className="row gap-8"><StockLogo src={s.logo} t={s.ticker} size={22} /><span>{s.ticker}{s.fii && <div className="tiny" style={{ color: s.fii.read.c, fontWeight: 600 }}>P/VP {s.fii.pvp != null ? num(s.fii.pvp, 2) : '—'} · {s.fii.read.label}</div>}</span></span></td>
                     {FREQ.map((f) => {
                       const x = s.scores.find((y) => y.frequency === f.key)
                       if (!x) return <td key={f.key}><div className="heat-cell" style={{ ['--c' as string]: 'var(--line-3)', ['--a' as string]: '0%', opacity: 0.45, cursor: 'default' }}><b>—</b><span>Sem dado</span></div></td>
@@ -229,7 +229,15 @@ function Board({ market }: { market: Market }) {
                   <span className="pill tone"><span className="d" />{sg.label}</span>
                 </div>
                 <div style={{ display: 'grid', placeItems: 'center' }}><Gauge value={score.heat_x} color={sg.color} size={168} label={sg.summary.toUpperCase()} /></div>
-                <RsiBar rsi={score.rsi} />
+                {stock.fii ? (
+                  <div className="stack gap-8">
+                    <div className="pill tone" style={{ ['--c' as string]: stock.fii.read.c, alignSelf: 'flex-start' }}>{stock.fii.read.label}</div>
+                    <div className="small muted">{stock.fii.read.note}</div>
+                    <div className="kv"><span>P/VP<Hint text="Preço da cota dividido pelo valor patrimonial por cota. Abaixo de 1, a cota está com desconto." /></span><b className="mono">{stock.fii.pvp != null ? num(stock.fii.pvp, 2) : '—'}</b></div>
+                    <div className="kv"><span>Dividend yield 12m</span><b className="mono">{stock.fii.dy12m != null ? `${num(stock.fii.dy12m, 2)}%` : '—'}</b></div>
+                    <div className="kv"><span>Segmento</span><b>{stock.fii.segment ?? '—'}</b></div>
+                  </div>
+                ) : <RsiBar rsi={score.rsi} />}
                 <div>
                   <div className="kv"><span>Variação na janela</span><b className={`mono ${score.change_pct >= 0 ? 'up' : 'down'}`}>{score.change_pct >= 0 ? '+' : ''}{num(score.change_pct, 2)}%</b></div>
                   <div className="kv"><span>Volatilidade<Hint text={HELP.volatility} /></span><b className="mono">{num(score.volatility_pct, 1)}%</b></div>

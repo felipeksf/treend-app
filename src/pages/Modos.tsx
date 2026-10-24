@@ -1,9 +1,11 @@
-import { useMemo } from 'react'
+import { useMemo, type MouseEvent } from 'react'
+import { Star } from 'lucide-react'
+import { useMarkets } from '../lib/favorites'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowRight, ArrowUpRight, Grid3x3, Search, TrendingDown, TrendingUp } from 'lucide-react'
 import { CLASSES, CLASS_LIST, priceDigits, useClassScan, type ClassKey, type Row } from '../lib/classes'
 import { zoneOf } from '../lib/market'
-import { Delta, Empty, Hint, PageHeader, Seg, Skel } from '../components/ui'
+import { Delta, Empty, Hint, PageHeader, Skel } from '../components/ui'
 import { num, timeAgo } from '../lib/format'
 import { useNewsFeed } from './Dashboard'
 import { openAsset } from './Mercado'
@@ -15,6 +17,7 @@ const ART: Record<ClassKey, string> = {
   us: 'linear-gradient(145deg, #0b1a3a 0%, #2453e0 100%)',
   crypto: 'linear-gradient(145deg, #2a1608 0%, #f7931a 100%)',
   commod: 'linear-gradient(145deg, #2b1d0e 0%, #b8862b 100%)',
+  fii: 'linear-gradient(145deg, #0e2a33 0%, #1f9bb5 100%)',
   fx: 'linear-gradient(145deg, #1d1446 0%, #7b61ff 100%)',
 }
 
@@ -25,19 +28,50 @@ export default function Modos() {
 }
 
 function Picker() {
+  const { favs, isFav, toggleFav, select } = useMarkets()
+  const nav = useNavigate()
+  const open = (k: ClassKey) => { select(k); nav('/') }
+  const star = (e: MouseEvent, k: ClassKey) => { e.preventDefault(); e.stopPropagation(); toggleFav(k) }
+  const Card = ({ k }: { k: ClassKey }) => {
+    const c = CLASSES[k]
+    return (
+      <button className="mode" style={{ background: ART[k] }} onClick={() => open(k)}>
+        <span className={`mode-star ${isFav(k) ? 'on' : ''}`} role="button" aria-label={isFav(k) ? 'Remover dos favoritos' : 'Favoritar'} title={isFav(k) ? 'Remover dos favoritos' : 'Favoritar'} onClick={(e) => star(e, k)}><Star size={18} /></span>
+        <span className="mode-emoji">{c.emoji}</span>
+        <span className="mode-label">{c.label}</span>
+        <span className="mode-desc">{c.desc}</span>
+        <span className="mode-go">Abrir visão geral <ArrowRight size={16} /></span>
+      </button>
+    )
+  }
+  const favList = CLASS_LIST.filter((c) => favs.includes(c.key))
   return (
     <div className="page">
-      <PageHeader title="Escolha seu" accent="mercado." sub="Selecione uma classe de ativos para ver a visão geral, os destaques e as notícias daquele mercado." />
-      <div className="modes">
-        {CLASS_LIST.map((c) => (
-          <Link key={c.key} to={`/mercados/${c.key}`} className="mode" style={{ background: ART[c.key] }}>
-            <span className="mode-emoji">{c.emoji}</span>
-            <span className="mode-label">{c.label}</span>
-            <span className="mode-desc">{c.desc}</span>
-            <span className="mode-go">Ver visão geral <ArrowRight size={16} /></span>
-          </Link>
-        ))}
-      </div>
+      <PageHeader title="Escolha seu" accent="mercado." sub="Selecione uma classe de ativos para abrir a visão geral daquele mercado. Use a estrela para favoritar os que você mais acompanha." />
+      {favList.length > 0 && (
+        <>
+          <div className="small muted" style={{ margin: '0 0 10px', fontWeight: 600 }}>Favoritos</div>
+          <div className="modes" style={{ marginBottom: 24 }}>{favList.map((c) => <Card key={c.key} k={c.key} />)}</div>
+          <div className="small muted" style={{ margin: '0 0 10px', fontWeight: 600 }}>Todos os mercados</div>
+        </>
+      )}
+      <div className="modes">{CLASS_LIST.map((c) => <Card key={c.key} k={c.key} />)}</div>
+    </div>
+  )
+}
+
+/** Market switch used on Visão geral: favorites first, then the rest in alphabetical order. */
+export function MarketSwitch({ value, onChange }: { value: ClassKey; onChange: (k: ClassKey) => void }) {
+  const { favs } = useMarkets()
+  const list = [...CLASS_LIST.filter((c) => favs.includes(c.key)), ...CLASS_LIST.filter((c) => !favs.includes(c.key))]
+  return (
+    <div className="market-switch">
+      {list.map((c) => (
+        <button key={c.key} className={value === c.key ? 'on' : ''} onClick={() => onChange(c.key)}>
+          {favs.includes(c.key) && <Star size={12} fill="currentColor" />}{c.label}
+        </button>
+      ))}
+      <Link to="/mercados" className="market-switch-more">Mercados</Link>
     </div>
   )
 }
@@ -55,9 +89,10 @@ function AssetRow({ r, k, right }: { r: Row; k: ClassKey; right: React.ReactNode
   )
 }
 
-function Overview({ k }: { k: ClassKey }) {
+export function Overview({ k, embedded }: { k: ClassKey; embedded?: boolean }) {
   const c = CLASSES[k]
   const nav = useNavigate()
+  const { select } = useMarkets()
   const { data, isLoading, dataUpdatedAt } = useClassScan(k)
   const { data: feed } = useNewsFeed()
   const rows = useMemo(() => data ?? [], [data])
@@ -82,10 +117,7 @@ function Overview({ k }: { k: ClassKey }) {
 
   return (
     <div className="page">
-      <div className="row between wrap" style={{ gap: 12, marginBottom: 8 }}>
-        <Seg value={k} onChange={(v) => nav(`/mercados/${v}`)} options={CLASS_LIST.map((x) => ({ value: x.key, label: x.label }))} />
-        <Link to="/mercados" className="btn ghost sm">Todos os mercados</Link>
-      </div>
+      <MarketSwitch value={k} onChange={(v) => (embedded ? select(v) : nav(`/mercados/${v}`))} />
       <PageHeader title={c.label} accent="hoje." sub={<>{c.desc}. {dataUpdatedAt ? <span className="faint">Atualizado há {timeAgo(new Date(dataUpdatedAt).toISOString())}.</span> : null}</>} help={`Visão geral de ${c.label}: destaques do dia, ativos em zona de oportunidade, os mais esticados e as notícias desse mercado.`} />
 
       {top.length > 0 && (
