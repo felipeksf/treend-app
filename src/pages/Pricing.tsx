@@ -20,9 +20,9 @@ export const OFFER_PLANS: Plan[] = [
   { key: 'annual', priceId: (import.meta.env.VITE_OFFER_ANNUAL as string) || 'price_OFERTA_ANUAL', name: 'Anual', price: 'R$ 129', period: 'ano', note: 'Equivale a R$ 10,75/mês — 46% de economia', hl: true },
 ]
 
-export function Oferta() { return <Pricing plans={OFFER_PLANS} lead="oferta" /> }
+export function Oferta() { return <Pricing plans={OFFER_PLANS} lead="oferta" quotes /> }
 
-export default function Pricing({ plans = STRIPE_PLANS as Plan[], lead = '' }: { plans?: Plan[]; lead?: string }) {
+export default function Pricing({ plans = STRIPE_PLANS as Plan[], lead = '', quotes = false }: { plans?: Plan[]; lead?: string; quotes?: boolean }) {
   const STRIPE_PLANS_ = plans
   const { session } = useAuth()
   const [params] = useSearchParams()
@@ -58,7 +58,7 @@ export default function Pricing({ plans = STRIPE_PLANS as Plan[], lead = '' }: {
   }
 
   return (
-    <PurchaseShell eyebrow="" title="Acesso completo" accent="à Treend." description="Todas as ferramentas de inteligência cambial em um só lugar. Cancele quando quiser." payment="Pagamento seguro processado pelo Stripe">
+    <PurchaseShell eyebrow="" title="Acesso completo" accent="à Treend." description="Todas as ferramentas de inteligência cambial em um só lugar. Cancele quando quiser." payment="Pagamento seguro processado pelo Stripe" quotes={quotes}>
       <div className="plan-list">
         {STRIPE_PLANS_.map((p) => (
           <button key={p.key} className={`plan-row selectable ${plan === p.key ? 'on' : ''}`} onClick={() => setPlan(p.key)}>

@@ -1,3 +1,4 @@
+import LiveQuotes from '../components/LiveQuotes'
 import LangPicker from '../components/LangPicker'
 import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
@@ -5,12 +6,9 @@ import { ArrowRight, Eye, EyeOff, Lock, Mail } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/auth'
 import { TreendLogo } from '../components/ui'
-import { useQuotes } from '../lib/rates'
-import { num } from '../lib/format'
 
 export default function Login() {
   const { session } = useAuth()
-  const { data: q } = useQuotes()
   const nav = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -61,22 +59,7 @@ export default function Login() {
           </p>
         </div>
 
-        <div className="login-quotes">
-          {['USD', 'EUR', 'GBP', 'CNY', 'USDT', 'BTC'].map((c) =>
-            q?.[c] ? (
-              <div key={c} className="stack gap-4">
-                <span style={{ color: '#8fa3c7', fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{q[c].short}</span>
-                <span className="mono" style={{ fontSize: 17 }}>
-                  {q[c].prefix} {num(q[c].bid, c === 'BTC' ? 0 : 4)}
-                </span>
-                <span className="mono" style={{ color: q[c].pctChange >= 0 ? '#7ff0c6' : '#ff8a96', fontSize: 12 }}>
-                  {q[c].pctChange >= 0 ? '+' : ''}
-                  {num(q[c].pctChange, 2)}%
-                </span>
-              </div>
-            ) : null,
-          )}
-        </div>
+        <LiveQuotes />
       </section>
 
       <section className="auth-form" style={{ position: 'relative' }}>

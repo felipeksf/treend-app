@@ -1305,3 +1305,12 @@ tr:hover .row-my,.row-my:has(.on){opacity:1}
 .proj-bar i{display:block;height:100%;width:var(--w);background:var(--c);opacity:.7}
 .proj-range{position:relative;height:8px;border-radius:8px;background:linear-gradient(90deg,var(--up),var(--amber),var(--down))}
 .proj-range i{position:absolute;top:50%;width:16px;height:16px;border-radius:50%;background:var(--surface);border:3px solid var(--text);transform:translate(-50%,-50%)}
+.lq{display:flex;flex-direction:column;gap:14px;position:relative;z-index:2}
+.lq-tabs{display:flex;gap:4px;flex-wrap:wrap}
+.lq-tabs button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#c3cfe6;height:28px;padding:0 11px;border-radius:999px;font:600 11.5px inherit;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s}
+.lq-tabs button:hover{color:#fff;background:rgba(255,255,255,.12)}
+.lq-tabs button.on{background:#fff;color:#0b1640;border-color:#fff}
+.lq-k{color:#8fa3c7;font-size:11px;letter-spacing:.1em;text-transform:uppercase;max-width:120px;overflow:hidden;text-overflow:ellipsis}
+.lq-v{font-size:17px;color:#fff}
+.lq-d{font-size:12px}
+.lq-skel{height:56px;border-radius:10px;background:rgba(255,255,255,.06);min-width:80px}

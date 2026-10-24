@@ -1,3 +1,4 @@
+import LiveQuotes from './LiveQuotes'
 import LangPicker from './LangPicker'
 import type { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -6,7 +7,7 @@ import { TreendLogo, Toaster } from './ui'
 import { useAuth } from '../lib/auth'
 
 /** Shared layout for every purchase page (/assinatura, /planos, /pricing): fixed navy panel + content. */
-export default function PurchaseShell({ eyebrow, title, accent, description, payment, children }: { eyebrow: string; title: string; accent: string; description: string; payment: string; children: ReactNode }) {
+export default function PurchaseShell({ eyebrow, title, accent, description, payment, children, quotes = false }: { eyebrow: string; title: string; accent: string; description: string; payment: string; children: ReactNode; quotes?: boolean }) {
   const { session, signOut } = useAuth()
   const nav = useNavigate()
   return (
@@ -22,7 +23,10 @@ export default function PurchaseShell({ eyebrow, title, accent, description, pay
           <h2>Mais contexto. <span className="serif">Melhores decisões.</span></h2>
           <p style={{ color: '#c3cfe6', fontSize: 16, maxWidth: 420, marginTop: 20 }}>Inteligência cambial em tempo real para importadores, exportadores, agências de turismo e quem recebe do exterior.</p>
         </div>
-        <div className="row gap-8 tiny" style={{ color: '#8fa3c7' }}><ShieldCheck size={15} /> {payment}</div>
+        <div className="stack gap-24">
+          {quotes && <LiveQuotes />}
+          <div className="row gap-8 tiny" style={{ color: '#8fa3c7' }}><ShieldCheck size={15} /> {payment}</div>
+        </div>
       </section>
       <section className="onb-side">
         <div className="onb-side-top">
