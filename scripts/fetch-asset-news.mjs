@@ -68,6 +68,14 @@ const query = (s) => {
 }
 // quote/profile pages ("Petroleo Brasileiro SA Petrobras (PETR4)") are not news
 const isQuotePage = (t) => t.length < 70 && /\([A-Za-z0-9.]{2,10}\)\s*$/.test(t) && !/[,:;!?]/.test(t)
+// the headline must mention the asset itself (ticker or the exact first word of its name — "Amazon" ≠ "Amazonas")
+const mentions = (sym, title) => {
+  const code = sym.split(':')[1].replace(/USDT$/, '')
+  if (sym.startsWith('FX_IDC:') || sym.startsWith('BMFBOVESPA:')) return true
+  const word = (names[sym] || '').replace(/\.com\b/i, '').split(/[\s,.]+/).find((w) => w.length >= 3) || code
+  const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return new RegExp(`(^|[^\\p{L}])(${esc(code)}|${esc(word)})(?![\\p{L}])`, 'iu').test(title)
+}
 let j = 0
 async function gworker() {
   while (j < local.length) {
@@ -89,7 +97,7 @@ async function gworker() {
         const source = tag(it, 'source')
         const title = tag(it, 'title').replace(new RegExp(` - ${source.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`), '')
         return { title, link: tag(it, 'link'), source, pubDate: new Date(tag(it, 'pubDate')).toISOString() }
-      }).filter((n) => n.title && n.link && !Number.isNaN(Date.parse(n.pubDate)) && !isQuotePage(n.title) && (LANG === 'pt' || !n.link.includes('google.com/')))
+      }).filter((n) => n.title && n.link && !Number.isNaN(Date.parse(n.pubDate)) && !isQuotePage(n.title) && (LANG === 'pt' || !n.link.includes('google.com/')) && mentions(s, n.title))
       const all = [...(bySymbol[s] ?? []), ...got]
       const seen = new Set()
       const merged = all.filter((n) => { const k = n.title.toLowerCase().replace(/[^a-z0-9à-ú]+/g, ' ').slice(0, 70); if (seen.has(k)) return false; seen.add(k); return true })

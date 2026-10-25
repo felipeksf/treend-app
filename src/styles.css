@@ -1420,3 +1420,25 @@ tr:hover .row-my,.row-my:has(.on){opacity:1}
 [data-theme="dark"] .np-hero,[data-theme="dark"] .np-card{background:rgba(255,255,255,.04)}
 @media (max-width:900px){.np-hero{grid-template-columns:1fr}.np-hero-img{min-height:220px}.np-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:560px){.np-grid{grid-template-columns:1fr}}
+.np-fb{display:grid;place-items:center}
+.np-fb::after{content:'';position:absolute;inset:0;background:radial-gradient(60% 60% at 50% 45%,rgba(255,255,255,.18),transparent)}
+.np-fb-logo{position:relative;z-index:1;display:grid;place-items:center;width:34%;max-width:120px;aspect-ratio:1;border-radius:50%;overflow:hidden;background:#fff;box-shadow:0 14px 30px -10px rgba(0,0,0,.45)}
+.np-fb-logo img{width:100%;height:100%;object-fit:cover}
+.np-fb-logo b{font-family:var(--display);font-size:28px;color:var(--h)}
+/* news feed (newsletter cards + briefing) */
+.nf{display:flex;flex-direction:column;gap:22px;max-width:760px}
+.nf-card{border-radius:22px;overflow:hidden;background:var(--surface);border:1px solid var(--line);box-shadow:0 12px 30px -24px rgba(10,20,50,.4)}
+.nf-card a{text-decoration:none;color:inherit}
+.nf-img{position:relative;aspect-ratio:2/1;overflow:hidden;background:linear-gradient(135deg,var(--h),color-mix(in srgb,var(--h) 40%,#0b1640))}
+.nf-img>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.nf-body{padding:22px 26px 24px;display:flex;flex-direction:column;gap:12px}
+.nf-num{font-family:var(--display);font-weight:800;color:#2453e0}
+.nf-body h2{font-family:var(--display);font-size:clamp(21px,2.2vw,27px);line-height:1.15;letter-spacing:-.03em;font-weight:700;margin:0}
+.nf-body a:hover h2{color:var(--brand)}
+.nf-brief{padding:16px 18px;border-radius:16px;background:var(--brand-soft);border-left:3px solid #2453e0}
+.nf-brief-h{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#2453e0;margin-bottom:8px}
+.nf-brief .tn-body{padding:0}
+.nf-brief .tn-body p{font-size:14.5px;line-height:1.65;margin:0 0 10px}
+.nf-brief .tn-body p.lead{font-size:15.5px}
+.nf-brief .tn-body p.lead::first-letter{float:none;font-size:inherit;margin:0;color:inherit}
+.nf-brief .tn-block{margin-bottom:10px}

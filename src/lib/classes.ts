@@ -24,7 +24,7 @@ export const CLASSES: Record<ClassKey, {
   heatmapRoute: string; news: string[]; emoji: string
 }> = {
   b3: { key: 'b3', label: 'Ações B3', short: 'B3', currency: 'R$', question: 'Qual ação da B3 deseja analisar?', placeholder: 'Ex.: PETR4, Vale, Itaú', desc: '375 ações da bolsa brasileira', heatmapRoute: '/acoes-b3', news: ['B3'], emoji: '🇧🇷' },
-  us: { key: 'us', label: 'Stocks', short: 'EUA', currency: 'US$', question: 'Qual ação americana deseja analisar?', placeholder: 'Ex.: AAPL, Nvidia, Tesla', desc: '4.790 ações da NASDAQ e NYSE', heatmapRoute: '/stocks-invest', news: ['US'], emoji: '🇺🇸' },
+  us: { key: 'us', label: 'Stocks', short: 'Stocks', currency: 'US$', question: 'Qual ação americana deseja analisar?', placeholder: 'Ex.: AAPL, Nvidia, Tesla', desc: '4.790 ações da NASDAQ e NYSE', heatmapRoute: '/stocks-invest', news: ['US'], emoji: '🇺🇸' },
   crypto: { key: 'crypto', label: 'Cripto', short: 'Cripto', currency: 'US$', question: 'Qual criptomoeda deseja analisar?', placeholder: 'Ex.: Bitcoin, ETH, Solana', desc: 'Todas as criptomoedas negociadas em USDT', heatmapRoute: '/cripto', news: ['CRYPTO'], emoji: '₿' },
   fii: { key: 'fii', label: 'FIIs', short: 'FIIs', currency: 'R$', question: 'Qual FII deseja analisar?', placeholder: 'Ex.: MXRF11, HGLG11, KNRI11', desc: 'Fundos imobiliários e Fiagros com P/VP', heatmapRoute: '/fiis', news: ['FII'], emoji: '🏢' },
   commod: { key: 'commod', label: 'Commodities', short: 'Commodities', currency: 'US$', question: 'Qual commodity deseja analisar?', placeholder: 'Ex.: Petróleo, Ouro, Soja, Café', desc: '232 commodities: energia, metais e agrícolas', heatmapRoute: '/commodities', news: ['COMMOD'], emoji: '🛢️' },

@@ -54,12 +54,29 @@ async function priceOf(symbol: string) {
   return ((await r.json()).data?.[0]?.d?.[0] as number | null) ?? null
 }
 
+/** Dividend data: B3 stocks from the market data (12-month yield and dividend per share), FIIs from fii.json. */
+async function dividendsOf(a: Asset, cls: ClassKey): Promise<{ dy: number | null; dps: number | null }> {
+  if (cls === 'fii') {
+    try { const f = (await (await fetch('/fii.json')).json()).funds?.[a.ticker]; return { dy: f?.dy12m ?? null, dps: null } } catch { return { dy: null, dps: null } }
+  }
+  const r = await fetch('https://scanner.tradingview.com/global/scan', { method: 'POST', headers: { 'content-type': 'text/plain;charset=UTF-8' }, body: JSON.stringify({ symbols: { tickers: [a.symbol] }, columns: ['dividends_yield_current', 'dps_common_stock_prim_issue_fy'] }) })
+  const d = (await r.json()).data?.[0]?.d ?? []
+  return { dy: d[0] ?? null, dps: d[1] ?? null }
+}
+
 export default function AssetCalculator({ cls }: { cls: Exclude<ClassKey, 'fx'> }) {
   const R = RULES[cls]
   const [asset, setAsset] = useState<Asset | null>(null)
   const { data: def } = useQuery({ queryKey: ['calc-default', cls], queryFn: async () => (await searchAssets(DEFAULT[cls], undefined, cls))[0] ?? null, enabled: !asset })
   const a = asset ?? def ?? null
   const { data: price } = useQuery({ queryKey: ['calc-price', a?.symbol], queryFn: () => priceOf(a!.symbol), enabled: !!a })
+  const divs = cls === 'b3' || cls === 'fii'
+  const { data: div } = useQuery({ queryKey: ['calc-div', a?.symbol], queryFn: () => dividendsOf(a!, cls), enabled: !!a && divs })
+  const [dy, setDy] = useState<number>(0)
+  const [months, setMonths] = useState(12)
+  const [jcp, setJcp] = useState(30)
+  const [minDy, setMinDy] = useState(6)
+  useEffect(() => { if (div?.dy != null) setDy(+div.dy.toFixed(2)); else if (div) setDy(0) }, [div])
   const { data: quotes } = useQuotes()
   const usd = quotes?.USD?.bid ?? 5
   const cc = a?.currency ?? CLASSES[cls].currency
@@ -96,8 +113,17 @@ export default function AssetCalculator({ cls }: { cls: Exclude<ClassKey, 'fx'> 
     const ret = brlBuy ? (net / (brlBuy + (isUS ? 0 : fees / 2))) * 100 : 0
     // break-even sell price: covers costs (and FX for US) with zero result
     const be = units ? (isUS ? (brlBuy / (usdOut * (1 - fxPct / 100)) + fixed * 2 + gBuy * feePct / 100) / units / (1 - feePct / 100) : (gBuy + gBuy * feePct / 100 + fixed * 2) / units / (1 - feePct / 100)) : 0
-    return { units, gBuy, gSell, fees, brlBuy, brlSell, brlFees, gross, profit, ir, net, ret, be, exemptOk, isUS }
-  }, [mode, qty, amount, buy, sell, feePct, fixed, fxPct, tax, exempt, cls, usd, usdSell, R.exemptLimit])
+    // dividends: yield on today's price → dividend per share; received over the holding period
+    const dps = divs && price ? (price * dy) / 100 : 0
+    const provBruto = units * dps * (months / 12)
+    const provLiq = cls === 'b3' ? provBruto * (1 - (jcp / 100) * 0.15) : provBruto // JCP has 15% withheld; dividends and FII income are exempt
+    const total = net + provLiq
+    const totalRet = brlBuy ? (total / brlBuy) * 100 : 0
+    const yoc = buy ? (dps / buy) * 100 : 0
+    const ceiling = minDy ? dps / (minDy / 100) : 0
+    const beDiv = units ? Math.max(0, be - provLiq / units) : 0
+    return { units, gBuy, gSell, fees, brlBuy, brlSell, brlFees, gross, profit, ir, net, ret, be, exemptOk, isUS, dps, provBruto, provLiq, total, totalRet, yoc, ceiling, beDiv }
+  }, [mode, qty, amount, buy, sell, feePct, fixed, fxPct, tax, exempt, cls, usd, usdSell, R.exemptLimit, divs, price, dy, months, jcp, minDy])
 
   const brl = (v: number) => `${v < 0 ? '−' : ''}R$ ${num(Math.abs(v), 2)}`
   const digits = (price ?? buy) < 10 ? 4 : 2
@@ -127,6 +153,17 @@ export default function AssetCalculator({ cls }: { cls: Exclude<ClassKey, 'fx'> 
               {R.exemptLabel && <label className="row gap-8 small" style={{ cursor: 'pointer' }}><input type="checkbox" checked={exempt} onChange={(e) => setExempt(e.target.checked)} style={{ accentColor: 'var(--brand)', width: 16, height: 16 }} />{R.exemptLabel}</label>}
             </div>
           </details>
+          {divs && (
+            <details className="calc-costs" open>
+              <summary>{cls === 'fii' ? 'Rendimentos' : 'Dividendos e JCP'}<Hint text={cls === 'fii' ? 'Rendimentos mensais distribuídos pelo fundo, estimados pelo dividend yield dos últimos 12 meses.' : 'Proventos estimados pelo dividend yield dos últimos 12 meses sobre o preço atual. Dividendos são isentos; JCP tem 15% retidos na fonte.'} /></summary>
+              <div className="stack gap-12" style={{ marginTop: 12 }}>
+                <div className="field"><label>Dividend yield 12 meses (%)</label><input className="input mono" type="number" step="any" min={0} value={dy} onChange={(e) => setDy(+e.target.value)} /><span className="tiny faint">{div?.dy != null ? `Dado atual do ativo: ${num(div.dy, 2)}%` : 'Sem dado disponível — informe manualmente.'}</span></div>
+                <div className="field"><label>Tempo com o ativo (meses)</label><input className="input mono" type="number" min={0} value={months} onChange={(e) => setMonths(Math.max(0, +e.target.value))} /></div>
+                {cls === 'b3' && <div className="field"><label>Parcela paga como JCP (%)<Hint text="Juros sobre capital próprio têm 15% de IR retido na fonte; dividendos são isentos para pessoa física." /></label><input className="input mono" type="number" min={0} max={100} value={jcp} onChange={(e) => setJcp(Math.min(100, Math.max(0, +e.target.value)))} /></div>}
+                <div className="field"><label>Dividend yield de referência (%)<Hint text="Usado no preço-teto pelo método Bazin: dividendo anual por ação dividido pelo yield de referência (6% é o padrão do método)." /></label><input className="input mono" type="number" step="any" min={0} value={minDy} onChange={(e) => setMinDy(+e.target.value)} /></div>
+              </div>
+            </details>
+          )}
         </div>
       </div>
 
@@ -148,7 +185,21 @@ export default function AssetCalculator({ cls }: { cls: Exclude<ClassKey, 'fx'> 
               <div className="total"><span>Resultado líquido</span><b className="mono" style={{ color: r.net >= 0 ? 'var(--up)' : 'var(--down)' }}>{brl(r.net)}</b></div>
             </div>
           </div>
+          {divs && (
+            <div className="card">
+              <div className="card-h"><h3>{cls === 'fii' ? 'Rendimentos' : 'Dividendos'} no período<Hint text="Estimativa com base no dividend yield informado; os proventos futuros podem ser diferentes dos passados." /></h3></div>
+              <div className="calc-rows">
+                <div><span>{cls === 'fii' ? 'Rendimento' : 'Provento'} anual por {cls === 'fii' ? 'cota' : 'ação'}</span><b className="mono">R$ {num(r.dps, 4)}</b></div>
+                <div><span>Recebido em {months} {months === 1 ? 'mês' : 'meses'}{cls === 'b3' ? ` (líquido de IR sobre JCP)` : ''}</span><b className="mono up">+R$ {num(r.provLiq, 2)}</b></div>
+                <div><span>Dividend yield sobre o seu preço de compra (yield on cost)</span><b className="mono">{num(r.yoc, 2)}%</b></div>
+                <div><span>Preço-teto pelo método Bazin (DY de {num(minDy, 1)}%)</span><b className="mono">R$ {num(r.ceiling, 2)}</b></div>
+                <div><span>Preço atual em relação ao preço-teto</span><b className="mono">{price && r.ceiling ? `${num(((price - r.ceiling) / r.ceiling) * 100, 1)}% ${price <= r.ceiling ? 'abaixo' : 'acima'}` : '—'}</b></div>
+                <div className="total"><span>Resultado total (preço + {cls === 'fii' ? 'rendimentos' : 'proventos'})</span><b className="mono" style={{ color: r.total >= 0 ? 'var(--up)' : 'var(--down)' }}>{r.total >= 0 ? '+' : '−'}R$ {num(Math.abs(r.total), 2)} · {r.totalRet >= 0 ? '+' : ''}{num(r.totalRet, 2)}%</b></div>
+              </div>
+            </div>
+          )}
           <div className="card pad stack gap-8">
+            {divs && <div className="row between"><span className="muted">Preço de equilíbrio considerando {cls === 'fii' ? 'rendimentos' : 'proventos'}<Hint text="Preço de venda a partir do qual custos ficam cobertos, descontando os proventos recebidos no período." /></span><b className="mono">{cc} {num(r.beDiv, digits)}</b></div>}
             <div className="row between"><span className="muted">Preço de equilíbrio<Hint text="Preço de venda a partir do qual a operação cobre os custos (e o câmbio, em Stocks), antes do IR." /></span><b className="mono">{cc} {num(r.be, digits)}</b></div>
             <div className="tiny faint">{buy && r.be ? `${num(((r.be - buy) / buy) * 100, 2)}% acima do preço de compra` : ''}</div>
           </div>

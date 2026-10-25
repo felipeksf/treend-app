@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowUpRight, ExternalLink, Newspaper, Search, X } from 'lucide-react'
+import { ArrowUpRight, ExternalLink, LayoutGrid, List, Newspaper, Rows3, Search, X } from 'lucide-react'
 import SummarySheet from '../components/SummarySheet'
-import { Empty, Hint, PageHeader, Skel } from '../components/ui'
+import { Magazine } from '../components/AssetNews'
+import NewsFeed from '../components/NewsFeed'
+import { Empty, Hint, PageHeader, Seg, Skel } from '../components/ui'
 import { timeAgo } from '../lib/format'
 import { LOCALE } from '../lib/i18n'
 import { useNewsFeed, type NewsItem } from './Dashboard'
@@ -38,6 +40,11 @@ const keyOf = (t: string) => t.toLowerCase().replace(/[^a-z0-9à-ú]+/g, ' ').tr
 const iso = (d: string) => { const t = Date.parse(d); return Number.isNaN(t) ? '1970-01-01T00:00:00.000Z' : new Date(t).toISOString() }
 const readMin = (n: number) => Math.max(1, Math.round(n * 0.35))
 
+const LOGO = (id: string) => `https://s3-symbol-logo.tradingview.com/${id}.svg`
+const FX_LOGO: Record<string, string> = { USD: 'country/US', EUR: 'country/EU', GBP: 'country/GB', CNY: 'country/CN', JPY: 'country/JP' }
+const CLS_LOGO: Record<string, string> = { b3: 'country/BR', fii: 'country/BR', us: 'country/US', crypto: 'crypto/XTVCBTC', commod: 'metal/gold' }
+const fb = (n: NewsItem) => { const s = n as Story; return { logo: LOGO(s.cls === 'fx' ? FX_LOGO[s.currency ?? 'USD'] ?? 'country/US' : CLS_LOGO[s.cls] ?? 'country/BR'), label: s.cls } }
+
 export default function News() {
   const nav = useNavigate()
   const { data: feed, isLoading } = useNewsFeed()
@@ -45,6 +52,8 @@ export default function News() {
   const [tab, setTab] = useState<Tab>('all')
   const [fx, setFx] = useState('all')
   const [q, setQ] = useState('')
+  const [view, setViewState] = useState<'edition' | 'magazine' | 'feed'>(() => { try { return (localStorage.getItem('treend-v2-newspage-view') as 'edition' | 'magazine' | 'feed') || 'magazine' } catch { return 'magazine' } })
+  const setView = (v: 'edition' | 'magazine' | 'feed') => { setViewState(v); try { localStorage.setItem('treend-v2-newspage-view', v) } catch { /* ignore */ } }
   const [picked, setPicked] = useState<Asset | null>(null)
   const [summary, setSummary] = useState<{ story: Story } | null>(null)
 
@@ -96,6 +105,9 @@ export default function News() {
         </div>
       </div>
 
+      <div className="row between wrap gap-12" style={{ marginBottom: 12 }}>
+        <Seg value={view} onChange={setView} options={[{ value: 'edition', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><List size={14} /> Edição</span> }, { value: 'magazine', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><LayoutGrid size={14} /> Revista</span> }, { value: 'feed', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Rows3 size={14} /> Feed</span> }]} />
+      </div>
       <div className="tn-tabs" role="tablist">
         {TABS.map((t) => (
           <button key={t.key} role="tab" aria-selected={tab === t.key} className={tab === t.key ? 'on' : ''} onClick={() => setTab(t.key)}>
@@ -112,7 +124,9 @@ export default function News() {
           {isLoading && <div className="stack gap-16">{[0, 1, 2, 3].map((i) => <Skel key={i} h={70} />)}</div>}
           {!isLoading && !list.length && <div className="card"><Empty icon={<Newspaper size={20} />} title="Nenhuma notícia encontrada">Tente outro filtro.</Empty></div>}
 
-          {lead && (
+          {view === 'magazine' && list.length > 0 && <Magazine items={list} onSummary={(n) => summarize(n as Story)} tag={(n) => `${EMOJI[(n as Story).cls]} ${label((n as Story).cls)}`} fallback={fb} />}
+          {view === 'feed' && list.length > 0 && <NewsFeed items={list.slice(0, 20)} tag={(n) => `${EMOJI[(n as Story).cls]} ${label((n as Story).cls)}`} fallback={fb} />}
+          {view === 'edition' && lead && (
             <article className="tn-lead">
               <div className="tn-tag">{EMOJI[lead.cls]} {label(lead.cls)} · <span data-no-tr>{lead.source}</span> · {timeAgo(lead.pubDate)}</div>
               <a href={lead.link} target="_blank" rel="noreferrer"><h2 data-no-tr>{clean(lead.title)}</h2></a>
@@ -123,7 +137,7 @@ export default function News() {
             </article>
           )}
 
-          <ol className="tn-list">
+          {view === 'edition' && <ol className="tn-list">
             {rest.map((n, i) => (
               <li key={n.link + n.title}>
                 <span className="tn-num">{i + 2}.</span>
@@ -137,7 +151,7 @@ export default function News() {
                 </div>
               </li>
             ))}
-          </ol>
+          </ol>}
         </div>
 
         <aside className="tn-side">

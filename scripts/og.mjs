@@ -21,23 +21,32 @@ async function ogOf(url) {
   try {
     const r = await fetch(url, { headers: { 'user-agent': UA, accept: 'text/html' }, redirect: 'follow', signal: ctl.signal })
     if (!r.ok || !(r.headers.get('content-type') || '').includes('html')) return ''
-    // only the <head> matters
     const reader = r.body.getReader(); let html = ''
-    while (html.length < 250000) { const { done, value } = await reader.read(); if (done) break; html += new TextDecoder().decode(value); if (/<\/head>/i.test(html)) break }
+    const OG = /<meta[^>]+(?:property|name)=["'](?:og:image(?::secure_url|:url)?|twitter:image(?::src)?)["'][^>]*content=["']([^"']+)["']|<meta[^>]+content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:image|twitter:image)["']/i
+    while (html.length < 450000) { const { done, value } = await reader.read(); if (done) break; html += new TextDecoder().decode(value); if (OG.test(html)) break }
     try { reader.cancel() } catch { /* ignore */ }
-    const m = html.match(/<meta[^>]+(?:property|name)=["'](?:og:image(?::secure_url)?|twitter:image(?::src)?)["'][^>]*content=["']([^"']+)["']/i)
-      || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:image|twitter:image)["']/i)
-    if (!m) return ''
-    const img = new URL(decode(m[1]), r.url || url).toString()
-    return /^https:\/\//.test(img) && !/logo|favicon|default|placeholder/i.test(img) ? img : ''
+    const bad = (u) => /(^|\/)[^/]*(logo|favicon|sprite|avatar|icon|placeholder|blank|pixel|spacer)[^/]*$/i.test(u.split('?')[0]) || /\.svg(\?|$)|\.gif(\?|$)/i.test(u)
+    const abs = (u) => { try { return new URL(decode(u), r.url || url).toString() } catch { return '' } }
+    const cands = []
+    const og = html.match(OG); if (og) cands.push(og[1] || og[2])
+    const ld = html.match(/"image"\s*:\s*(?:\{[^}]*?"url"\s*:\s*)?\[?\s*"([^"]+\.(?:jpe?g|png|webp)[^"]*)"/i); if (ld) cands.push(ld[1])
+    const rel = html.match(/<link[^>]+rel=["']image_src["'][^>]*href=["']([^"']+)["']/i); if (rel) cands.push(rel[1])
+    // first sizeable photo of the article body
+    for (const m of html.matchAll(/<img[^>]+(?:data-src|src)=["']([^"']+\.(?:jpe?g|png|webp)[^"']*)["'][^>]*>/gi)) {
+      const tag = m[0]; const w = +(tag.match(/width=["']?(\d+)/i)?.[1] ?? 0)
+      if (!w || w >= 300) { cands.push(m[1]); if (cands.length > 6) break }
+    }
+    for (const c of cands) { const img = abs(c); if (/^https:\/\//.test(img) && !bad(img)) return img }
+    return ''
   } catch { return '' } finally { clearTimeout(timer) }
 }
 
 /** Adds `image` to every item (in place), fetching only links not cached yet. */
 export async function addImages(items, map, concurrency = 12) {
-  const todo = [...new Set(items.map((n) => n.link).filter((l) => l && !(l in map)))]
+  // misses are retried once on a later run ('#retry'), then cached as '' for good
+  const todo = [...new Set(items.map((n) => n.link).filter((l) => l && (!(l in map) || map[l] === '#retry')))]
   let i = 0
-  await Promise.all(Array.from({ length: concurrency }, async () => { while (i < todo.length) { const l = todo[i++]; map[l] = await ogOf(l) } }))
-  for (const n of items) if (map[n.link]) n.image = map[n.link]
+  await Promise.all(Array.from({ length: concurrency }, async () => { while (i < todo.length) { const l = todo[i++]; const img = await ogOf(l); map[l] = img || (map[l] === '#retry' ? '' : '#retry') } }))
+  for (const n of items) if (map[n.link] && map[n.link] !== '#retry') n.image = map[n.link]
   return todo.length
 }
