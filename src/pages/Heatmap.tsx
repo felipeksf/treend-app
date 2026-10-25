@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { CLASSES, CLASS_LIST, type ClassKey } from '../lib/classes'
+import { CLASSES, CLASS_LIST, useClassScan, type ClassKey } from '../lib/classes'
+import HeatTreemap from '../components/HeatTreemap'
+import { Flame } from 'lucide-react'
 import { Access } from './StocksInvest'
 import Gate from '../components/Gate'
 import { Grid3x3 } from 'lucide-react'
@@ -130,10 +132,33 @@ export default function Heatmap() {
           {CLASS_LIST.map((x) => <button key={x.key} role="tab" aria-selected={k === x.key} className={k === x.key ? 'on' : ''} onClick={() => setParams(x.key === 'fx' ? {} : { c: x.key })}>{x.emoji} {x.label}</button>)}
         </div>
       </div>
-      {k === 'fx' ? <FxHeatmap /> : (
+      {k === 'fx' ? <FxHeatmapModes /> : (
         <div className="page">
           <PageHeader eyebrow={<><Grid3x3 size={13} /> Mapa de calor</>} title="Todo o mercado," accent="em um olhar." sub={<>Índice Treend de 0 a 100 para {c.desc.charAt(0).toLowerCase() + c.desc.slice(1)}, em cinco tempos gráficos. Clique em um bloco para criar um radar.</>} />
           <Gate what="o mapa de calor"><Access key={k} market={k} /></Gate>
+        </div>
+      )}
+    </>
+  )
+}
+
+/** FX on the heatmap screen: the profile grid, or the colour heatmap of the 11 currencies. */
+function FxHeatmapModes() {
+  const [mode, setModeState] = useState<'grid' | 'heat'>(() => { try { return (localStorage.getItem('treend-v2-fxheat-view') as 'grid' | 'heat') || 'grid' } catch { return 'grid' } })
+  const setMode = (m: 'grid' | 'heat') => { setModeState(m); try { localStorage.setItem('treend-v2-fxheat-view', m) } catch { /* ignore */ } }
+  const { data } = useClassScan('fx')
+  const nav = useNavigate()
+  return (
+    <>
+      <div className="page" style={{ paddingBottom: 0, paddingTop: 0 }}>
+        <div className="row" style={{ justifyContent: 'flex-end' }}>
+          <Seg value={mode} onChange={setMode} options={[{ value: 'grid', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Grid3x3 size={14} /> Por perfil</span> }, { value: 'heat', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Flame size={14} /> Calor</span> }]} />
+        </div>
+      </div>
+      {mode === 'grid' ? <FxHeatmap /> : (
+        <div className="page">
+          <PageHeader eyebrow={<><Grid3x3 size={13} /> Mapa de calor</>} title="Todo o mercado," accent="em um olhar." sub="As 11 moedas contra o real coloridas pelo índice Treend: verde quando o preço está abaixo da média recente, vermelho quando está esticado." />
+          <div className="card pad"><HeatTreemap rows={data ?? []} grouped={false} onPick={(r) => { try { sessionStorage.setItem('treend-v2-asset', JSON.stringify({ symbol: r.symbol, ticker: r.ticker, name: r.name, logo: r.logo, currency: 'R$', sub: 'Câmbio' })) } catch { /* ignore */ } nav(`/mercado?c=fx&s=${encodeURIComponent(r.symbol)}`) }} /></div>
         </div>
       )}
     </>

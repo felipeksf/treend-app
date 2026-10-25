@@ -1,5 +1,6 @@
 import Select from '../components/Select'
-import { Grid3x3, LayoutGrid } from 'lucide-react'
+import { Flame, Grid3x3, LayoutGrid } from 'lucide-react'
+import HeatTreemap from '../components/HeatTreemap'
 import MyAssetButton from '../components/MyAssetButton'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -81,8 +82,8 @@ function Board({ market }: { market: Market }) {
   const PAGE = 100
   const [query, setQuery] = useState('')
   const [cat, setCat] = useState('all')
-  const [bview, setBviewState] = useState<'map' | 'logos'>(() => { try { return (localStorage.getItem('treend-v2-board-view') as 'map' | 'logos') || 'map' } catch { return 'map' } })
-  const setBview = (v: 'map' | 'logos') => { setBviewState(v); try { localStorage.setItem('treend-v2-board-view', v) } catch { /* ignore */ } }
+  const [bview, setBviewState] = useState<'map' | 'logos' | 'heat'>(() => { try { return (localStorage.getItem('treend-v2-board-view') as 'map' | 'logos' | 'heat') || 'map' } catch { return 'map' } })
+  const setBview = (v: 'map' | 'logos' | 'heat') => { setBviewState(v); try { localStorage.setItem('treend-v2-board-view', v) } catch { /* ignore */ } }
   const all = useMemo(() => data?.stocks ?? [], [data])
   const catOf = (s: Stock) => (s as unknown as Row).category ?? null
   const cats = useMemo(() => {
@@ -155,18 +156,18 @@ function Board({ market }: { market: Market }) {
         ))}
       </div>}
 
-      <div className="grid g-main" style={{ alignItems: 'start' }}>
+      <div className="grid g-main" style={{ alignItems: 'start', ...(bview === 'heat' ? { gridTemplateColumns: 'minmax(0, 1fr)' } : {}) }}>
         <div className="card" style={{ overflowX: 'auto' }}>
           <div className="card-h">
             <h3><Boxes /> Mapa do índice Treend</h3>
             <div className="row gap-8">
-              <Seg value={bview} onChange={setBview} options={[{ value: 'map', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Grid3x3 size={14} /> Mapa</span> }, { value: 'logos', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><LayoutGrid size={14} /> Logos</span> }]} />
+              <Seg value={bview} onChange={setBview} options={[{ value: 'map', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Grid3x3 size={14} /> Mapa</span> }, { value: 'logos', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><LayoutGrid size={14} /> Logos</span> }, { value: 'heat', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Flame size={14} /> Calor</span> }]} />
               {data?.updated && <span className="tiny faint hide-m">Atualizado há {timeAgo(data.updated)}</span>}
               <button className="icon-btn" title="Atualizar" onClick={refresh}><RefreshCw className={isFetching ? 'spin' : ''} /></button>
             </div>
           </div>
           <div className="card-b">
-            {bview === 'logos' ? (
+            {bview === 'heat' ? <HeatTreemap rows={stocks as unknown as Row[]} grouped={(market === 'b3' || market === 'us') && cat === 'all'} onPick={(r) => openAsset(nav, r, market)} /> : bview === 'logos' ? (
               <div className="my-logos board-logos">
                 {stocks.slice(page * PAGE, (page + 1) * PAGE).map((s) => {
                   const d1 = s.scores.find((x) => x.frequency === 'd1')?.heat_x ?? null
