@@ -6,7 +6,8 @@ import { useMemo, useState, type MouseEvent } from 'react'
 import { Star } from 'lucide-react'
 import { useMarkets } from '../lib/favorites'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { ArrowRight, Gauge, Grid3x3, TrendingDown, TrendingUp } from 'lucide-react'
+import { ArrowRight, Coins, Gauge, Grid3x3, TrendingDown, TrendingUp } from 'lucide-react'
+import DividendsBoard from '../components/DividendsBoard'
 import { CLASSES, CLASS_LIST, priceDigits, useClassScan, type ClassKey, type Row } from '../lib/classes'
 import { zoneOf } from '../lib/market'
 import { Delta, Hint, PageHeader, Seg, Skel } from '../components/ui'
@@ -66,14 +67,14 @@ function Picker() {
 }
 
 /** Market switch used on Visão geral: favorites first, then the rest in alphabetical order. */
-export type MarketView = 'overview' | 'map'
+export type MarketView = 'overview' | 'map' | 'dividends'
 /** Overview ↔ full class map, remembered across markets. */
 export function useMarketView(): [MarketView, (v: MarketView) => void] {
   const [v, setV] = useState<MarketView>(() => { try { return (localStorage.getItem('treend-v2-market-view') as MarketView) || 'overview' } catch { return 'overview' } })
   return [v, (n) => { setV(n); try { localStorage.setItem('treend-v2-market-view', n) } catch { /* ignore */ } }]
 }
-export function MarketViewSwitch({ value, onChange }: { value: MarketView; onChange: (v: MarketView) => void }) {
-  return <Seg value={value} onChange={onChange} options={[{ value: 'overview', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Gauge size={14} /> Visão geral</span> }, { value: 'map', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Grid3x3 size={14} /> Mapa</span> }]} />
+export function MarketViewSwitch({ value, onChange, dividends = false }: { value: MarketView; onChange: (v: MarketView) => void; dividends?: boolean }) {
+  return <Seg value={dividends ? value : value === 'dividends' ? 'overview' : value} onChange={onChange} options={[{ value: 'overview', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Gauge size={14} /> Visão geral</span> }, { value: 'map', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Grid3x3 size={14} /> Mapa</span> }, ...(dividends ? [{ value: 'dividends' as MarketView, label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Coins size={14} /> Dividendos</span> }] : [])]} />
 }
 /** Body of the "Mapa" view: the full board of the class (same screen the old sidebar shortcuts opened). */
 export function MarketMap({ k }: { k: ClassKey }) {
@@ -140,8 +141,8 @@ export function Overview({ k, embedded }: { k: ClassKey; embedded?: boolean }) {
   return (
     <div className="page">
       <MarketSwitch value={k} onChange={(v) => (embedded ? select(v) : nav(`/mercados/${v}`))} />
-      <PageHeader title={hello} accent={`${c.label} hoje.`} sub={<>{c.desc}. {dataUpdatedAt ? <span className="faint">Atualizado há {timeAgo(new Date(dataUpdatedAt).toISOString())}.</span> : null}</>} help={`Visão geral de ${c.label}: destaques do dia, ativos em faixa abaixo da média, os mais esticados e as notícias desse mercado.`} actions={<MarketViewSwitch value={view} onChange={setView} />} />
-      {view === 'map' ? <MarketMap k={k} /> : <>
+      <PageHeader title={hello} accent={`${c.label} hoje.`} sub={<>{c.desc}. {dataUpdatedAt ? <span className="faint">Atualizado há {timeAgo(new Date(dataUpdatedAt).toISOString())}.</span> : null}</>} help={`Visão geral de ${c.label}: destaques do dia, ativos em faixa abaixo da média, os mais esticados e as notícias desse mercado.`} actions={<MarketViewSwitch value={view} onChange={setView} dividends={k === 'b3'} />} />
+      {view === 'map' ? <MarketMap k={k} /> : view === 'dividends' && k === 'b3' ? <DividendsBoard /> : <>
 
       {top.length > 0 && (
         <div className="slider" style={{ marginBottom: 16 }}>

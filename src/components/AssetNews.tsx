@@ -28,7 +28,7 @@ export default function AssetNews({ asset, title, compact = false }: { asset: Pi
       </div>
       {isLoading ? <Skel h={160} /> : !items.length ? (
         <Empty icon={<Newspaper size={20} />} title="Sem notícias recentes sobre este ativo">Quando surgirem manchetes citando {asset.ticker}, elas aparecem aqui.</Empty>
-      ) : view === 'portal' && !compact ? <Magazine items={items} onSummary={setOpen} fallback={() => ({ logo: (asset as { logo?: string | null }).logo ?? null, label: asset.ticker })} /> : (
+      ) : view === 'portal' && !compact ? <Magazine items={items} onSummary={setOpen} fallback={() => ({ logo: (asset as { logo?: string | null }).logo ?? null, label: asset.ticker, kind: kindOf(asset.symbol) })} /> : (
         <>
           <article className="tn-lead">
             <div className="tn-tag"><span data-no-tr>{lead.source}</span> · {timeAgo(lead.pubDate)}</div>
@@ -60,9 +60,10 @@ export default function AssetNews({ asset, title, compact = false }: { asset: Pi
   )
 }
 
+const kindOf = (sym: string) => { const ex = sym.split(':')[0]; return ex === 'FX_IDC' ? 'fx' : ex === 'BINANCE' ? 'crypto' : ex === 'NASDAQ' || ex === 'NYSE' ? 'us' : ex === 'BMFBOVESPA' ? (/11$/.test(sym) ? 'fii' : 'b3') : 'commod' }
 const HUES = ['#2453e0', '#0f9d74', '#d9822b', '#7b61ff', '#e0457b', '#1f9bb5']
 export const hue = (s: string) => HUES[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % HUES.length]
-export type Fallback = (n: NewsItem) => { logo: string | null; label: string }
+export type Fallback = (n: NewsItem) => { logo: string | null; label: string; kind?: string }
 
 /** Cover of a story: its own image, or — when the article has none — the asset/market logo on a gradient. */
 export function Cover({ n, cls, fallback }: { n: NewsItem; cls: string; fallback?: Fallback }) {
@@ -72,7 +73,10 @@ export function Cover({ n, cls, fallback }: { n: NewsItem; cls: string; fallback
   return (
     <div className={`${cls} ${showImg ? '' : 'np-fb'}`} style={{ ['--h' as string]: hue(fb?.label || n.source || n.title) }}>
       {showImg ? <img src={n.image} alt="" loading="lazy" referrerPolicy="no-referrer" onError={() => setBroken(true)} />
-        : <span className="np-fb-logo">{fb?.logo ? <img src={fb.logo} alt="" /> : <b>{(fb?.label || n.source || '•').slice(0, 2).toUpperCase()}</b>}</span>}
+        : <>
+          <img src={`/news-fallback/${fb?.kind ?? 'default'}.svg`} alt="" />
+          {fb?.logo && <span className="np-fb-logo"><img src={fb.logo} alt="" /></span>}
+        </>}
       <span className="np-src" data-no-tr>{n.source}</span>
     </div>
   )

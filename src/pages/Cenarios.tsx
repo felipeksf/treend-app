@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { ArrowRight, BellRing, Maximize2, Minimize2, Orbit, Search, TrendingDown, TrendingUp, X } from 'lucide-react'
+import { ArrowRight, BellRing, Flame, Maximize2, Minimize2, Orbit, Search, TrendingDown, TrendingUp, X } from 'lucide-react'
 import { CLASSES, CLASS_LIST, priceDigits, useClassScan, type ClassKey, type Row } from '../lib/classes'
 import { zoneOf, type Asset } from '../lib/market'
 import { openAsset } from './Mercado'
-import { Delta, Hint, PageHeader, Skel } from '../components/ui'
+import { Delta, Hint, PageHeader, Seg, Skel } from '../components/ui'
+import HeatTreemap from '../components/HeatTreemap'
 import { num } from '../lib/format'
 import Gate from '../components/Gate'
 import MyAssetButton from '../components/MyAssetButton'
@@ -42,6 +43,12 @@ export default function Cenarios() {
   const [q, setQ] = useState('') // live search: bubbles filter as the user types
   const [open, setOpen] = useState<Row | null>(null)
   const [full, setFull] = useState(false)
+  const [mode, setModeState] = useState<'bubbles' | 'heat'>(() => { try { return (localStorage.getItem('treend-v2-cen-mode') as 'bubbles' | 'heat') || 'bubbles' } catch { return 'bubbles' } })
+  const setMode = (m: 'bubbles' | 'heat') => { setModeState(m); try { localStorage.setItem('treend-v2-cen-mode', m) } catch { /* ignore */ } }
+  const heatRows = useMemo(() => {
+    const s = norm(q.trim())
+    return (data ?? []).filter((r) => !s || norm(`${r.ticker} ${r.name} ${r.category ?? ''}`).includes(s))
+  }, [data, q])
   const wrap = useRef<HTMLDivElement>(null)
   useEffect(() => { setQ(''); setOpen(null) }, [k])
 
@@ -92,9 +99,12 @@ export default function Cenarios() {
           <div className={`cen-wrap ${full ? 'full' : ''}`} ref={wrap}>
             <div className="cen-top">
               <span className="small muted">{q.trim() ? <>{items.length ? <><b>{items.length}</b> {items.length === 1 ? 'ativo encontrado' : 'ativos encontrados'} para “{q.trim()}”</> : <>Nenhum ativo de {CLASSES[k].label} encontrado para “{q.trim()}”</>}</> : <><b style={{ color: side === 'buy' ? 'var(--up)' : 'var(--down)' }}>{extremes}</b> de {items.length} em leitura extrema {side === 'buy' ? '(≥ 90)' : '(≤ 20)'} · {CLASSES[k].label}<Hint text="O ponto colorido indica pelo menos um tempo gráfico em extremo." /></>}</span>
+              <span className="row gap-8">
+              <Seg value={mode} onChange={setMode} options={[{ value: 'bubbles', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Orbit size={14} /> Bolhas</span> }, { value: 'heat', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Flame size={14} /> Calor</span> }]} />
               <button className="icon-btn" onClick={toggleFull} title={full ? 'Sair da tela cheia' : 'Tela cheia'} aria-label="Tela cheia">{full ? <Minimize2 size={16} /> : <Maximize2 size={16} />}</button>
+              </span>
             </div>
-            <Field key={`${k}-${side}-${items.map((x) => x.r.symbol).join()}-${full}`} items={items} side={side} onPick={setOpen} />
+            {mode === 'heat' ? <HeatTreemap rows={heatRows} grouped={(k === 'b3' || k === 'us') && !q.trim()} onPick={setOpen} limit={full ? 200 : 120} /> : <Field key={`${k}-${side}-${items.map((x) => x.r.symbol).join()}-${full}`} items={items} side={side} onPick={setOpen} />}
             {open && <AssetPop r={open} k={k} side={side} onClose={() => setOpen(null)} />}
           </div>
         )}

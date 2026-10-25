@@ -1,3 +1,4 @@
+import AssetDividends from '../components/AssetDividends'
 import MyAssetButton from '../components/MyAssetButton'
 import { clsOf } from '../lib/market'
 import AssetNews from '../components/AssetNews'
@@ -233,6 +234,7 @@ export function Result({ asset, cls, onBack, onPick, backLabel }: { asset: Asset
         </>
       )}
 
+      {(cls === 'b3' || cls === 'us') && <AssetDividends symbol={asset.symbol} ticker={asset.ticker} currency={asset.currency} />}
       <div style={{ marginTop: 16 }}><AssetNews asset={asset} /></div>
 
       {radar && <AssetAlertModal asset={{ symbol: asset.symbol, ticker: asset.ticker, name: asset.name, logo: asset.logo, cls }} frame={radar} current={data?.frames.find((f) => f.key === radar)?.index ?? null} onClose={() => setRadar(null)} />}

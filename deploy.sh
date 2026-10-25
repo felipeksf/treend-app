@@ -4,6 +4,7 @@ set -e
 cd "$(dirname "$0")"
 npm run build
 node scripts/fetch-fii.mjs dist/fii.json || curl -sf https://novo.treend.com.br/fii.json -o dist/fii.json || echo 'aviso: fii.json não atualizado'
+cp /tmp/gt/b3-dividends.json dist/b3-dividends.json 2>/dev/null || curl -sf https://novo.treend.com.br/b3-dividends.json -o dist/b3-dividends.json || echo 'aviso: b3-dividends.json ausente'
 cp /tmp/gt/og-map.json dist/og-map.json 2>/dev/null || true
 cp /tmp/gt/gnews-map.json dist/gnews-map.json 2>/dev/null || curl -sf https://novo.treend.com.br/gnews-map.json -o dist/gnews-map.json || true
 GNEWS_MAP=dist/gnews-map.json node scripts/fetch-news.mjs dist/news.json || echo 'aviso: feed de notícias não atualizado'

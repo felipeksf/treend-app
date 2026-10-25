@@ -1,0 +1,39 @@
+name: Proventos B3
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # 3h BRT, uma vez por dia
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['scripts/fetch-b3-dividends.mjs', '.github/workflows/b3-dividends.yml']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: b3-dividends
+  cancel-in-progress: false
+
+jobs:
+  dividends:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/fetch-b3-dividends.mjs /tmp/b3-dividends.json
+      - name: Publicar b3-dividends.json no gh-pages
+        run: |
+          git fetch origin gh-pages --depth=1
+          git worktree add /tmp/site gh-pages
+          cp /tmp/b3-dividends.json /tmp/site/b3-dividends.json
+          cd /tmp/site
+          git config user.name "treend-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add b3-dividends.json
+          git commit -m "proventos B3: $(date -u '+%Y-%m-%d %H:%M')" || exit 0
+          git pull --rebase origin gh-pages || true
+          git push origin gh-pages

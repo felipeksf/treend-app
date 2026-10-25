@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowUpRight, ExternalLink, LayoutGrid, List, Newspaper, Rows3, Search, X } from 'lucide-react'
+import { ArrowUpRight, BookOpenText, ExternalLink, LayoutGrid, List, Maximize2, Minimize2, Moon, Newspaper, Rows3, Search, Square, Sun, X } from 'lucide-react'
 import SummarySheet from '../components/SummarySheet'
 import { Magazine } from '../components/AssetNews'
 import NewsFeed from '../components/NewsFeed'
@@ -43,7 +43,7 @@ const readMin = (n: number) => Math.max(1, Math.round(n * 0.35))
 const LOGO = (id: string) => `https://s3-symbol-logo.tradingview.com/${id}.svg`
 const FX_LOGO: Record<string, string> = { USD: 'country/US', EUR: 'country/EU', GBP: 'country/GB', CNY: 'country/CN', JPY: 'country/JP' }
 const CLS_LOGO: Record<string, string> = { b3: 'country/BR', fii: 'country/BR', us: 'country/US', crypto: 'crypto/XTVCBTC', commod: 'metal/gold' }
-const fb = (n: NewsItem) => { const s = n as Story; return { logo: LOGO(s.cls === 'fx' ? FX_LOGO[s.currency ?? 'USD'] ?? 'country/US' : CLS_LOGO[s.cls] ?? 'country/BR'), label: s.cls } }
+const fb = (n: NewsItem) => { const s = n as Story; return { logo: LOGO(s.cls === 'fx' ? FX_LOGO[s.currency ?? 'USD'] ?? 'country/US' : CLS_LOGO[s.cls] ?? 'country/BR'), label: s.cls, kind: s.cls } }
 
 export default function News() {
   const nav = useNavigate()
@@ -52,6 +52,21 @@ export default function News() {
   const [tab, setTab] = useState<Tab>('all')
   const [fx, setFx] = useState('all')
   const [q, setQ] = useState('')
+  // page-only theme (Claro / Escuro / Branco), restored when leaving the page
+  const [ntheme, setNthemeState] = useState<string>(() => { try { return localStorage.getItem('treend-v2-news-theme') || document.documentElement.dataset.theme || 'light' } catch { return 'light' } })
+  const setNtheme = (t: string) => { setNthemeState(t); try { localStorage.setItem('treend-v2-news-theme', t) } catch { /* ignore */ } }
+  useEffect(() => {
+    const root = document.documentElement
+    const before = root.dataset.theme
+    root.dataset.theme = ntheme
+    return () => { if (before) root.dataset.theme = before }
+  }, [ntheme])
+  const [reading, setReading] = useState(false)
+  useEffect(() => { document.body.classList.toggle('reading-mode', reading); return () => document.body.classList.remove('reading-mode') }, [reading])
+  const pageRef = useRef<HTMLDivElement>(null)
+  const [full, setFull] = useState(false)
+  const toggleFull = async () => { try { if (!document.fullscreenElement) await pageRef.current?.requestFullscreen(); else await document.exitFullscreen() } catch { setFull((f) => !f) } }
+  useEffect(() => { const f = () => setFull(!!document.fullscreenElement); document.addEventListener('fullscreenchange', f); return () => document.removeEventListener('fullscreenchange', f) }, [])
   const [view, setViewState] = useState<'edition' | 'magazine' | 'feed'>(() => { try { return (localStorage.getItem('treend-v2-newspage-view') as 'edition' | 'magazine' | 'feed') || 'magazine' } catch { return 'magazine' } })
   const setView = (v: 'edition' | 'magazine' | 'feed') => { setViewState(v); try { localStorage.setItem('treend-v2-newspage-view', v) } catch { /* ignore */ } }
   const [picked, setPicked] = useState<Asset | null>(null)
@@ -91,7 +106,7 @@ export default function News() {
   const label = (c: ClassKey) => CLASSES[c].label
 
   return (
-    <div className="page tn">
+    <div className={`page tn ${reading ? 'reading' : ''} ${full ? 'tn-full' : ''}`} ref={pageRef}>
       <PageHeader eyebrow={<><Newspaper size={13} /> Notícias</>} title="O que move o mercado," accent="agora." sub="Câmbio, ações da B3 e dos EUA, cripto, commodities e FIIs: as manchetes que importam, atualizadas continuamente e organizadas por mercado." />
 
       <div className="tn-mast">
@@ -106,7 +121,14 @@ export default function News() {
       </div>
 
       <div className="row between wrap gap-12" style={{ marginBottom: 12 }}>
+        <div className="row gap-8 wrap">
         <Seg value={view} onChange={setView} options={[{ value: 'edition', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><List size={14} /> Edição</span> }, { value: 'magazine', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><LayoutGrid size={14} /> Revista</span> }, { value: 'feed', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Rows3 size={14} /> Feed</span> }]} />
+        </div>
+        <div className="row gap-8 wrap tn-tools">
+          <Seg value={ntheme} onChange={setNtheme} options={[{ value: 'light', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Sun size={14} /> Claro</span> }, { value: 'dark', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Moon size={14} /> Escuro</span> }, { value: 'white', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Square size={14} /> Branco</span> }]} />
+          <button className={`btn sm ${reading ? 'primary' : ''}`} onClick={() => setReading(!reading)} title="Modo leitura: desfoca o resto da tela e destaca a notícia sob o cursor"><BookOpenText size={15} /> Modo leitura</button>
+          <button className="btn sm" onClick={toggleFull} title={full ? 'Sair da tela cheia' : 'Tela cheia'}>{full ? <Minimize2 size={15} /> : <Maximize2 size={15} />} {full ? 'Sair' : 'Tela cheia'}</button>
+        </div>
       </div>
       <div className="tn-tabs" role="tablist">
         {TABS.map((t) => (
