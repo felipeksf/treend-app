@@ -105,7 +105,7 @@ export default function Shell() {
     return () => window.removeEventListener('keydown', onKey)
   }, [nav])
 
-  const current = ALL.find((i) => (i.to === '/' ? loc.pathname === '/' : loc.pathname.startsWith(i.to)))
+  const current = ALL.find((i) => (i.to === '/' ? loc.pathname === '/' : loc.pathname === i.to || loc.pathname.startsWith(i.to + '/')))
   const group = NAV.find((g) => g.items.includes(current!))?.group
   const email = session?.user.email ?? ''
   const name = (session?.user.user_metadata?.full_name as string) || (session ? email.split('@')[0] : 'Usuário')

@@ -1,13 +1,15 @@
+import Gate from '../components/Gate'
+import { Access } from './StocksInvest'
 import { useOverviewSearch } from '../components/OverviewSearch'
 import { useGreeting } from '../lib/greet'
-import { useMemo, type MouseEvent } from 'react'
+import { useMemo, useState, type MouseEvent } from 'react'
 import { Star } from 'lucide-react'
 import { useMarkets } from '../lib/favorites'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { ArrowRight, Grid3x3, TrendingDown, TrendingUp } from 'lucide-react'
+import { ArrowRight, Gauge, Grid3x3, TrendingDown, TrendingUp } from 'lucide-react'
 import { CLASSES, CLASS_LIST, priceDigits, useClassScan, type ClassKey, type Row } from '../lib/classes'
 import { zoneOf } from '../lib/market'
-import { Delta, Hint, PageHeader, Skel } from '../components/ui'
+import { Delta, Hint, PageHeader, Seg, Skel } from '../components/ui'
 import { num, timeAgo } from '../lib/format'
 import { useNewsFeed } from './Dashboard'
 import { openAsset } from './Mercado'
@@ -64,6 +66,20 @@ function Picker() {
 }
 
 /** Market switch used on Visão geral: favorites first, then the rest in alphabetical order. */
+export type MarketView = 'overview' | 'map'
+/** Overview ↔ full class map, remembered across markets. */
+export function useMarketView(): [MarketView, (v: MarketView) => void] {
+  const [v, setV] = useState<MarketView>(() => { try { return (localStorage.getItem('treend-v2-market-view') as MarketView) || 'overview' } catch { return 'overview' } })
+  return [v, (n) => { setV(n); try { localStorage.setItem('treend-v2-market-view', n) } catch { /* ignore */ } }]
+}
+export function MarketViewSwitch({ value, onChange }: { value: MarketView; onChange: (v: MarketView) => void }) {
+  return <Seg value={value} onChange={onChange} options={[{ value: 'overview', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Gauge size={14} /> Visão geral</span> }, { value: 'map', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Grid3x3 size={14} /> Mapa</span> }]} />
+}
+/** Body of the "Mapa" view: the full board of the class (same screen the old sidebar shortcuts opened). */
+export function MarketMap({ k }: { k: ClassKey }) {
+  return <Gate what="o mapa deste mercado"><Access key={k} market={k} /></Gate>
+}
+
 export function MarketSwitch({ value, onChange }: { value: ClassKey; onChange: (k: ClassKey) => void }) {
   const { favs } = useMarkets()
   const list = [...CLASS_LIST.filter((c) => favs.includes(c.key)), ...CLASS_LIST.filter((c) => !favs.includes(c.key))]
@@ -119,11 +135,13 @@ export function Overview({ k, embedded }: { k: ClassKey; embedded?: boolean }) {
   const cur = c.currency
   const hello = useGreeting()
   const ov = useOverviewSearch(k)
+  const [view, setView] = useMarketView()
 
   return (
     <div className="page">
       <MarketSwitch value={k} onChange={(v) => (embedded ? select(v) : nav(`/mercados/${v}`))} />
-      <PageHeader title={hello} accent={`${c.label} hoje.`} sub={<>{c.desc}. {dataUpdatedAt ? <span className="faint">Atualizado há {timeAgo(new Date(dataUpdatedAt).toISOString())}.</span> : null}</>} help={`Visão geral de ${c.label}: destaques do dia, ativos em faixa abaixo da média, os mais esticados e as notícias desse mercado.`} />
+      <PageHeader title={hello} accent={`${c.label} hoje.`} sub={<>{c.desc}. {dataUpdatedAt ? <span className="faint">Atualizado há {timeAgo(new Date(dataUpdatedAt).toISOString())}.</span> : null}</>} help={`Visão geral de ${c.label}: destaques do dia, ativos em faixa abaixo da média, os mais esticados e as notícias desse mercado.`} actions={<MarketViewSwitch value={view} onChange={setView} />} />
+      {view === 'map' ? <MarketMap k={k} /> : <>
 
       {top.length > 0 && (
         <div className="slider" style={{ marginBottom: 16 }}>
@@ -176,6 +194,7 @@ export function Overview({ k, embedded }: { k: ClassKey; embedded?: boolean }) {
         </div>
       )}
 
+      </>}
       <p className="tiny faint" style={{ marginTop: 16 }}>Conteúdo informativo, não constitui recomendação de investimento.</p>
     </div>
   )

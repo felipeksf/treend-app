@@ -1,6 +1,7 @@
 import { LANG, NEWS_SUFFIX } from '../lib/i18n'
 import { useOverviewSearch } from '../components/OverviewSearch'
 import { useGreeting } from '../lib/greet'
+import { MarketMap, MarketViewSwitch, useMarketView } from './Modos'
 import { LOCALE } from '../lib/i18n'
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -89,6 +90,7 @@ function Dashboard({ onMarket }: { onMarket: (k: ClassKey) => void }) {
   const { data: hist } = useHistory(ccy, +range)
   const { data: news } = useNews()
   const hello = useGreeting()
+  const [mview, setMview] = useMarketView()
   const ov = useOverviewSearch('fx')
 
   const q = quotes?.[ccy]
@@ -117,9 +119,13 @@ function Dashboard({ onMarket }: { onMarket: (k: ClassKey) => void }) {
         
         sub={<>Leitura calibrada para o perfil <b style={{ color: 'var(--text)' }}>{prof.label}</b>. {updated && <span className="faint">Atualizado há {timeAgo(updated)}.</span>}</>}
         actions={
-          <Seg value={profile} onChange={setProfile} options={PROFILES.map((p) => ({ value: p.key, label: p.label }))} />
+          <div className="row gap-8 wrap" style={{ justifyContent: 'flex-end' }}>
+            <MarketViewSwitch value={mview} onChange={setMview} />
+            {mview === 'overview' && <Seg value={profile} onChange={setProfile} options={PROFILES.map((p) => ({ value: p.key, label: p.label }))} />}
+          </div>
         }
       />
+      {mview === 'map' ? <MarketMap k="fx" /> : <>
 
 
       <div className="sliders"><QuotesSlider /><BrandsSlider /></div>
@@ -303,6 +309,7 @@ function Dashboard({ onMarket }: { onMarket: (k: ClassKey) => void }) {
       <p className="tiny faint" style={{ marginTop: 32, maxWidth: 760 }}>
         A Treend não faz recomendação cambial ou financeira. As informações são indicativas e a decisão final é de responsabilidade do usuário.
       </p>
+      </>}
     </div>
   )
 }
