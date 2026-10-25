@@ -64,8 +64,8 @@ const CHAPTERS: Ch[] = [
       <h2>Um número, <span className="serif">cinco zonas.</span></h2>
       <p className="pb-lead">Quanto maior o índice, mais descontado o preço está naquela janela — e mais rara é a situação.</p>
       <div className="stack gap-8">
-        <Zone c="var(--up)" r="90+" l="Desconto extremo" d="Desconto estatisticamente raro em relação ao padrão recente do ativo." />
-        <Zone c="#5fbf8f" r="70–89" l="Oportunidade" d="Preço abaixo do comportamento usual, sem atingir o nível mais raro." />
+        <Zone c="var(--up)" r="90+" l="Muito abaixo da média" d="Desconto estatisticamente raro em relação ao padrão recente do ativo." />
+        <Zone c="#5fbf8f" r="70–89" l="Abaixo da média" d="Preço abaixo do comportamento usual, sem atingir o nível mais raro." />
         <Zone c="var(--amber)" r="45–69" l="Neutro" d="Preço próximo do comportamento usual: sem desconto nem excesso relevantes." />
         <Zone c="var(--orange)" r="21–44" l="Atenção" d="Preço acima do comportamento usual na janela." />
         <Zone c="var(--down)" r="≤ 20" l="Esticado" d="Preço esticado: excesso estatisticamente raro em relação ao padrão recente." />
@@ -82,7 +82,7 @@ const CHAPTERS: Ch[] = [
         <div className="pb-card"><b>Diário</b><span>A decisão. É a janela principal para quem monta posição.</span></div>
         <div className="pb-card"><b>4h e 1h</b><span>O gatilho. Ajudam a refinar o ponto de entrada no curto prazo.</span></div>
       </div>
-      <div className="pb-quote">Semanal em oportunidade + diário em oportunidade + 1h virando = <b>alinhamento de janelas</b>.</div>
+      <div className="pb-quote">Semanal abaixo da média + diário abaixo da média + 1h virando = <b>alinhamento de janelas</b>.</div>
     </>),
   },
   {

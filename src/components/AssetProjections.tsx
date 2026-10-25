@@ -117,7 +117,7 @@ export default function AssetProjections({ cls, onView }: { cls: ClassKey; onVie
             </div>
           ) : (
           <div className="grid g-2">
-            {([[-1, 'Zonas de compra', 'abaixo do preço atual — para quem quer comprar', TrendingDown, 'var(--up)'], [1, 'Zonas de venda', 'acima do preço atual — para quem quer vender ou realizar', TrendingUp, 'var(--down)']] as const).map(([dir, t, d, I, c]) => (
+            {([[-1, 'Zonas inferiores', 'abaixo do preço atual', TrendingDown, 'var(--up)'], [1, 'Zonas superiores', 'acima do preço atual', TrendingUp, 'var(--down)']] as const).map(([dir, t, d, I, c]) => (
               <div key={t} className="card">
                 <div className="card-h"><h3><I style={{ color: c }} /> {t}<Hint text="Zonas projetadas a partir da amplitude média de oscilação do ativo no tempo gráfico escolhido. Quanto mais distante do preço atual, mais rara — e mais vantajosa — a zona." /></h3><span className="tiny faint">{d}</span></div>
                 <div>

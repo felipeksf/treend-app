@@ -8,7 +8,7 @@ export default function StocksB3() {
     <div className="page">
       <PageHeader
         eyebrow={<><Boxes size={13} /> Treend Ações B3</>}
-        title="Zonas de compra"
+        title="Índice Treend"
         accent="na bolsa brasileira."
         sub="O índice Treend para todas as ações da B3, em cinco tempos gráficos."
       />

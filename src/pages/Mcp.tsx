@@ -12,7 +12,7 @@ import { dateBR } from '../lib/format'
 
 const ASSISTANTS = ['ChatGPT', 'Claude', 'Gemini', 'Grok', 'Agente próprio']
 const EXAMPLES = [
-  { q: 'Quais as 5 maiores oportunidades em Ações B3 no diário?', a: 'Pelo índice Treend diário, os destaques são os ativos com índice acima de 90 — zona de desconto extremo — ordenados do maior para o menor.' },
+  { q: 'Quais as 5 maiores índices Treend em Ações B3 no diário?', a: 'Pelo índice Treend diário, os destaques são os ativos com índice acima de 90 — zona de muito abaixo da média — ordenados do maior para o menor.' },
   { q: 'Analise o HGLG11 considerando o P/VP.', a: 'O fundo está com P/VP de 0,96 e o índice Treend em zona neutra no diário e no semanal: cota levemente descontada, sem assimetria forte no momento.' },
   { q: 'Como está o Bitcoin em todos os tempos gráficos?', a: 'O Bitcoin aparece neutro no diário e no semanal, com o 4 horas mais pressionado. Veja a melhor janela antes de decidir.' },
 ]
@@ -93,7 +93,7 @@ export default function Mcp() {
       <div className="grid g-3" style={{ marginBottom: 16 }}>
         {[
           { i: Plug, t: 'Conecte', d: 'Seu time e a Treend configuram o assistente ou agente compatível com MCP.' },
-          { i: MessageSquareText, t: 'Pergunte', d: 'Peça o índice de qualquer ativo, rankings de oportunidades e visões gerais de mercado em linguagem natural.' },
+          { i: MessageSquareText, t: 'Pergunte', d: 'Peça o índice de qualquer ativo, rankings do índice Treend e visões gerais de mercado em linguagem natural.' },
           { i: LineChart, t: 'Decida', d: 'Leve o contexto Treend para o financeiro, a tesouraria e o comércio exterior.' },
         ].map((s, n) => (
           <div key={s.t} className="card pad stack gap-8">

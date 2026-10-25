@@ -46,9 +46,9 @@ export default function StocksInvest() {
     <div className="page">
       <PageHeader
         eyebrow={<><Boxes size={13} /> Treend Stocks Invest</>}
-        title="Zonas de compra"
+        title="Índice Treend"
         accent="em tempo real."
-        sub="Quanto maior o índice Treend, mais atrativa a janela de compra. Todas as ações da NASDAQ e da NYSE, em cinco tempos gráficos."
+        sub="O índice Treend de todas as ações da NASDAQ e da NYSE, em cinco tempos gráficos: quanto mais alto, mais abaixo da média recente está o preço."
       />
       <Gate what="o Stocks Invest">
         <Access />
@@ -158,7 +158,7 @@ function Board({ market }: { market: Market }) {
       <div className="grid g-main" style={{ alignItems: 'start' }}>
         <div className="card" style={{ overflowX: 'auto' }}>
           <div className="card-h">
-            <h3><Boxes /> Mapa de oportunidades</h3>
+            <h3><Boxes /> Mapa do índice Treend</h3>
             <div className="row gap-8">
               <Seg value={bview} onChange={setBview} options={[{ value: 'map', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Grid3x3 size={14} /> Mapa</span> }, { value: 'logos', label: <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><LayoutGrid size={14} /> Logos</span> }]} />
               {data?.updated && <span className="tiny faint hide-m">Atualizado há {timeAgo(data.updated)}</span>}
@@ -268,7 +268,7 @@ function Board({ market }: { market: Market }) {
             </div>
           )}
           <div className="card">
-            <div className="card-h"><h3>Zonas mais fortes agora<Hint text="As três combinações de ação e janela com maior índice de oportunidade neste momento." /></h3></div>
+            <div className="card-h"><h3>Índices mais altos agora<Hint text="As três combinações de ação e janela com maior índice Treend neste momento." /></h3></div>
             <div style={{ marginTop: 8 }}>
               {ranked.map(({ s, x }) => {
                 const c = signal(x.heat_x)
@@ -303,10 +303,10 @@ function RsiBar({ rsi }: { rsi: number | null }) {
         <i style={{ left: '30%' }} /><i style={{ left: '70%' }} />
         <div className="knob" style={{ left: `${v}%` }} />
       </div>
-      <div className="meter-legend"><span>Oportunidade</span><span>Neutro</span><span>Esticado</span></div>
+      <div className="meter-legend"><span>Abaixo da média</span><span>Neutro</span><span>Esticado</span></div>
     </div>
   )
 }
 
-const signalLabel = (x: number) => (x >= 70 ? 'Oportunidade' : x >= 45 ? 'Neutro' : 'Esticado')
+const signalLabel = (x: number) => (x >= 70 ? 'Abaixo da média' : x >= 45 ? 'Neutro' : 'Esticado')
 

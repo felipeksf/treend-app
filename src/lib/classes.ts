@@ -123,10 +123,10 @@ export type FiiRead = { label: string; c: string; note: string }
 export function fiiRead(d1: number | null, w1: number | null, pvp: number | null): FiiRead {
   const hi = Math.max(d1 ?? 0, w1 ?? 0)
   const lo = Math.min(d1 ?? 100, w1 ?? 100)
-  if (pvp != null && pvp < 1 && hi >= 90) return { label: 'Assimetria de compra', c: 'var(--up)', note: 'Momento de forte pessimismo com a cota abaixo do valor patrimonial. Confirme se não houve perda de inquilino ou alta de vacância.' }
-  if (pvp != null && pvp < 1 && hi >= 70) return { label: 'Desconto com oportunidade', c: 'var(--up)', note: 'Índice favorável e cota negociada com desconto sobre o patrimônio.' }
+  if (pvp != null && pvp < 1 && hi >= 90) return { label: 'Muito abaixo da média e do patrimônio', c: 'var(--up)', note: 'Momento de forte pessimismo com a cota abaixo do valor patrimonial. Confirme se não houve perda de inquilino ou alta de vacância.' }
+  if (pvp != null && pvp < 1 && hi >= 70) return { label: 'Abaixo da média com desconto patrimonial', c: 'var(--up)', note: 'Índice alto e cota negociada com desconto sobre o patrimônio.' }
   if (pvp != null && pvp > 1.05 && lo <= 20) return { label: 'Ágio esticado', c: 'var(--down)', note: 'Euforia de curto prazo com a cota acima do valor patrimonial.' }
-  if (hi >= 90) return { label: 'Oportunidade com ágio', c: 'var(--amber)', note: 'Índice favorável, mas a cota está acima do valor patrimonial. Avalie o prêmio pago.' }
+  if (hi >= 90) return { label: 'Abaixo da média com ágio', c: 'var(--amber)', note: 'Índice alto, mas a cota está acima do valor patrimonial.' }
   if (pvp != null && pvp > 1.15) return { label: 'Ágio elevado', c: 'var(--orange)', note: 'Cota bem acima do valor patrimonial.' }
   if (pvp != null && pvp < 0.85) return { label: 'Desconto patrimonial', c: 'var(--lime)', note: 'Desconto relevante sobre o patrimônio. Verifique se não é uma armadilha de valor (vacância, inadimplência).' }
   return { label: 'Neutro', c: 'var(--text-3)', note: 'Sem assimetria relevante entre momento e preço.' }

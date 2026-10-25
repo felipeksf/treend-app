@@ -212,7 +212,7 @@ export function Result({ asset, cls, onBack, onPick, backLabel }: { asset: Asset
       ) : (
         <>
           <div className="row between wrap" style={{ marginBottom: 12, gap: 8 }}>
-            <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Índice Treend por tempo gráfico<Hint text="O índice Treend vai de 0 a 100 em cada tempo gráfico. Acima de 90, desconto extremo; abaixo de 20, preço esticado. Use a melhor janela para planejar a sua operação." /></h2>
+            <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Índice Treend por tempo gráfico<Hint text="O índice Treend vai de 0 a 100 em cada tempo gráfico. Acima de 90, muito abaixo da média; abaixo de 20, preço esticado. Use a melhor janela para planejar a sua operação." /></h2>
             <span className="row gap-8 tiny faint">{data && `Atualizado há ${timeAgo(new Date(data.at).toISOString())}`}<button className="icon-btn" title="Atualizar" onClick={() => refetch()}><RefreshCw className={isFetching ? 'spin' : ''} /></button></span>
           </div>
           <div className="frame-grid">
@@ -220,11 +220,11 @@ export function Result({ asset, cls, onBack, onPick, backLabel }: { asset: Asset
               const z = zoneOf(f.index)
               return (
                 <div key={f.key} className={`card frame-card ${best?.key === f.key ? 'best' : ''}`} style={{ ['--c' as string]: z.c, cursor: 'pointer' }} role="button" title="Criar radar neste tempo gráfico" onClick={() => setRadar(f.key)}>
-                  <div className="row between"><span className="small muted">{f.label}</span>{best?.key === f.key && <span className="pill tone" style={{ ['--c' as string]: 'var(--brand)' }}>Melhor janela</span>}</div>
+                  <div className="row between"><span className="small muted">{f.label}</span>{best?.key === f.key && <span className="pill tone" style={{ ['--c' as string]: 'var(--brand)' }}>Índice mais alto</span>}</div>
                   <div style={{ display: 'grid', placeItems: 'center' }}><Gauge value={f.index ?? 0} color={z.c} size={150} label="ÍNDICE TREEND" /></div>
                   <div className="frame-zone" style={{ color: z.c }}>{z.label}</div>
                   <div className="frame-scale"><i style={{ left: `${100 - (f.index ?? 50)}%` }} /></div>
-                  <div className="row between tiny faint"><span>Oportunidade</span><span>Esticado</span></div>
+                  <div className="row between tiny faint"><span>Abaixo da média</span><span>Esticado</span></div>
                 </div>
               )
             })}

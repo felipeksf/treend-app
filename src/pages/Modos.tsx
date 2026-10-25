@@ -123,7 +123,7 @@ export function Overview({ k, embedded }: { k: ClassKey; embedded?: boolean }) {
   return (
     <div className="page">
       <MarketSwitch value={k} onChange={(v) => (embedded ? select(v) : nav(`/mercados/${v}`))} />
-      <PageHeader title={hello} accent={`${c.label} hoje.`} sub={<>{c.desc}. {dataUpdatedAt ? <span className="faint">Atualizado há {timeAgo(new Date(dataUpdatedAt).toISOString())}.</span> : null}</>} help={`Visão geral de ${c.label}: destaques do dia, ativos em zona de oportunidade, os mais esticados e as notícias desse mercado.`} />
+      <PageHeader title={hello} accent={`${c.label} hoje.`} sub={<>{c.desc}. {dataUpdatedAt ? <span className="faint">Atualizado há {timeAgo(new Date(dataUpdatedAt).toISOString())}.</span> : null}</>} help={`Visão geral de ${c.label}: destaques do dia, ativos em faixa abaixo da média, os mais esticados e as notícias desse mercado.`} />
 
       {top.length > 0 && (
         <div className="slider" style={{ marginBottom: 16 }}>
@@ -142,7 +142,7 @@ export function Overview({ k, embedded }: { k: ClassKey; embedded?: boolean }) {
 
       <div className="insights" style={{ marginBottom: 16 }}>
         <div className="ins"><span className="ins-k">Ativos monitorados</span><span className="ins-v">{isLoading ? '—' : num(s.total, 0)}</span><span className="ins-s">{c.desc}</span></div>
-        <div className="ins"><span className="ins-k">Em zona de oportunidade<Hint text="Ativos com índice Treend diário de 70 ou mais." /></span><span className="ins-v up">{isLoading ? '—' : s.opp}</span><span className="ins-s">no tempo gráfico diário</span></div>
+        <div className="ins"><span className="ins-k">Em faixa abaixo da média<Hint text="Ativos com índice Treend diário de 70 ou mais." /></span><span className="ins-v up">{isLoading ? '—' : s.opp}</span><span className="ins-s">no tempo gráfico diário</span></div>
         <div className="ins"><span className="ins-k">Esticados<Hint text="Ativos com índice Treend diário de 20 ou menos." /></span><span className="ins-v down">{isLoading ? '—' : s.stretched}</span><span className="ins-s">no tempo gráfico diário</span></div>
         <Link to={`/mercado?c=${k}`} className="ins ins-cta"><span className="ins-k">Analisar ativo</span><span className="ins-v">Buscar {c.short}</span><span className="ins-s">{num(s.breadth, 0)}% dos ativos em alta hoje</span><ArrowRight className="ins-go" /></Link>
       </div>
@@ -154,7 +154,7 @@ export function Overview({ k, embedded }: { k: ClassKey; embedded?: boolean }) {
       {isLoading || ov.focused ? null : (
         <div className="grid g-2" style={{ alignItems: 'start' }}>
           <div className="card">
-            <div className="card-h"><h3><TrendingUp /> Maiores oportunidades<Hint text="Ativos com o maior índice Treend no tempo gráfico diário." /></h3><Link to={c.heatmapRoute} className="btn ghost sm"><Grid3x3 size={14} /> Mapa completo</Link></div>
+            <div className="card-h"><h3><TrendingUp /> Maiores índices Treend<Hint text="Ativos com o maior índice Treend no tempo gráfico diário." /></h3><Link to={c.heatmapRoute} className="btn ghost sm"><Grid3x3 size={14} /> Mapa completo</Link></div>
             <div style={{ marginTop: 8 }}>
               {s.best.map((r) => { const z = zoneOf(d1(r)); return <AssetRow key={r.symbol} r={r} k={k} right={<span className="row gap-8"><span className="pill tone" style={{ ['--c' as string]: z.c }}>{z.label}</span><b className="mono" style={{ color: z.c, fontSize: 18, width: 34, textAlign: 'right' }}>{Math.round(d1(r) ?? 0)}</b></span>} /> })}
             </div>

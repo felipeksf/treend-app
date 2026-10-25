@@ -76,7 +76,7 @@ export default function McpConnect() {
             <>No ChatGPT, abra <b>Configurações → Apps e conectores → Avançado</b> e ative o <b>Modo desenvolvedor</b>.</>,
             <>Em <b>Apps e conectores</b>, clique em <b>Criar</b> (novo conector).</>,
             <>Nome: <b>Treend</b>. URL do servidor MCP:<Code>{url}</Code>Autenticação: <b>Sem autenticação</b> (o link já é pessoal).</>,
-            <>Em uma conversa, ative o conector <b>Treend</b> e pergunte, por exemplo: “Quais as 5 maiores oportunidades em Ações B3 hoje?”.</>,
+            <>Em uma conversa, ative o conector <b>Treend</b> e pergunte, por exemplo: “Quais as 5 maiores índices Treend em Ações B3 hoje?”.</>,
             <span className="small muted">Conectores personalizados exigem um plano do ChatGPT que permita o modo desenvolvedor.</span>,
           ]} />
         )}
@@ -99,7 +99,7 @@ export default function McpConnect() {
         {tab === 'grok' && (
           <Steps items={[
             <>O Grok aceita servidores MCP remotos pela <b>API da xAI</b> (ferramenta <code>mcp</code> nas chamadas ao modelo).</>,
-            <>Crie uma chave em <b>console.x.ai</b> e inclua a Treend como ferramenta remota:<Code>{JSON.stringify({ model: 'grok-4', tools: [{ type: 'mcp', server_label: 'treend', server_url: url }], input: 'Quais as 5 maiores oportunidades em Ações B3 hoje?' }, null, 2)}</Code></>,
+            <>Crie uma chave em <b>console.x.ai</b> e inclua a Treend como ferramenta remota:<Code>{JSON.stringify({ model: 'grok-4', tools: [{ type: 'mcp', server_label: 'treend', server_url: url }], input: 'Quais as 5 maiores índices Treend em Ações B3 hoje?' }, null, 2)}</Code></>,
             <>O Grok chama as ferramentas da Treend (<b>analisar_ativo</b>, <b>ranking_oportunidades</b>…) e responde com os índices na conversa.</>,
             <span className="small muted">Conexão via API: o app do Grok (grok.com) ainda não permite adicionar conectores MCP personalizados.</span>,
           ]} />

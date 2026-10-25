@@ -86,7 +86,7 @@ export default function MeusAtivos() {
                           const v = live?.[a.symbol]?.frames.find((x) => x.key === f.key)?.index ?? null
                           if (v == null) return <td key={f.key}><div className="heat-cell" style={{ ['--c' as string]: 'var(--line-3)', ['--a' as string]: '0%', opacity: 0.45, cursor: 'default' }}><b>—</b><span>Sem dado</span></div></td>
                           const c = signal(v)
-                          return <td key={f.key}><div className="heat-cell" onClick={() => setAlertFor({ a, f: f.key, v })} style={{ ['--c' as string]: c.color, ['--a' as string]: `${12 + (v / 100) * 26}%` }}><b className="mono">{Math.round(v)}</b><span>{v >= 70 ? 'Oportunidade' : v >= 45 ? 'Neutro' : 'Esticado'}</span></div></td>
+                          return <td key={f.key}><div className="heat-cell" onClick={() => setAlertFor({ a, f: f.key, v })} style={{ ['--c' as string]: c.color, ['--a' as string]: `${12 + (v / 100) * 26}%` }}><b className="mono">{Math.round(v)}</b><span>{v >= 70 ? 'Abaixo da média' : v >= 45 ? 'Neutro' : 'Esticado'}</span></div></td>
                         })}
                       </tr>
                     ))}
