@@ -53,13 +53,13 @@ export default function News() {
   const [fx, setFx] = useState('all')
   const [q, setQ] = useState('')
   // page-only theme (Claro / Escuro / Branco), restored when leaving the page
-  const [ntheme, setNthemeState] = useState<string>(() => { try { return localStorage.getItem('treend-v2-news-theme') || document.documentElement.dataset.theme || 'light' } catch { return 'light' } })
-  const setNtheme = (t: string) => { setNthemeState(t); try { localStorage.setItem('treend-v2-news-theme', t) } catch { /* ignore */ } }
+  const [ntheme, setNthemeState] = useState<string>(() => { try { return document.documentElement.dataset.theme || 'light' } catch { return 'light' } })
+  const setNtheme = (t: string) => { setNthemeState(t); try { localStorage.setItem('treend-v2-theme', t) } catch { /* ignore */ } }
   useEffect(() => {
     const root = document.documentElement
     const before = root.dataset.theme
     root.dataset.theme = ntheme
-    return () => { if (before) root.dataset.theme = before }
+    void before
   }, [ntheme])
   const [reading, setReading] = useState(false)
   useEffect(() => { document.body.classList.toggle('reading-mode', reading); return () => document.body.classList.remove('reading-mode') }, [reading])

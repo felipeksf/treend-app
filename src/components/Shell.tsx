@@ -2,7 +2,7 @@ import { addHistory } from '../lib/assetHistory'
 import LangPicker from './LangPicker'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { ArrowUpRight, Bell, CornerDownLeft, Menu, Moon, PanelLeft, Search, Sun, LogOut, Coins, ShieldAlert } from 'lucide-react'
+import { ArrowUpRight, Bell, CornerDownLeft, Menu, Moon, PanelLeft, Search, Sun, LogOut, Coins, ShieldAlert, Square } from 'lucide-react'
 import { ALL, CLASSIC, NAV } from './nav'
 import { TreendLogo, Toaster, toast } from './ui'
 import { ALERT_FRAMES, checkAlerts } from '../lib/assetAlerts'
@@ -92,7 +92,7 @@ export default function Shell() {
         const typing = !!t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))
         if (!typing) {
           e.preventDefault()
-          setTheme((th) => (th === 'dark' ? 'light' : 'dark'))
+          setTheme((th) => (th === 'light' ? 'dark' : th === 'dark' ? 'white' : 'light'))
           return
         }
       }
@@ -139,9 +139,9 @@ export default function Shell() {
           ))}
         </div>
         <div className="side-foot">
-          <button className="nav-item" style={{ border: 0, background: 'none', width: '100%' }} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-            {theme === 'dark' ? <Sun /> : <Moon />}
-            <span className="nav-text">{theme === 'dark' ? 'Modo claro' : 'Modo escuro'}</span>
+          <button className="nav-item" style={{ border: 0, background: 'none', width: '100%' }} onClick={() => setTheme(theme === 'light' ? 'dark' : theme === 'dark' ? 'white' : 'light')} title="Alternar entre claro, escuro e branco">
+            {theme === 'dark' ? <Square /> : theme === 'white' ? <Sun /> : <Moon />}
+            <span className="nav-text">{theme === 'light' ? 'Modo escuro' : theme === 'dark' ? 'Modo branco' : 'Modo claro'}</span>
             <span className="kbd hide-m" style={{ display: 'inline-block', marginLeft: 'auto' }}>⌘A</span>
           </button>
           <div className="user-chip">
