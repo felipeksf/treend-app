@@ -76,7 +76,7 @@ export default function AssetProjections({ cls, onView }: { cls: ClassKey; onVie
             <div style={{ textAlign: 'right' }}><div className="tiny faint">Preço atual</div><b className="mono" style={{ fontSize: 24 }}>{p != null ? `${cc} ${num(p, digits)}` : '—'}</b></div>
             <div className="row gap-8">
               <button className="btn" onClick={() => { try { sessionStorage.setItem('treend-v2-asset', JSON.stringify(a)) } catch { /* ignore */ } nav(`/mercado?c=${clsOf(a)}&s=${encodeURIComponent(a.symbol)}`) }}><ExternalLink /> Análise completa</button>
-              <button className="btn primary" onClick={() => setRadar(true)}><BellRing /> Criar radar</button>
+              <button className="btn primary btn-alert" onClick={() => setRadar(true)}><BellRing /> Criar radar</button>
             </div>
           </div>
 

@@ -65,7 +65,7 @@ function FxProjections({ tabs }: { tabs: React.ReactNode }) {
         title="Zonas de"
         accent="intensidade."
         sub="O cenário otimista para cada perfil, em seis zonas. Quanto mais profunda a zona, mais rara — e mais vantajosa — a cotação."
-        actions={<Link to="/radar" className="btn"><Bell /> Criar alerta</Link>}
+        actions={<Link to="/radar" className="btn btn-alert"><Bell /> Criar alerta</Link>}
       />
 
       {view === 'list' ? <Gate what="as projeções de preço"><AssetProjections cls="fx" onView={setView} /></Gate> : (<>

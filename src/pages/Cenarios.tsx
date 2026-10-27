@@ -238,7 +238,7 @@ function AssetPop({ r, k, side, onClose }: { r: Row; k: ClassKey; side: Side; on
         </div>
         <div className="row gap-8 wrap" style={{ marginTop: 16 }}>
           <button className="btn primary" style={{ flex: 1 }} onClick={() => openAsset(nav, r, k)}>Analisar por completo <ArrowRight /></button>
-          <button className="btn" onClick={() => setRadar(true)} title="Criar radar"><BellRing /></button>
+          <button className="btn btn-alert" onClick={() => setRadar(true)} title="Criar radar"><BellRing /></button>
           <MyAssetButton compact asset={asset} cls={k} />
         </div>
         <div className="tiny faint" style={{ marginTop: 10 }}>Dados estatísticos; não é recomendação de investimento.</div>

@@ -40,7 +40,7 @@ export default function AssetAlertModal({ asset, frame = 'd1', current, onClose 
         </label>
         <div className="row gap-8" style={{ justifyContent: 'flex-end' }}>
           <button className="btn ghost" onClick={onClose}>Agora não</button>
-          <button className="btn primary" onClick={create}><BellRing /> Criar radar</button>
+          <button className="btn primary btn-alert" onClick={create}><BellRing /> Criar radar</button>
         </div>
       </div>
     </Modal>

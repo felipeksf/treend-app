@@ -61,7 +61,7 @@ export default function Radar() {
 
   return (
     <div className="page">
-      <PageHeader eyebrow={<><RadarIcon size={13} /> Radar inteligente</>} title="Deixe o mercado" accent="vir até você." sub="Configure um gatilho e nosso agente monitora 24/7. Quando o cenário ideal aparecer, você recebe e-mail e push." actions={session && <button className="btn primary" onClick={() => setOpen(true)}><Plus /> Novo alerta</button>} />
+      <PageHeader eyebrow={<><RadarIcon size={13} /> Radar inteligente</>} title="Deixe o mercado" accent="vir até você." sub="Configure um gatilho e nosso agente monitora 24/7. Quando o cenário ideal aparecer, você recebe e-mail e push." actions={session && <button className="btn primary btn-alert" onClick={() => setOpen(true)}><Plus /> Novo alerta</button>} />
 
       <div className="grid g-3" style={{ marginBottom: 16 }}>
         {[
@@ -83,7 +83,7 @@ export default function Radar() {
           {!isLoading && !data?.length && (
             <Empty icon={<RadarIcon size={20} />} title="Nenhum alerta configurado">
               Crie seu primeiro alerta e seja avisado automaticamente.
-              <div style={{ marginTop: 14 }}><button className="btn primary" onClick={() => setOpen(true)}><Plus /> Criar alerta</button></div>
+              <div style={{ marginTop: 14 }}><button className="btn primary btn-alert" onClick={() => setOpen(true)}><Plus /> Criar alerta</button></div>
             </Empty>
           )}
           {data?.map((a) => {
@@ -120,7 +120,7 @@ export default function Radar() {
           <div className="field"><div className="row between"><label>Máximo de alertas por dia</label><b className="mono">{form.max}</b></div><input type="range" min={1} max={10} value={form.max} onChange={(e) => setForm({ ...form, max: +e.target.value })} /></div>
           <div className="row gap-8" style={{ justifyContent: 'flex-end' }}>
             <button className="btn ghost" onClick={() => setOpen(false)}>Cancelar</button>
-            <button className="btn primary" disabled={create.isPending} onClick={() => create.mutate()}>Criar alerta</button>
+            <button className="btn primary btn-alert" disabled={create.isPending} onClick={() => create.mutate()}>Criar alerta</button>
           </div>
           </>) : (<>
             <div className="field"><label>Ativo</label>

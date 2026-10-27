@@ -202,7 +202,7 @@ export function Result({ asset, cls, onBack, onPick, backLabel }: { asset: Asset
         <div className="row gap-8 wrap">
           <MyAssetButton asset={asset} cls={cls} />
           <button className="btn" disabled={!data} onClick={() => { if (!data) return; addHistory({ cls, symbol: asset.symbol, ticker: asset.ticker, name: asset.name, logo: asset.logo, currency: asset.currency, price: data.price, frames: data.frames.map((f) => ({ key: f.key, index: f.index })), source: 'manual' }); toast('Salvo no histórico') }}><HistoryIcon /> Salvar no histórico</button>
-          <button className="btn primary" onClick={() => setRadar(best?.key ?? 'd1')}><BellRing /> Criar radar</button>
+          <button className="btn primary btn-alert" onClick={() => setRadar(best?.key ?? 'd1')}><BellRing /> Criar radar</button>
         </div>
       </div>
 

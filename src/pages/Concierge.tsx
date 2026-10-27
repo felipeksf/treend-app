@@ -164,7 +164,7 @@ function FxConcierge({ tabs }: { tabs: React.ReactNode }) {
 
           <div className="row wrap gap-8">
             <Link to={`/projecoes?ccy=${asked.ccy}`} className="btn"><TrendingUp /> Ver zonas de preço</Link>
-            <Link to="/radar" className="btn primary">Criar alerta para esta operação <ArrowRight /></Link>
+            <Link to="/radar" className="btn primary btn-alert">Criar alerta para esta operação <ArrowRight /></Link>
           </div>
           <Disclaimer />
         </div>

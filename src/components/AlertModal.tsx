@@ -74,7 +74,7 @@ export default function AlertModal({ currency, frequency = 'daily', profile, onC
           <div className="field"><div className="row between"><label>Máximo de alertas por dia</label><b className="mono">{form.max}</b></div><input type="range" min={1} max={10} value={form.max} onChange={(e) => setForm({ ...form, max: +e.target.value })} /></div>
           <div className="row gap-8" style={{ justifyContent: 'flex-end' }}>
             <button className="btn ghost" onClick={onClose}>Agora não</button>
-            <button className="btn primary" disabled={create.isPending} onClick={() => create.mutate()}><BellRing /> Criar alerta</button>
+            <button className="btn primary btn-alert" disabled={create.isPending} onClick={() => create.mutate()}><BellRing /> Criar alerta</button>
           </div>
         </div>
       )}

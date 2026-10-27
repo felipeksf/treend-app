@@ -344,7 +344,7 @@ function Answer({ p, d, usd, news, onRadar, onOpen }: { p: Parsed; d: Data; usd:
                 {amountAsset != null && <b className="mono">{shown(amountAsset * t / 100)}</b>}
               </div>
             ))}
-            <button className="btn" onClick={onRadar}><BellRing /> Criar radar para as próximas zonas</button>
+            <button className="btn btn-alert" onClick={onRadar}><BellRing /> Criar radar para as próximas zonas</button>
             <div className="tiny faint">Simulação ilustrativa. Não é uma recomendação de compra ou venda.</div>
           </div>
         </div>
