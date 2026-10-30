@@ -1,0 +1,1485 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fbfcff">
+<title>Treend Pro — Saiba o momento de comprar</title>
+<meta name="description" content="Index Score Quantitativo da Treend: topo e fundo de mais de 5.000 ativos em Ações, FIIs, Stocks, Commodities, Câmbio e Cripto. R$ 129/ano.">
+<link rel="icon" href="./favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbfcff; --paper:#fff; --tint:#f3f6fd; --tint-2:#eaf0fc;
+  --ink:#0b1a33; --ink-2:#33415c; --mute:#6b7891; --faint:#a3adc0;
+  --rule:#e4e9f3; --rule-2:#d5ddec;
+  --blue:#385fe1; --blue-d:#2449ba; --blue-l:#8cacff; --mint:#9cddc3;
+  --up:#10B981; --mid:#64748B; --down:#EF4444;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --r:14px;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.55 Geist,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip;font-feature-settings:"ss01","cv11"}
+a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
+.mono{font-family:'Geist Mono',monospace;font-feature-settings:"tnum"}
+.wrap{width:min(1200px,calc(100% - 48px));margin-inline:auto}
+::selection{background:#dfe7ff}
+
+/* type */
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font:500 12px 'Geist Mono',monospace;letter-spacing:.04em;color:var(--mute);text-transform:uppercase}
+.eyebrow:before{content:'';width:6px;height:6px;border-radius:1px;background:var(--blue)}
+.h2{font-size:clamp(34px,4.4vw,58px);font-weight:500;letter-spacing:-.045em;line-height:1.02}
+.h2 .soft{color:var(--faint)}
+.p{color:var(--ink-2);font-size:17px;line-height:1.6}
+
+/* buttons */
+.btn{position:relative;display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 18px;border-radius:999px;font-size:15px;font-weight:500;white-space:nowrap;transition:transform .5s var(--ease),box-shadow .5s var(--ease),background .3s}
+.btn svg{width:15px;height:15px;transition:transform .5s var(--ease)}
+.btn:hover svg{transform:translateX(3px)}
+.btn-pri{color:#fff;background:var(--ink);box-shadow:0 1px 0 rgba(255,255,255,.15) inset,0 8px 20px -8px rgba(11,26,51,.6)}
+.btn-pri:hover{background:#13274b;transform:translateY(-1px)}
+.btn-blue{color:#fff;background:linear-gradient(180deg,#4b70f0,#2f56dc);box-shadow:0 1px 0 rgba(255,255,255,.3) inset,0 10px 24px -10px rgba(56,95,225,.9)}
+.btn-blue:hover{transform:translateY(-1px)}
+.btn-line{color:var(--ink);background:var(--paper);box-shadow:0 0 0 1px var(--rule-2),0 1px 2px rgba(11,26,51,.05)}
+.btn-line:hover{box-shadow:0 0 0 1px var(--ink-2)}
+
+/* ── NAV ── */
+.nav{position:fixed;inset:14px 0 auto;z-index:60;pointer-events:none}
+.nav .bar{pointer-events:auto;display:flex;align-items:center;justify-content:space-between;gap:20px;height:60px;padding:0 10px 0 18px;border-radius:999px;background:rgba(255,255,255,.72);backdrop-filter:saturate(1.6) blur(18px);box-shadow:0 0 0 1px rgba(11,26,51,.06),0 10px 30px -18px rgba(11,26,51,.35);transition:box-shadow .4s}
+.nav .logo img{height:30px;width:auto}
+.nav nav{display:flex;gap:4px;font-size:14px;color:var(--ink-2)}
+.nav nav a{padding:7px 12px;border-radius:999px;transition:background .2s}
+.nav nav a:hover{background:var(--tint)}
+.nav .act{display:flex;gap:6px}
+.nav .btn{height:40px;padding:0 16px;font-size:14px}
+
+/* ── HERO ── */
+.hero{position:relative;padding:150px 0 0;overflow:hidden;isolation:isolate}
+.mesh{position:absolute;inset:0 0 auto;height:980px;z-index:-2;overflow:hidden}
+.mesh i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.75;animation:drift 18s var(--ease) infinite alternate}
+.mesh i:nth-child(1){width:620px;height:420px;left:-6%;top:120px;background:#c9d7ff}
+.mesh i:nth-child(2){width:520px;height:460px;right:-4%;top:40px;background:#cfeee1;animation-delay:-6s}
+.mesh i:nth-child(3){width:560px;height:360px;left:34%;top:360px;background:#b3c6ff;animation-delay:-11s}
+@keyframes drift{to{transform:translate(60px,-40px) scale(1.12)}}
+.mesh:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(251,252,255,0) 40%,var(--bg) 92%)}
+.grain{position:absolute;inset:0;z-index:-1;opacity:.35;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.hero-top{text-align:center}
+.pill{display:inline-flex;align-items:center;gap:10px;height:34px;padding:0 6px 0 14px;border-radius:999px;background:rgba(255,255,255,.7);box-shadow:0 0 0 1px rgba(11,26,51,.07);font-size:13px;color:var(--ink-2);backdrop-filter:blur(8px)}
+.pill b{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:999px;background:var(--ink);color:#fff;font-size:11px;font-weight:500}
+.hero h1{margin:26px auto 0;font-size:min(84px,7.3vw);font-weight:500;letter-spacing:-.055em;line-height:1}
+.hero h1>span{display:block;white-space:nowrap}
+.hero h1 .b{background:linear-gradient(95deg,#1f3ea8 0%,#385fe1 45%,#6f8ff5 75%,#5fc4a2 105%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .p{max-width:590px;margin:24px auto 0}
+.hero .ctas{display:flex;justify-content:center;gap:10px;margin-top:32px;flex-wrap:wrap}
+.hero .meta{display:flex;justify-content:center;gap:18px;margin-top:18px;font-size:13px;color:var(--mute);flex-wrap:wrap}
+.hero .meta span{display:inline-flex;align-items:center;gap:6px}
+.hero .meta svg{width:14px;height:14px;color:var(--up)}
+
+/* product window */
+.window{position:relative;margin:70px auto 0;max-width:1080px;border-radius:18px;background:var(--paper);box-shadow:0 0 0 1px rgba(11,26,51,.08),0 2px 4px rgba(11,26,51,.04),0 40px 80px -30px rgba(36,73,186,.35),0 80px 140px -60px rgba(11,26,51,.25);overflow:hidden;transform-origin:50% 0;transition:transform 1.2s var(--ease)}
+.win-bar{display:flex;align-items:center;gap:14px;height:44px;padding:0 16px;border-bottom:1px solid var(--rule);background:#fcfdff}
+.dots{display:flex;gap:7px}.dots i{width:11px;height:11px;border-radius:50%;background:#e3e8f2}
+.url{flex:1;max-width:340px;margin:0 auto;height:26px;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:7px;background:var(--tint);font:12px 'Geist Mono';color:var(--mute)}
+.win{display:grid;grid-template-columns:200px 1fr 290px;min-height:430px}
+.side{padding:16px 12px;border-right:1px solid var(--rule);font-size:13px;background:#fcfdff}
+.side img{height:24px;width:auto;margin:2px 6px 18px}
+.side a{display:flex;justify-content:space-between;padding:8px 10px;border-radius:8px;color:var(--ink-2)}
+.side a.on{background:var(--tint-2);color:var(--ink);font-weight:500}
+.side a small{font-family:'Geist Mono';color:var(--faint)}
+.side .lbl{margin:18px 10px 6px}
+.lbl{font:500 11px 'Geist Mono',monospace;letter-spacing:.04em;text-transform:uppercase;color:var(--faint)}
+.tbl{padding:16px 20px}
+.tbl-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.tbl-head h4{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.seg{display:flex;gap:2px;padding:3px;border-radius:8px;background:var(--tint);font-size:12px}
+.seg span{padding:3px 9px;border-radius:6px;color:var(--mute)}.seg span.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(11,26,51,.1)}
+.row{display:grid;grid-template-columns:28px 1fr 90px 120px 36px;gap:12px;align-items:center;height:50px;border-top:1px solid var(--rule);font-size:13px}
+.row img{width:28px;height:28px;border-radius:7px;box-shadow:0 0 0 1px var(--rule)}
+.row b{font-weight:600;display:block;line-height:1.1}.row span{color:var(--mute);font-size:11px}
+.row svg{width:90px;height:26px}
+.bar{position:relative;height:6px;border-radius:9px;background:var(--tint)}
+.bar i{position:absolute;inset:0 auto 0 0;border-radius:9px;transition:width 1s var(--ease)}
+.row .sc{text-align:right;font-weight:600;transition:color .4s}
+.flash{animation:flash 1s var(--ease)}
+@keyframes flash{0%{background:rgba(56,95,225,.12)}100%{background:transparent}}
+.insp{border-left:1px solid var(--rule);padding:16px 18px;background:linear-gradient(180deg,#fcfdff,#fff)}
+.insp .big{display:flex;align-items:baseline;gap:8px;margin-top:14px}
+.insp .big b{font-size:64px;font-weight:500;letter-spacing:-.06em;line-height:1}
+.insp .z{display:inline-block;margin-top:10px;padding:4px 9px;border-radius:6px;font:600 11px 'Geist Mono';letter-spacing:.04em}
+.insp svg.arc{width:100%;height:120px;margin-top:10px}
+.insp p{margin-top:8px;font-size:13px;color:var(--ink-2)}
+.toast{position:absolute;right:22px;bottom:22px;display:flex;gap:10px;align-items:center;padding:10px 14px 10px 10px;border-radius:12px;background:var(--ink);color:#fff;font-size:13px;box-shadow:0 20px 40px -14px rgba(11,26,51,.6);transform:translateY(20px);opacity:0;transition:.6s var(--ease)}
+.toast.show{transform:none;opacity:1}
+.toast i{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:var(--up)}
+.toast small{display:block;color:#a8b3c8;font-size:11px}
+
+/* ── TAPE ── */
+.tape{margin-top:80px;border-block:1px solid var(--rule);background:var(--paper);overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.tape div{display:flex;gap:44px;width:max-content;padding:14px 0;font:13px 'Geist Mono';animation:tape 45s linear infinite}
+.tape span{display:inline-flex;gap:10px;align-items:center;color:var(--ink-2)}
+.tape em{font-style:normal;font-weight:600}
+@keyframes tape{to{transform:translateX(-50%)}}
+
+/* ── GRID frame (Vercel-ish rules with + marks) ── */
+.frame{position:relative;border:1px solid var(--rule);background:var(--paper)}
+.frame:before,.frame:after{content:'+';position:absolute;font:300 20px/1 Geist;color:var(--faint)}
+.frame:before{left:-7px;top:-11px}.frame:after{right:-7px;bottom:-12px}
+.sec{padding:140px 0 0}
+.sec-head{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin-bottom:56px}
+.sec-head .p{max-width:460px;justify-self:end}
+
+
+/* ── STATEMENT (word reveal) ── */
+.statement{padding:150px 0 0}
+.statement p{font-size:clamp(28px,3.6vw,48px);font-weight:500;letter-spacing:-.04em;line-height:1.18;max-width:1040px}
+.statement .w{color:#cdd5e3;transition:color .3s}
+.statement .w.lit{color:var(--ink)}
+.statement .w.hl.lit{color:var(--blue)}
+
+/* ── CYCLE (sticky scroll story) ── */
+.cycle{position:relative;height:300vh;margin-top:120px}
+.cycle-pin{position:sticky;top:0;height:100vh;display:flex;align-items:center}
+.cycle-grid{display:grid;grid-template-columns:1fr 1.25fr;gap:60px;align-items:center}
+.cycle-copy{position:relative;min-height:330px}
+.cstep{position:absolute;inset:0;opacity:0;transform:translateY(20px);transition:opacity .6s var(--ease),transform .6s var(--ease);pointer-events:none}
+.cstep.on{opacity:1;transform:none;pointer-events:auto}
+.cstep .tag{display:inline-flex;align-items:center;gap:8px;padding:5px 10px;border-radius:999px;font:600 12px 'Geist Mono';letter-spacing:.04em}
+.cstep h3{margin-top:22px;font-size:clamp(30px,3.4vw,44px);font-weight:500;letter-spacing:-.045em;line-height:1.05}
+.cstep p{margin-top:16px;color:var(--ink-2);font-size:17px;max-width:420px}
+.cycle-nav{position:absolute;left:0;bottom:-60px;display:flex;gap:8px}
+.cycle-nav i{width:36px;height:3px;border-radius:3px;background:var(--rule-2);overflow:hidden;position:relative}
+.cycle-nav i b{position:absolute;inset:0;width:0;background:var(--ink)}
+.chart{padding:0;border-radius:22px;background:var(--paper);box-shadow:0 0 0 1px var(--rule),0 2px 4px rgba(11,26,51,.04),0 50px 100px -40px rgba(36,73,186,.45);overflow:hidden}
+.ch-head{display:grid;grid-template-columns:1fr auto auto;gap:28px;align-items:center;padding:18px 22px;border-bottom:1px solid var(--rule);background:linear-gradient(180deg,#fcfdff,#fff)}
+.ch-asset{display:flex;gap:10px;align-items:center}
+.ch-asset img{width:36px;height:36px;border-radius:9px;box-shadow:0 0 0 1px var(--rule)}
+.ch-asset b{display:block;font-size:16px;font-weight:600;letter-spacing:-.01em}.ch-asset span{font-size:12px;color:var(--mute)}
+.ch-price b{display:block;font-size:20px;font-weight:500;letter-spacing:-.03em}
+.ch-idx{text-align:right}
+.ch-idx div{display:flex;align-items:center;gap:10px;justify-content:flex-end}
+.ch-idx b{font-size:40px;font-weight:500;letter-spacing:-.06em;line-height:1;transition:color .4s}
+.ch-idx em{font:600 10px 'Geist Mono';font-style:normal;letter-spacing:.03em;padding:4px 8px;border-radius:6px;background:#e7f8f1;color:#0e9f6e;transition:background .4s,color .4s;white-space:nowrap}
+.ch-plot{position:relative;margin:18px 64px 6px 18px;height:300px}
+.ch-plot svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.ch-axis{position:absolute;top:0;bottom:0;right:-56px;width:50px}
+.ch-axis span{position:absolute;left:6px;transform:translateY(-50%);font:11px 'Geist Mono';color:var(--faint)}
+.ch-pin{position:absolute;display:flex;align-items:center;gap:7px;padding:6px 10px;border-radius:9px;font:600 11px 'Geist Mono';white-space:nowrap;opacity:0;transform:translate(-50%,6px);transition:opacity .5s var(--ease),transform .5s var(--ease);box-shadow:0 10px 24px -12px rgba(11,26,51,.45)}
+.ch-pin i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.ch-pin.up{background:#fff;color:#0e9f6e;box-shadow:0 0 0 1px #bfe9d6,0 10px 24px -12px rgba(16,185,129,.6)}
+.ch-pin.down{background:#fff;color:#dc2626;box-shadow:0 0 0 1px #f5c6c6,0 10px 24px -12px rgba(239,68,68,.6)}
+.ch-pin.show{opacity:1;transform:translate(-50%,0)}
+.ch-tag{position:absolute;right:-60px;padding:3px 7px;border-radius:5px;background:var(--ink);color:#fff;font-size:11px;transform:translateY(-50%);transition:background .4s}
+.ch-foot{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;padding:16px 22px 20px;border-top:1px solid var(--rule);background:#fcfdff}
+.ch-track{position:relative;height:8px;border-radius:9px;background:linear-gradient(90deg,#EF4444 0 20%,#f08a24 20% 44%,#d4a017 44% 69%,#5fbf8f 69% 89%,#10B981 89%)}
+.ch-track i{position:absolute;top:-6px;width:4px;height:20px;border-radius:3px;background:var(--ink);box-shadow:0 0 0 4px rgba(11,26,51,.1);transform:translateX(-50%);transition:left .25s linear}
+.ch-names{display:flex;justify-content:space-between;margin-top:8px;font:500 10px 'Geist Mono';color:var(--faint);text-transform:uppercase}
+.ch-tf{display:flex;gap:6px}
+.ch-tf div{width:50px;padding:6px 0;border-radius:9px;text-align:center;background:var(--paper);box-shadow:0 0 0 1px var(--rule)}
+.ch-tf span{display:block;font:500 10px 'Geist Mono';color:var(--faint)}
+.ch-tf b{font:600 14px 'Geist Mono';transition:color .4s}
+@media(max-width:640px){.ch-head{grid-template-columns:1fr auto;gap:12px}.ch-price{display:none}.ch-idx b{font-size:32px}.ch-idx em{display:none}.ch-plot{height:220px;margin:14px 52px 6px 10px}.ch-foot{grid-template-columns:1fr}.ch-tf div{flex:1;width:auto}.ch-names span:nth-child(2),.ch-names span:nth-child(4){display:none}.ch-tag{right:-50px;font-size:10px;padding:2px 5px}.ch-pin{font-size:10px;padding:5px 8px}.ch-pin.up{transform:translate(-22%,6px)}.ch-pin.up.show{transform:translate(-22%,0)}}
+
+/* ── COMPARE ── */
+.cmp{overflow-x:auto;border-radius:18px;box-shadow:0 0 0 1px var(--rule);background:var(--paper)}
+.cmp table{width:100%;min-width:780px;border-collapse:collapse;font-size:14px}
+.cmp th,.cmp td{padding:18px 22px;text-align:left;border-bottom:1px solid var(--rule)}
+.cmp tbody tr:last-child td{border-bottom:0}
+.cmp th{font-weight:500;color:var(--mute);font-size:13px}
+.cmp td:first-child{color:var(--ink-2)}
+.cmp .us{background:linear-gradient(180deg,#f3f6ff,#f8faff);box-shadow:inset 1px 0 0 #dbe4fb,inset -1px 0 0 #dbe4fb}
+.cmp th.us img{height:24px;width:auto}
+.y,.n{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%}
+.y{background:var(--ink);color:#fff}.n{background:var(--tint);color:var(--faint)}
+.y svg,.n svg{width:11px;height:11px}
+.cmp td small{display:block;color:var(--faint);font-size:12px}
+.note{margin-top:14px;font-size:12px;color:var(--faint)}
+.essay{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-bottom:56px}
+.essay .p+.p{margin-top:16px}
+.essay strong{color:var(--ink);font-weight:600}
+.pull{font-size:clamp(24px,2.6vw,34px);font-weight:500;letter-spacing:-.035em;line-height:1.18}
+.pull span{color:var(--blue)}
+
+/* ── BENTO with spotlight ── */
+.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+.card{position:relative;overflow:hidden;padding:28px;border-radius:20px;background:var(--paper);box-shadow:0 0 0 1px var(--rule);isolation:isolate;min-height:340px;display:flex;flex-direction:column}
+.card:before{content:'';position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .4s;background:radial-gradient(400px circle at var(--mx,50%) var(--my,50%),rgba(56,95,225,.09),transparent 60%)}
+.card:hover:before{opacity:1}
+.card:after{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;opacity:0;transition:opacity .4s;background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),rgba(56,95,225,.55),transparent 60%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.card:hover:after{opacity:1}
+.c7{grid-column:span 7}.c5{grid-column:span 5}.c4{grid-column:span 4}.c8{grid-column:span 8}
+.card h3{font-size:22px;font-weight:500;letter-spacing:-.03em}
+.card p{margin-top:8px;color:var(--ink-2);font-size:15px;max-width:380px}
+.card .viz{flex:1;display:flex;align-items:flex-end;justify-content:center;margin-top:24px}
+/* scale viz */
+.scalebar{width:100%}
+.scalebar .track{position:relative;height:14px;border-radius:9px;background:linear-gradient(90deg,#EF4444 0 20%,#f08a24 20% 44%,#d4a017 44% 69%,#5fbf8f 69% 89%,#10B981 89%)}
+.scalebar .track i{position:absolute;top:-9px;width:4px;height:32px;border-radius:3px;background:var(--ink);box-shadow:0 0 0 5px rgba(11,26,51,.08);transition:left 1.4s var(--ease)}
+.scalebar .ticks{position:relative;height:16px;margin-top:12px;font:12px 'Geist Mono';color:var(--faint)}
+.scalebar .names{display:grid;grid-template-columns:1fr 1fr 1fr;margin-top:16px;font-size:13px}
+.scalebar .names span:nth-child(2){text-align:center}.scalebar .names span:last-child{text-align:right}
+/* alerts viz */
+.stack{position:relative;width:100%;max-width:340px;height:170px}
+.stack .n1,.stack .n2,.stack .n3{position:absolute;left:0;right:0;display:flex;gap:10px;align-items:center;padding:12px;border-radius:14px;background:var(--paper);box-shadow:0 0 0 1px var(--rule),0 12px 30px -16px rgba(11,26,51,.4);font-size:13px}
+.stack .n1{bottom:0;z-index:3}.stack .n2{bottom:22px;transform:scale(.95);opacity:.85;z-index:2}.stack .n3{bottom:44px;transform:scale(.9);opacity:.6;z-index:1}
+.stack img{width:32px;height:32px;border-radius:8px;box-shadow:0 0 0 1px var(--rule)}
+.stack b{display:block;font-weight:600}.stack small{color:var(--up)}
+/* markets viz */
+.mk{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+.mk a{display:flex;justify-content:space-between;align-items:center;padding:14px;border-radius:12px;background:var(--tint);font-size:14px;font-weight:500;transition:background .3s,transform .4s var(--ease)}
+.mk a:hover{background:var(--tint-2);transform:translateY(-2px)}
+.mk a small{font:12px 'Geist Mono';color:var(--mute)}
+/* filters viz */
+.flt{width:100%;display:grid;gap:8px}
+.flt .chips{display:flex;gap:6px;flex-wrap:wrap}
+.flt .chips span{padding:6px 10px;border-radius:999px;background:var(--tint);font-size:12px;color:var(--ink-2)}
+.flt .chips span.on{background:var(--ink);color:#fff}
+.flt .r{display:grid;grid-template-columns:80px 1fr 30px;gap:12px;align-items:center;font-size:13px;padding:8px 0;border-top:1px solid var(--rule)}
+
+
+/* ── PLATFORM TOUR ── */
+.tour{display:grid;grid-template-columns:360px 1fr;gap:28px;align-items:start}
+.tour-list{display:grid;gap:4px;position:sticky;top:100px}
+.tour-item{position:relative;display:block;width:100%;padding:16px 18px;border-radius:14px;text-align:left;transition:background .3s}
+.tour-item:hover{background:var(--tint)}
+.tour-item b{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:500;letter-spacing:-.02em;color:var(--mute);transition:color .3s}
+.tour-item b span{font:500 11px 'Geist Mono';color:var(--faint)}
+.tour-item p{max-height:0;overflow:hidden;opacity:0;margin-top:0;font-size:14px;color:var(--ink-2);transition:max-height .6s var(--ease),opacity .4s,margin .4s}
+.tour-item .prog{position:absolute;left:18px;right:18px;bottom:8px;height:2px;border-radius:2px;background:var(--rule);overflow:hidden;opacity:0}
+.tour-item .prog i{display:block;height:100%;width:0;background:var(--ink)}
+.tour-item.on{background:var(--paper);box-shadow:0 0 0 1px var(--rule),0 12px 30px -20px rgba(11,26,51,.3)}
+.tour-item.on b{color:var(--ink)}
+.tour-item.on p{max-height:160px;opacity:1;margin:8px 0 10px}
+.tour-item.on .prog{opacity:1}
+.tour-item.on .prog i{animation:prog var(--dur,7s) linear forwards}
+@keyframes prog{to{width:100%}}
+.tour.paused .tour-item.on .prog i{animation-play-state:paused}
+.shot{border-radius:16px;overflow:hidden;background:var(--paper);box-shadow:0 0 0 1px rgba(11,26,51,.08),0 40px 80px -30px rgba(36,73,186,.35)}
+.shot .win-bar{height:38px}
+.shot-stage{position:relative;aspect-ratio:1440/900;background:var(--tint)}
+.shot-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top left;opacity:0;transform:scale(1.015);transition:opacity .7s var(--ease),transform 1.2s var(--ease)}
+.shot-stage img.on{opacity:1;transform:none}
+.shot-cap{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.shot-cap span{padding:6px 11px;border-radius:999px;background:var(--paper);box-shadow:0 0 0 1px var(--rule);font-size:13px;color:var(--ink-2)}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.feat{border-radius:18px;overflow:hidden;background:var(--paper);box-shadow:0 0 0 1px var(--rule)}
+.feat img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top left;border-bottom:1px solid var(--rule)}
+.feat div{padding:20px 22px 24px}
+.feat h3{font-size:18px;font-weight:500;letter-spacing:-.02em}
+.feat p{margin-top:6px;font-size:14px;color:var(--ink-2)}
+@media(max-width:900px){.tour{grid-template-columns:1fr}.tour-list{position:static;order:2}.feat-grid{grid-template-columns:1fr}}
+
+
+/* ── MCP ── */
+.mcp{display:grid;grid-template-columns:1fr 1.15fr;gap:48px;align-items:start}
+.ais{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.ai{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 16px 0 12px;border-radius:14px;background:var(--paper);box-shadow:0 0 0 1px var(--rule),0 6px 16px -12px rgba(11,26,51,.3);font-size:15px;font-weight:500}
+.ai img{width:24px;height:24px}
+.ai.more{color:var(--mute);font-weight:400}
+.mcp-steps{display:grid;gap:0;margin-top:34px}
+.mcp-steps>div{display:flex;gap:16px;padding:16px 0;border-top:1px solid var(--rule)}
+.mcp-steps>div:last-child{border-bottom:1px solid var(--rule)}
+.mcp-steps span{font:500 12px 'Geist Mono';color:var(--faint);padding-top:3px}
+.mcp-steps>div>div>b{display:block;font-weight:600}.mcp-steps p b{font-weight:600;color:var(--ink)}.mcp-steps p{font-size:14px;color:var(--mute)}
+.mcp-steps code{font:12px 'Geist Mono';padding:2px 6px;border-radius:5px;background:var(--tint);color:var(--ink-2)}
+.chat{border-radius:20px;background:var(--paper);box-shadow:0 0 0 1px var(--rule),0 40px 80px -40px rgba(36,73,186,.4);overflow:hidden}
+.chat-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border-bottom:1px solid var(--rule);background:#fcfdff}
+.chat-tabs{display:flex;gap:2px;padding:3px;border-radius:9px;background:var(--tint);font-size:12px}
+.chat-tabs button{padding:5px 10px;border-radius:7px;color:var(--mute)}
+.chat-tabs button.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgba(11,26,51,.12)}
+.chat-who{display:flex;gap:6px}.chat-who img{width:20px;height:20px;padding:3px;border-radius:6px;background:var(--tint)}
+.chat-body{padding:22px;min-height:470px;display:flex;flex-direction:column;gap:14px}
+.msg-u{align-self:flex-end;max-width:80%;padding:11px 15px;border-radius:16px 16px 4px 16px;background:var(--ink);color:#fff;font-size:15px}
+.tool{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;background:var(--tint);font:12px 'Geist Mono';color:var(--ink-2)}
+.tool img{height:14px;width:auto}
+.tool i{width:6px;height:6px;border-radius:50%;background:var(--up)}
+.msg-a{max-width:94%;font-size:15px;color:var(--ink-2);line-height:1.6}
+.msg-a b{color:var(--ink);font-weight:600}
+.res{margin:10px 0;border-radius:12px;box-shadow:0 0 0 1px var(--rule);overflow:hidden;font-size:13px}
+.res div{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:9px 12px;border-top:1px solid var(--rule)}
+.res div:first-child{border-top:0;background:#fcfdff;font:500 11px 'Geist Mono';color:var(--faint);text-transform:uppercase}
+.res em{font-style:normal;font:600 13px 'Geist Mono'}
+.res small{padding:2px 7px;border-radius:5px;font:600 10px 'Geist Mono'}
+.typing{display:inline-flex;gap:4px}.typing i{width:6px;height:6px;border-radius:50%;background:var(--faint);animation:blink 1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes blink{50%{opacity:.25}}
+.chat-in{display:flex;align-items:center;gap:10px;margin:0 16px 16px;padding:8px 8px 8px 16px;border-radius:14px;box-shadow:0 0 0 1px var(--rule-2);color:var(--faint);font-size:14px}
+.chat-in span{flex:1}.chat-in i{display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:var(--ink);color:#fff;font-style:normal}
+.tools{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.tools p code{font:11px 'Geist Mono';color:var(--ink-2);background:var(--tint);padding:1px 5px;border-radius:4px}
+.tools div{padding:16px;border-radius:14px;background:var(--paper);box-shadow:0 0 0 1px var(--rule)}
+.tools code{font:500 12px 'Geist Mono';color:var(--blue)}
+.tools p{margin-top:6px;font-size:13px;color:var(--ink-2)}
+@media(max-width:1060px){.tools{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){.mcp{grid-template-columns:1fr}.tools{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.chat-tabs button{padding:5px 7px}.chat-body{min-height:520px;padding:16px}.tools{grid-template-columns:1fr}}
+
+
+/* ── CRYPTO ── */
+.crypto{display:grid;grid-template-columns:1fr 1.25fr;gap:48px;align-items:center}
+.cr-points{display:grid;gap:0;margin-top:28px}
+.cr-points>div{display:grid;grid-template-columns:92px 1fr;gap:16px;padding:16px 0;border-top:1px solid var(--rule)}
+.cr-points>div:last-child{border-bottom:1px solid var(--rule)}
+.cr-points span{font:500 12px 'Geist Mono';color:var(--blue);padding-top:2px}
+.cr-points b{display:block;font-weight:600}.cr-points p{font-size:14px;color:var(--mute)}
+.cr-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.cr-stats div{padding:16px 18px;border-radius:14px;background:var(--paper);box-shadow:0 0 0 1px var(--rule)}
+.cr-stats b{display:block;font-size:30px;font-weight:500;letter-spacing:-.04em}
+.cr-stats span{font-size:13px;color:var(--mute)}
+@media(max-width:900px){.crypto{grid-template-columns:1fr}.cr-stats{grid-template-columns:1fr 1fr 1fr}}
+@media(max-width:640px){.cr-stats b{font-size:24px}.cr-points>div{grid-template-columns:1fr;gap:4px}}
+
+
+/* ── NEWS (animated navigation) ── */
+.news{display:grid;grid-template-columns:.85fr 1.35fr;gap:48px;align-items:center}
+.news-pts{display:grid;margin-top:26px}
+.news-pts>div{display:flex;gap:14px;padding:15px 0;border-top:1px solid var(--rule);transition:opacity .4s}
+.news-pts>div:last-child{border-bottom:1px solid var(--rule)}
+.news-pts i{flex:none;width:8px;height:8px;margin-top:8px;border-radius:2px;background:var(--rule-2);transition:background .4s}
+.news-pts>div.on i{background:var(--blue)}
+.news-pts b{display:block;font-weight:600}.news-pts p{font-size:14px;color:var(--mute)}
+.news-app{position:relative;border-radius:16px;overflow:hidden;background:var(--paper);box-shadow:0 0 0 1px rgba(11,26,51,.08),0 40px 80px -30px rgba(36,73,186,.35)}
+.news-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid var(--rule);background:#fcfdff}
+.news-seg{display:flex;gap:2px;padding:3px;border-radius:9px;background:var(--tint);font-size:12px}
+.news-seg button{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:7px;color:var(--mute);transition:background .3s,color .3s,box-shadow .3s}
+.news-seg button.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgba(11,26,51,.12)}
+.news-seg button img{width:14px;height:14px;border-radius:3px}
+.news-live{display:inline-flex;align-items:center;gap:6px;font:12px 'Geist Mono';color:var(--mute)}
+.news-live:before{content:'';width:6px;height:6px;border-radius:50%;background:var(--up);animation:pulse 1.6s infinite}
+.news-stage{position:relative;height:540px;overflow:hidden;background:var(--tint)}
+.news-stage img{position:absolute;left:0;top:0;width:100%;height:auto;opacity:0;transition:opacity .5s var(--ease)}
+.news-stage img.on{opacity:1;animation:newsScroll var(--t,6.4s) cubic-bezier(.45,0,.25,1) .6s forwards}
+@keyframes newsScroll{to{transform:translateY(calc(-1 * var(--d,0px)))}}
+.news-stage:after{content:'';position:absolute;inset:auto 0 0;height:60px;background:linear-gradient(transparent,rgba(255,255,255,.9));pointer-events:none}
+.cursor{position:absolute;z-index:3;left:0;top:0;width:22px;height:22px;pointer-events:none;transition:transform .9s cubic-bezier(.65,0,.35,1);filter:drop-shadow(0 3px 5px rgba(11,26,51,.35))}
+.cursor.click:after{content:'';position:absolute;left:-8px;top:-8px;width:26px;height:26px;border-radius:50%;border:2px solid var(--blue);animation:ping .5s ease-out forwards}
+@keyframes ping{from{transform:scale(.4);opacity:1}to{transform:scale(1.4);opacity:0}}
+@media(max-width:900px){.news{grid-template-columns:1fr}.news-stage{height:440px}}
+@media(max-width:640px){.news-seg button{padding:5px 7px}.news-live{display:none}.news-stage{height:380px}}
+
+
+/* ── CÂMBIO (motion: currency tabs + spread calculator) ── */
+.fx{display:grid;grid-template-columns:.9fr 1.3fr;gap:48px;align-items:center}
+.fx-claim{margin-top:24px;padding:20px 22px;border-radius:18px;background:var(--ink);color:#fff;position:relative;overflow:hidden}
+.fx-claim:before{content:'';position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(closest-side,rgba(95,196,162,.55),transparent)}
+.fx-claim>*{position:relative}
+.fx-claim b{display:block;font-size:clamp(22px,2.4vw,30px);font-weight:500;letter-spacing:-.035em;line-height:1.15}
+.fx-claim b em{font-style:normal;color:#7ee2bd}
+.fx-claim p{margin-top:8px;font-size:13px;color:#a8b3c8}
+.fx-pts{display:grid;margin-top:22px}
+.fx-pts>div{display:flex;gap:14px;padding:13px 0;border-top:1px solid var(--rule)}
+.fx-pts>div:last-child{border-bottom:1px solid var(--rule)}
+.fx-pts span{flex:none;font:500 12px 'Geist Mono';color:var(--blue);padding-top:3px;width:26px}
+.fx-pts b{display:block;font-weight:600}.fx-pts p{font-size:14px;color:var(--mute)}
+.fx-app{position:relative;border-radius:16px;overflow:hidden;background:var(--paper);box-shadow:0 0 0 1px rgba(11,26,51,.08),0 40px 80px -30px rgba(36,73,186,.35)}
+.fx-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid var(--rule);background:#fcfdff;flex-wrap:wrap}
+.fx-seg{display:flex;gap:2px;padding:3px;border-radius:9px;background:var(--tint);font-size:12px}
+.fx-seg button{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:7px;color:var(--mute);transition:background .3s,color .3s,box-shadow .3s}
+.fx-seg button.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgba(11,26,51,.12)}
+.fx-seg button.calc{color:#0e9f6e}
+.fx-seg button.calc.on{background:#0e9f6e;color:#fff}
+.fx-stage{position:relative;aspect-ratio:1400/657;background:var(--tint)}
+.fx-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top left;opacity:0;transform:scale(1.01);transition:opacity .55s var(--ease),transform .9s var(--ease)}
+.fx-stage img.on{opacity:1;transform:none}
+.fx-save{position:absolute;right:16px;bottom:16px;display:flex;gap:10px;align-items:center;padding:10px 14px 10px 10px;border-radius:14px;background:var(--ink);color:#fff;box-shadow:0 18px 40px -16px rgba(11,26,51,.6);transform:translateY(16px);opacity:0;transition:.6s var(--ease)}
+.fx-save.show{transform:none;opacity:1}
+.fx-save i{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:#0e9f6e;font-style:normal;font-weight:700}
+.fx-save small{display:block;font-size:11px;color:#a8b3c8}
+.fx-save b{font-size:17px;font-weight:600}
+@media(max-width:900px){.fx{grid-template-columns:1fr}}
+@media(max-width:640px){.fx-seg button{padding:5px 7px}.fx-save{left:10px;right:10px;bottom:10px}}
+
+
+/* ── Câmbio: candle simulator per currency ── */
+.fx-sim{display:grid;grid-template-columns:.85fr 1.35fr;gap:48px;align-items:center;margin-top:64px}
+.fx-tabs{display:inline-flex;gap:2px;padding:4px;border-radius:12px;background:var(--tint);margin-top:22px}
+.fx-tabs button{padding:8px 14px;border-radius:9px;font-size:14px;color:var(--mute);transition:background .3s,color .3s,box-shadow .3s}
+.fx-tabs button.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgba(11,26,51,.12)}
+.fx-prog{height:3px;margin-top:14px;border-radius:3px;background:var(--rule);overflow:hidden;max-width:360px}
+.fx-prog i{display:block;height:100%;width:0;background:var(--ink)}
+.fx-flag{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--tint);font-size:20px;box-shadow:0 0 0 1px var(--rule)}
+@media(max-width:900px){.fx-sim{grid-template-columns:1fr;gap:28px}}
+@media(max-width:640px){#qChart .ch-plot{margin-right:58px}#qChart .ch-tag{right:-58px;font-size:9.5px;padding:2px 4px}#qChart .ch-axis span{font-size:10px}}
+
+/* ── SIMULATOR ── */
+.sim{display:grid;grid-template-columns:340px 1fr;border-radius:20px;overflow:hidden;background:var(--paper);box-shadow:0 0 0 1px var(--rule),0 40px 80px -50px rgba(36,73,186,.45)}
+.sim-l{padding:24px;border-right:1px solid var(--rule);background:#fcfdff}
+.search{position:relative;margin-top:10px}
+.search svg{position:absolute;left:13px;top:50%;width:16px;height:16px;transform:translateY(-50%);color:var(--faint)}
+.search kbd{position:absolute;right:10px;top:50%;transform:translateY(-50%);padding:2px 6px;border-radius:5px;background:var(--tint);font:11px 'Geist Mono';color:var(--mute)}
+.search input{width:100%;height:44px;padding:0 44px 0 38px;border-radius:10px;border:0;background:var(--paper);box-shadow:0 0 0 1px var(--rule-2);font:500 14px Geist;color:var(--ink);text-transform:uppercase;outline:none;transition:box-shadow .2s}
+.search input::placeholder{text-transform:none;color:var(--faint);font-weight:400}
+.search input:focus{box-shadow:0 0 0 1px var(--blue),0 0 0 4px rgba(56,95,225,.15)}
+.sugg{position:absolute;z-index:5;left:0;right:0;top:50px;max-height:270px;overflow:auto;padding:6px;list-style:none;border-radius:12px;background:var(--paper);box-shadow:0 0 0 1px var(--rule),0 24px 50px -20px rgba(11,26,51,.35)}
+.sugg li{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:8px;font-size:13px;cursor:pointer}
+.sugg li:hover{background:var(--tint)}
+.sugg i{font-style:normal;color:var(--mute)}
+.seg2{display:flex;flex-wrap:wrap;gap:2px;margin-top:18px;padding:3px;border-radius:10px;background:var(--tint)}
+.seg2 button{flex:1 1 auto;height:32px;padding:0 6px;border-radius:8px;font-size:12px;color:var(--mute)}
+.seg2 button.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgba(11,26,51,.12)}
+.picks{display:grid;gap:6px;margin-top:12px}
+.pick{display:flex;align-items:center;gap:10px;width:100%;padding:9px;border-radius:10px;text-align:left;transition:background .2s}
+.pick:hover{background:var(--tint)}
+.pick.on{background:var(--tint-2)}
+.pick img{width:28px;height:28px;border-radius:7px;box-shadow:0 0 0 1px var(--rule)}
+.pick b{font-size:13px;font-weight:600}.pick span{display:block;font-size:11px;color:var(--mute)}
+.pick em{margin-left:auto;font:600 13px 'Geist Mono';font-style:normal}
+.sim-r{position:relative;padding:30px;display:flex;flex-direction:column}
+.res-top{display:flex;justify-content:space-between;gap:14px}
+.res-id{display:flex;gap:12px;align-items:center}
+.res-id img{width:46px;height:46px;border-radius:11px;box-shadow:0 0 0 1px var(--rule)}
+.res-id b{display:block;font-size:24px;font-weight:600;letter-spacing:-.03em;line-height:1.1}
+.res-id span{font-size:13px;color:var(--mute)}
+.res-sc{font-size:84px;font-weight:500;letter-spacing:-.07em;line-height:.85;transition:color .4s,filter .4s}
+.res-r .scalebar{margin-top:40px}
+.res-z{align-self:flex-start;margin-top:26px;padding:5px 10px;border-radius:7px;font:600 12px 'Geist Mono';letter-spacing:.03em}
+.res-t{margin-top:12px;color:var(--ink-2);font-size:16px;max-width:460px}
+.lock{position:absolute;inset:100px 0 0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;background:rgba(255,255,255,.7);backdrop-filter:blur(12px)}
+.sim-r.locked .lock{display:flex}
+.sim-r.locked .res-sc{filter:blur(10px);color:var(--faint)!important}
+.lock .ic{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:var(--ink);color:#fff}
+.lock .ic svg{width:20px;height:20px}
+.lock h4{font-size:22px;font-weight:500;letter-spacing:-.03em}
+.lock p{max-width:340px;color:var(--ink-2);font-size:14px}
+
+/* ── CALC ── */
+.calc{display:grid;grid-template-columns:1fr 1fr;border-radius:20px;overflow:hidden;box-shadow:0 0 0 1px var(--rule)}
+.calc-in{padding:34px;background:var(--paper)}
+.calc-in label{display:block}.calc-in label+label{margin-top:34px}
+.calc-in .rw{display:flex;justify-content:space-between;align-items:baseline;color:var(--ink-2);font-size:15px}
+.calc-in .rw b{font-size:28px;font-weight:500;letter-spacing:-.04em;color:var(--ink)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;margin-top:18px;border-radius:9px;background:linear-gradient(90deg,var(--ink) var(--v,30%),var(--rule-2) var(--v,30%));outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px var(--rule-2),0 3px 8px rgba(11,26,51,.25);cursor:grab}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border:0;border-radius:50%;background:#fff;box-shadow:0 0 0 1px var(--rule-2),0 3px 8px rgba(11,26,51,.25)}
+.calc-out{position:relative;padding:34px;background:var(--ink);color:#fff;display:flex;flex-direction:column;justify-content:space-between;gap:28px;overflow:hidden}
+.calc-out:before{content:'';position:absolute;right:-120px;top:-120px;width:360px;height:360px;border-radius:50%;background:radial-gradient(closest-side,rgba(56,95,225,.7),transparent)}
+.calc-out .lbl{color:#8796b3}
+.calc-out strong{display:block;margin-top:10px;font-size:clamp(52px,6vw,80px);font-weight:500;letter-spacing:-.06em;line-height:1}
+.calc-out p{color:#b8c3d9}
+.calc-out .vs{display:flex;justify-content:space-between;padding-top:14px;border-top:1px solid rgba(255,255,255,.14);font-size:14px;color:#b8c3d9}
+.calc-out .vs b{color:#fff;font-weight:500}
+
+/* ── PRICE ── */
+.price-wrap{display:grid;grid-template-columns:1fr 440px;gap:60px;align-items:center}
+.inc{display:grid;gap:0}
+.inc>div{display:flex;gap:16px;padding:18px 0;border-top:1px solid var(--rule)}
+.inc>div:last-child{border-bottom:1px solid var(--rule)}
+.inc span{font:500 12px 'Geist Mono';color:var(--faint);padding-top:3px}
+.inc b{display:block;font-weight:600}.inc p{color:var(--mute);font-size:14px}
+.ticket{position:relative;padding:34px;border-radius:24px;background:var(--paper);box-shadow:0 0 0 1px var(--rule),0 50px 100px -40px rgba(36,73,186,.45);overflow:hidden}
+.ticket:before{content:'';position:absolute;inset:0 0 auto;height:140px;background:linear-gradient(180deg,#eef2ff,transparent);z-index:0}
+.ticket>*{position:relative}
+.ticket .top{display:flex;justify-content:space-between;align-items:center}
+.ticket .top img{height:28px;width:auto}
+.offer{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border-radius:999px;background:var(--ink);color:#fff;font:500 11px 'Geist Mono'}
+.offer:before{content:'';width:6px;height:6px;border-radius:50%;background:var(--mint);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.3}}
+.ticket .amt{margin-top:34px;display:flex;align-items:flex-start;gap:6px}
+.ticket .amt sup{font-size:22px;font-weight:500;margin-top:10px}
+.ticket .amt b{font-size:96px;font-weight:500;letter-spacing:-.07em;line-height:.9}
+.ticket .amt small{align-self:flex-end;margin-bottom:10px;color:var(--mute)}
+.ticket .eq{margin-top:10px;color:var(--blue);font-weight:500}
+.ticket .btn{width:100%;justify-content:center;height:52px;margin-top:28px}
+.ticket ul{list-style:none;padding:0;margin-top:24px;display:grid;gap:10px;font-size:14px;color:var(--ink-2)}
+.ticket li{display:flex;gap:10px}
+.ticket li svg{flex:none;width:16px;height:16px;margin-top:3px;color:var(--blue)}
+.ticket .safe{margin-top:18px;text-align:center;font-size:12px;color:var(--faint)}
+.perf{position:absolute;left:0;right:0;border-top:2px dashed var(--rule)}
+
+/* ── PROOF ── */
+.proof{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:12px}
+.case{padding:44px 34px;border-radius:20px;background:var(--ink);color:#fff;display:flex;flex-direction:column;justify-content:space-between;gap:24px;position:relative;overflow:hidden}
+.case:before{content:"";position:absolute;right:-90px;top:-90px;width:260px;height:260px;border-radius:50%;background:radial-gradient(closest-side,rgba(56,95,225,.75),transparent)}
+.case>*{position:relative}
+.case .lbl{color:#8796b3}
+.case b{display:block;font-size:84px;font-weight:500;letter-spacing:-.07em;line-height:.9;color:#7ee2bd}
+.case h3{font-size:20px;font-weight:500;letter-spacing:-.02em}
+.case p{font-size:12px;color:#93a1bd;line-height:1.5}
+.quote{padding:44px;border-radius:20px;background:var(--paper);box-shadow:0 0 0 1px var(--rule)}
+.quote blockquote{font-size:clamp(22px,2.4vw,30px);font-weight:500;letter-spacing:-.035em;line-height:1.3}
+.quote blockquote:before{content:'“';display:block;font-size:64px;line-height:.6;color:var(--blue-l)}
+.quote footer{display:flex;align-items:center;gap:12px;margin-top:28px;font-size:14px;color:var(--mute)}
+.quote footer span{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;font-weight:600;font-size:13px}
+.quote footer b{color:var(--ink);font-weight:600}
+.guar{padding:44px;border-radius:20px;background:linear-gradient(160deg,#e8f8f1,#fff 70%);box-shadow:0 0 0 1px #cdeedf;display:flex;flex-direction:column;justify-content:space-between;gap:30px}
+.guar .d{font-size:110px;font-weight:500;letter-spacing:-.08em;line-height:.8;color:#0e9f6e}
+.guar .d small{font-size:16px;letter-spacing:0;color:#0e9f6e;margin-left:6px}
+.guar h3{font-size:22px;font-weight:500;letter-spacing:-.03em}
+.guar p{margin-top:8px;font-size:14px;color:var(--ink-2)}
+
+/* ── FAQ ── */
+.faq{display:grid;grid-template-columns:1fr 1.6fr;gap:60px}
+.faq details{border-top:1px solid var(--rule)}
+.faq details:last-child{border-bottom:1px solid var(--rule)}
+.faq summary{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 0;list-style:none;cursor:pointer;font-size:17px;font-weight:500;letter-spacing:-.01em}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary i{position:relative;flex:none;width:14px;height:14px}
+.faq summary i:before,.faq summary i:after{content:'';position:absolute;left:0;top:6px;width:14px;height:1.5px;background:var(--ink);transition:transform .4s var(--ease)}
+.faq summary i:after{transform:rotate(90deg)}
+.faq details[open] summary i:after{transform:rotate(0)}
+.faq details p{padding:0 40px 24px 0;color:var(--ink-2)}
+
+/* ── FINAL ── */
+.final{position:relative;margin-top:150px;padding:140px 0 150px;text-align:center;overflow:hidden;isolation:isolate;border-top:1px solid var(--rule)}
+.final .mesh{top:auto;bottom:-300px;height:700px}
+.final .mesh:after{background:linear-gradient(0deg,rgba(251,252,255,0) 40%,var(--bg) 95%)}
+.final h2{font-size:min(76px,6.6vw);font-weight:500;letter-spacing:-.055em;line-height:1}
+.final h2 span{display:block;white-space:nowrap}
+.final .p{max-width:520px;margin:22px auto 0}
+.final .btn{margin-top:34px}
+
+footer.site{padding:36px 0 120px;border-top:1px solid var(--rule);font-size:13px;color:var(--mute);background:var(--paper)}
+footer.site .wrap{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+footer.site img{height:28px;width:auto}
+footer.site nav{display:flex;gap:22px}
+footer.site nav a:hover{color:var(--ink)}
+footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
+
+/* ── MODAL + STICKY ── */
+.modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:16px}
+.modal.open{display:flex}
+.modal-bg{position:absolute;inset:0;background:rgba(11,26,51,.35);backdrop-filter:blur(6px)}
+.modal-box{position:relative;width:100%;max-width:420px;padding:30px;border-radius:22px;background:var(--paper);box-shadow:0 0 0 1px var(--rule),0 40px 100px -30px rgba(11,26,51,.5);animation:pop .5s var(--ease)}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.98)}}
+.modal-box img{height:28px;width:auto}
+.modal-x{position:absolute;right:14px;top:14px;width:32px;height:32px;border-radius:8px;color:var(--mute)}
+.modal-x:hover{background:var(--tint)}
+.modal h3{margin-top:22px;font-size:clamp(17px,4.6vw,22px);font-weight:500;letter-spacing:-.03em;white-space:nowrap}
+.modal .sub{margin-top:6px;font-size:14px;color:var(--mute)}
+.modal form{display:grid;gap:12px;margin-top:20px}
+.modal label span{font-size:13px;font-weight:500;color:var(--ink-2)}
+.modal input{width:100%;height:46px;margin-top:6px;padding:0 14px;border:0;border-radius:10px;background:var(--paper);box-shadow:0 0 0 1px var(--rule-2);font:15px Geist;color:var(--ink);outline:none}
+.modal input:focus{box-shadow:0 0 0 1px var(--blue),0 0 0 4px rgba(56,95,225,.15)}
+.modal .btn{width:100%;justify-content:center;height:50px;margin-top:6px}
+.err{min-height:18px;font-size:13px;color:var(--down)}
+.safe{text-align:center;font-size:12px;color:var(--faint)}
+.sticky{position:fixed;left:50%;bottom:16px;z-index:90;display:flex;align-items:center;gap:16px;padding:8px 8px 8px 20px;border-radius:999px;background:rgba(11,26,51,.92);color:#fff;backdrop-filter:blur(14px);box-shadow:0 20px 40px -14px rgba(11,26,51,.6);transform:translate(-50%,140%);transition:transform .6s var(--ease)}
+.sticky.show{transform:translate(-50%,0)}
+.sticky p{font-size:14px;white-space:nowrap}.sticky p span{color:#9fb0d0}
+.sticky .btn{height:40px}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(24px);filter:blur(6px);transition:opacity 1s var(--ease),transform 1s var(--ease),filter 1s var(--ease)}
+.rv.in{opacity:1;transform:none;filter:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none;filter:none}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1060px){.nav nav{display:none}.win{grid-template-columns:1fr 260px}.side{display:none}}
+@media(max-width:900px){
+  .sec-head,.essay,.faq,.proof,.price-wrap,.calc,.sim{grid-template-columns:1fr}.sec-head .p{justify-self:start}
+  .bento{grid-template-columns:1fr}.c4,.c5,.c7,.c8{grid-column:auto}
+  .cycle{height:auto;margin-top:100px}.cycle-pin{position:static;height:auto}.cycle-grid{grid-template-columns:1fr;gap:30px}
+  .cycle-copy{min-height:0}.cstep{position:static;opacity:1;transform:none;margin-bottom:36px}.cycle-nav{display:none}
+  .sim-l{border-right:0;border-bottom:1px solid var(--rule)}
+  .sec{padding-top:100px}.statement{padding-top:110px}
+}
+@media(max-width:640px){
+  .wrap{width:calc(100% - 32px)}
+  .nav{inset:10px 0 auto}.nav .bar{height:54px;padding:0 6px 0 14px}.nav .logo img{height:26px}.nav .btn{height:38px;padding:0 13px;font-size:13px}
+  .hero{padding-top:120px}
+  .win{grid-template-columns:1fr}.insp{border-left:0;border-top:1px solid var(--rule)}
+  .row{grid-template-columns:28px 1fr 34px}.row svg,.row .bar{display:none}
+  .toast{left:12px;right:12px;bottom:12px}
+  .res-sc{font-size:64px}.sim-r,.sim-l,.calc-in,.calc-out,.quote,.guar,.ticket{padding:22px}
+  .ticket .amt b{font-size:80px}
+  .sticky{left:16px;right:16px;transform:translateY(140%)}.sticky.show{transform:none}.sticky p span{display:none}.sticky{justify-content:space-between}
+}
+.scalebar .ticks span{position:absolute;transform:translateX(-50%)}.scalebar .ticks span:first-child{transform:none}.scalebar .ticks span:last-child{transform:translateX(-100%)}
+.scalebar .names span:nth-child(2){text-align:center}
+img[src*="/logos/"]{border-radius:50%!important;object-fit:cover;background:#fff;box-shadow:0 0 0 1px var(--rule)}
+.impact{margin-top:44px;text-align:center;font-size:clamp(26px,3.2vw,42px);font-weight:500;letter-spacing:-.045em;line-height:1.1;background:linear-gradient(95deg,#1f3ea8 0%,#385fe1 45%,#6f8ff5 75%,#5fc4a2 105%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero h1 .tw{position:relative;display:inline-block;white-space:nowrap}
+.tw-reserve{visibility:hidden}
+.tw-run{position:absolute;left:0;right:0;top:0;text-align:left;white-space:nowrap}
+.tw-caret{display:inline-block;width:.06em;height:.82em;margin-left:.04em;vertical-align:-.06em;background:#385fe1;border-radius:2px;animation:caret 1s steps(1) infinite}
+@keyframes caret{50%{opacity:0}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.ch-ticker{position:relative;overflow:hidden;padding:12px 0;border-top:1px solid var(--rule);background:var(--ink);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.ch-ticker-track{display:flex;align-items:center;gap:22px;width:max-content;animation:chTicker 26s linear infinite}
+.ch-ticker span{font:500 13px 'Geist Mono';letter-spacing:.01em;color:#e6ecf8;white-space:nowrap}
+.ch-ticker i{width:5px;height:5px;border-radius:50%;background:#5fc4a2;flex:none}
+.ch-ticker:hover .ch-ticker-track{animation-play-state:paused}
+@keyframes chTicker{to{transform:translateX(-50%)}}
+.quote footer .avatar{width:48px;height:48px;border-radius:50%;box-shadow:0 0 0 3px #fff,0 0 0 4px var(--rule),0 8px 18px -8px rgba(36,73,186,.5)}
+@media(max-width:640px){.chat-who{display:none}.chat-tabs{max-width:100%;overflow-x:auto;scrollbar-width:none}.chat-tabs button{white-space:nowrap;font-size:12px}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="arr" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="chk" viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="x" viewBox="0 0 16 16"><path d="m4.5 4.5 7 7m0-7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="bell" viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 1 1 12 0v5l2 2H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 21h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+</svg>
+
+<header class="nav"><div class="wrap bar" id="bar">
+  <a class="logo" href="https://treend.com.br" aria-label="Treend — início"><img src="./assets/treend-blue.svg" alt="Treend" width="145" height="40"></a>
+  <nav aria-label="Seções"><a href="#ciclo">Como funciona</a><a href="#plataforma">Plataforma</a><a href="#noticias">Notícias</a><a href="#mcp">IA</a><a href="#por-que">Por que a Treend</a><a href="#simulador">Testar</a><a href="#planos">Plano</a><a href="#faq">FAQ</a></nav>
+  <div class="act"><a class="btn btn-line" href="https://novo.treend.com.br/login">Entrar</a><a class="btn btn-pri" href="#planos" data-checkout>Assinar</a></div>
+</div></header>
+
+<main>
+<!-- HERO -->
+<section class="hero">
+  <div class="mesh" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="wrap hero-top">
+    <span class="pill rv">Ações · FIIs · Stocks · Commodities · Câmbio · Cripto <b>Index Score</b></span>
+    <h1 class="rv"><span>Você sabe o que comprar.</span><span class="tw"><span class="tw-reserve" aria-hidden="true">A Treend te diz quando.</span><span class="sr">A Treend te diz quando.</span><span class="tw-run b" aria-hidden="true"><span id="twText">A Treend te diz quando.</span><i class="tw-caret"></i></span></span></h1>
+    <p class="p rv">Una suas análises ao Index Score Quantitativo da Treend. Identifique topos e fundos de movimento em segundos e pare de comprar ótimos ativos na hora errada.</p>
+    <div class="ctas rv"><a class="btn btn-blue" href="#planos" data-checkout>Desbloquear por R$ 129/ano <svg><use href="#arr"/></svg></a><a class="btn btn-line" href="#ciclo">Ver como funciona</a></div>
+    <div class="meta rv"><span><svg><use href="#chk"/></svg>R$ 10,75/mês</span><span><svg><use href="#chk"/></svg>Acesso imediato via Stripe</span><span><svg><use href="#chk"/></svg>7 dias de garantia</span></div>
+  </div>
+
+  <div class="wrap">
+    <div class="window rv" id="win" aria-label="Prévia do painel Treend">
+      <div class="win-bar"><div class="dots"><i></i><i></i><i></i></div><div class="url"><svg width="11" height="11"><use href="#lock"/></svg>novo.treend.com.br</div><div style="width:47px"></div></div>
+      <div class="win">
+        <aside class="side"><img src="./assets/treend-blue.svg" alt="">
+          <span class="lbl">Mercados</span>
+          <a class="on" href="#simulador">Minha lista <small>12</small></a><a href="#simulador">Ações B3 <small>1.2k</small></a><a href="#simulador">FIIs <small>480</small></a><a href="#simulador">Stocks <small>1.1k</small></a><a href="#simulador">Commodities <small>32</small></a>
+          <span class="lbl">Zonas</span>
+          <a href="#ciclo">Abaixo da média <small style="color:var(--up)">214</small></a><a href="#ciclo">Esticado <small style="color:var(--down)">167</small></a>
+        </aside>
+        <div class="tbl">
+          <div class="tbl-head"><h4>Minha lista</h4><div class="seg"><span class="on">Index Score</span><span>Variação</span></div></div>
+          <div id="rows"></div>
+        </div>
+        <div class="insp" id="insp">
+          <span class="lbl">Selecionado</span>
+          <div class="res-id" style="margin-top:12px"><img id="iLogo" src="./assets/logos/PETR4.svg" alt=""><div><b id="iTk">PETR4</b><span id="iNm">Petrobras</span></div></div>
+          <div class="big"><b class="mono" id="iSc">22</b><span class="lbl">/ 100</span></div>
+          <span class="z" id="iZ"></span>
+          <svg class="arc" viewBox="0 0 250 120"><path d="M20 110 A105 105 0 0 1 230 110" fill="none" stroke="#eef2f9" stroke-width="12" stroke-linecap="round"/><path id="iArc" d="M20 110 A105 105 0 0 1 230 110" fill="none" stroke="#10B981" stroke-width="12" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="78" style="transition:stroke-dashoffset 1s cubic-bezier(.16,1,.3,1),stroke .4s"/></svg>
+          <p id="iTx"></p>
+        </div>
+      </div>
+      <div class="toast" id="toast"><i><svg width="16" height="16"><use href="#bell"/></svg></i><div><b id="tT">HGLG11 muito abaixo da média</b><small id="tS">Índice Treend 93 · agora</small></div></div>
+    </div>
+  </div>
+
+  <div class="tape" aria-hidden="true"><div id="tape"></div></div>
+</section>
+
+<!-- STATEMENT -->
+<section class="statement"><div class="wrap">
+  
+  <p id="stmt">Você estuda balanços, confere a margem, o ROIC e a dívida. Escolhe um ótimo ativo. Compra. E assiste ele cair por meses, porque entrou exatamente no topo do ciclo. O maior erro do investidor não é escolher ativos ruins. É comprar os bons na hora errada.</p>
+</div></section>
+
+<!-- CYCLE STORY -->
+<section class="cycle" id="ciclo">
+  <div class="cycle-pin"><div class="wrap cycle-grid">
+    <div class="cycle-copy">
+      <div class="cstep on" data-i="0"><span class="tag" style="background:#e7f8f1;color:#0e9f6e">● 90+ · MUITO ABAIXO DA MÉDIA</span><h3>Desconto raro.<br>Oportunidade de aporte.</h3><p>O preço está muito abaixo do comportamento usual do ativo naquela janela, um desconto estatisticamente raro. É quando o investidor de valor quer estar comprando.</p></div>
+      <div class="cstep" data-i="1"><span class="tag" style="background:#eef1f5;color:#475569">● 45 – 69 · NEUTRO</span><h3>Preço em equilíbrio.<br>Acúmulo normal.</h3><p>O preço volta para perto do comportamento usual: sem desconto nem excesso relevantes. Aportes seguem a sua estratégia, sem pressa e sem euforia.</p></div>
+      <div class="cstep" data-i="2"><span class="tag" style="background:#fdecec;color:#dc2626">● ≤ 20 · ESTICADO</span><h3>Preço esticado.<br>Atenção e realização.</h3><p>O preço está em excesso estatisticamente raro em relação ao padrão recente. Bom momento para cautela, e péssimo para começar uma posição.</p></div>
+      <div class="cycle-nav"><i><b></b></i><i><b></b></i><i><b></b></i></div>
+    </div>
+    <div class="chart" id="cChart">
+      <div class="ch-head">
+        <div class="ch-asset"><img src="./assets/logos/PETR4.svg" alt=""><div><b>PETR4</b><span>Petrobras · Diário</span></div></div>
+        <div class="ch-price"><span class="lbl">Preço</span><b class="mono" id="cPx">R$ 30,12</b></div>
+        <div class="ch-idx"><span class="lbl">Índice Treend</span><div><b class="mono" id="cSc" style="color:#10B981">93</b><em id="cZ">MUITO ABAIXO DA MÉDIA</em></div></div>
+      </div>
+      <div class="ch-plot">
+        <svg viewBox="0 0 640 300" id="cSvg" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="cg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#385fe1" stop-opacity=".14"/><stop offset="1" stop-color="#385fe1" stop-opacity="0"/></linearGradient>
+            <clipPath id="cClip"><rect id="cClipR" x="0" y="0" width="0" height="300"/></clipPath>
+          </defs>
+          <g id="cGrid"></g>
+          <path d="M0 230 C60 250 90 260 130 240 S210 160 260 130 S330 50 380 40 S470 90 520 150 S580 210 600 220 V300 H0Z" fill="url(#cg)" clip-path="url(#cClip)"/>
+          <path id="cPath" d="M0 230 C60 250 90 260 130 240 S210 160 260 130 S330 50 380 40 S470 90 520 150 S580 210 600 220" fill="none" stroke="none"/>
+          <g id="cVol"></g>
+          <g id="cCandles"></g>
+          <line id="cGuide" x1="0" x2="0" y1="0" y2="300" stroke="#0b1a33" stroke-opacity=".18" stroke-dasharray="2 4"/>
+          <line id="cHline" x1="0" x2="600" y1="0" y2="0" stroke="#0b1a33" stroke-opacity=".12" stroke-dasharray="2 4"/>
+          <circle id="cHalo" r="18" fill="#10B981" fill-opacity=".16"/><circle id="cDot" r="6" fill="#10B981" stroke="#fff" stroke-width="2.5"/>
+        </svg>
+        <div class="ch-axis" id="cAxis"></div>
+        <div class="ch-pin up" id="pinLow"><i></i>Desconto raro · 96</div>
+        <div class="ch-pin down" id="pinHigh"><i></i>Esticado · 4</div>
+        <div class="ch-tag mono" id="cTag">R$ 30,12</div>
+      </div>
+      <div class="ch-foot">
+        <div class="ch-scale"><div class="ch-track"><i id="cMark"></i></div><div class="ch-names"><span>Esticado</span><span>Atenção</span><span>Neutro</span><span>Abaixo</span><span>Muito abaixo</span></div></div>
+        <div class="ch-tf" id="cTf"></div>
+      </div>
+      <div class="ch-ticker" aria-label="Algoritmos ultra treinados · 2.000 horas de testes · 94% de precisão · Maior assertividade na decisão · Métricas quantitativas validadas"><div class="ch-ticker-track" aria-hidden="true"><span>Algoritmos ultra treinados</span><i></i><span>2.000 horas de testes</span><i></i><span>94% de precisão</span><i></i><span>Maior assertividade na decisão</span><i></i><span>Métricas quantitativas validadas</span><i></i><span>Algoritmos ultra treinados</span><i></i><span>2.000 horas de testes</span><i></i><span>94% de precisão</span><i></i><span>Maior assertividade na decisão</span><i></i><span>Métricas quantitativas validadas</span><i></i></div></div>
+    </div>
+  </div></div>
+</section>
+
+<!-- WHY -->
+<section class="sec" id="por-que"><div class="wrap">
+  <div class="sec-head"><div><h2 class="h2 rv">Fundamentos dizem o quê.<br><span class="soft">Ninguém te diz quando.</span></h2></div><p class="p rv">A maioria das assinaturas entrega mais tabelas de múltiplos. A Treend entrega a variável que falta: o momento.</p></div>
+  <div class="essay">
+    <div class="rv"><p class="p">A análise fundamentalista avalia o negócio: lucro, margens, dívida, retorno sobre o capital, dividendos. É indispensável para separar bons ativos dos ruins.</p><p class="p">Mas <strong>preço e valor andam em ciclos diferentes</strong>. Um ativo excelente pode passar meses, às vezes anos, negociado acima do que vale. Os múltiplos dizem se ele é bom. Não dizem se o movimento do preço está no começo, no meio ou no fim.</p><p class="p">A Treend não compete com a sua análise. Ela completa: <strong>uma leitura quantitativa de momento</strong>, em um número de 0 a 100.</p></div>
+    <p class="pull rv">Análise sólida <span>+</span> timing quantitativo <span>=</span> mais margem de segurança em cada aporte.</p>
+  </div>
+  <div class="cmp rv"><table>
+    <thead><tr><th></th><th class="us"><img src="./assets/treend-blue.svg" alt="Treend Pro"></th><th>Plataformas de dados</th><th>Casas de recomendação</th><th>Planilha própria</th></tr></thead>
+    <tbody>
+      <tr><td>Indicador de topo e fundo</td><td class="us"><span class="y"><svg><use href="#chk"/></svg></span></td><td><span class="n"><svg><use href="#x"/></svg></span></td><td><span class="n"><svg><use href="#x"/></svg></span></td><td><span class="n"><svg><use href="#x"/></svg></span></td></tr>
+      <tr><td>Timing quantitativo, sem opinião</td><td class="us"><span class="y"><svg><use href="#chk"/></svg></span></td><td><span class="n"><svg><use href="#x"/></svg></span></td><td><span class="n"><svg><use href="#x"/></svg></span><small>depende do analista</small></td><td><span class="n"><svg><use href="#x"/></svg></span></td></tr>
+      <tr><td>6 classes de ativos em um lugar</td><td class="us"><span class="y"><svg><use href="#chk"/></svg></span></td><td><span class="n"><svg><use href="#x"/></svg></span><small>em geral um mercado</small></td><td><span class="n"><svg><use href="#x"/></svg></span></td><td><span class="y"><svg><use href="#chk"/></svg></span><small>se você montar</small></td></tr>
+      <tr><td>Alertas quando o ativo chega à sua zona</td><td class="us"><span class="y"><svg><use href="#chk"/></svg></span></td><td><span class="n"><svg><use href="#x"/></svg></span></td><td><span class="n"><svg><use href="#x"/></svg></span></td><td><span class="n"><svg><use href="#x"/></svg></span></td></tr>
+      <tr><td>A decisão continua sua</td><td class="us"><span class="y"><svg><use href="#chk"/></svg></span></td><td><span class="y"><svg><use href="#chk"/></svg></span></td><td><span class="n"><svg><use href="#x"/></svg></span></td><td><span class="y"><svg><use href="#chk"/></svg></span></td></tr>
+      <tr><td>Preço por ano</td><td class="us"><b class="mono">R$ 129</b></td><td class="mono">R$ 300–600</td><td class="mono">R$ 400–1.500</td><td>Suas horas</td></tr>
+    </tbody></table></div>
+  <p class="note">Faixas de preço de referência do mercado brasileiro de assinaturas de investimento, apenas para comparação.</p>
+</div></section>
+
+<!-- BENTO -->
+<section class="sec" id="recursos"><div class="wrap">
+  <div class="sec-head"><div><h2 class="h2 rv">Tudo o que importa.<br><span class="soft">Nada do que distrai.</span></h2></div><p class="p rv">Milhares de pontos de dados analisados diariamente, resumidos no que muda a sua decisão.</p></div>
+  <div class="bento">
+    <article class="card c7 rv"><h3>Index Score de 0 a 100</h3><p>Um número por ativo e por tempo gráfico. Quanto maior, mais descontado o preço está naquela janela. Cinco zonas, de esticado a muito abaixo da média.</p><div class="viz"><div class="scalebar"><div class="track"><i id="bMark" style="left:91%"></i></div><div class="ticks mono"><span style="left:0">0</span><span style="left:20%">20</span><span style="left:45%">45</span><span style="left:70%">70</span><span style="left:90%">90</span><span style="left:100%">100</span></div><div class="names"><span style="color:#dc2626">Esticado</span><span style="color:#b7791f">Neutro</span><span style="color:#0e9f6e">Muito abaixo da média</span></div></div></div></article>
+    <article class="card c5 rv"><h3>Alertas de Movimento</h3><p>Aviso quando um ativo da sua lista chega à zona que você definiu: desconto raro para comprar, ou preço esticado para realizar.</p><div class="viz"><div class="stack"><div class="n3"><img src="./assets/logos/AMZN.svg" alt=""><div><b>AMZN abaixo da média</b><small>Índice 88 · 2h</small></div></div><div class="n2"><img src="./assets/logos/PETR4.svg" alt=""><div><b>PETR4 muito abaixo da média</b><small>Índice 91 · 14m</small></div></div><div class="n1"><img src="./assets/logos/HGLG11.svg" alt=""><div><b>HGLG11 muito abaixo da média</b><small>Índice 93 · agora</small></div></div></div></div></article>
+    <article class="card c5 rv"><h3>6 mercados, 1 assinatura</h3><p>Pare de pagar uma assinatura para cada classe de ativo.</p><div class="viz"><div class="mk"><a href="https://treend.com.br/acoes/">Ações B3 <small>01</small></a><a href="https://treend.com.br/fiis/">FIIs <small>02</small></a><a href="https://treend.com.br/stocks/">Stocks <small>03</small></a><a href="https://treend.com.br/commodities/">Commodities <small>04</small></a><a href="#plataforma">Câmbio <small>05</small></a><a href="#plataforma">Cripto <small>06</small></a></div></div></article>
+    <article class="card c7 rv"><h3>Filtros e dashboard sem poluição</h3><p>Filtre por zona, mercado e setor. Sua lista inteira de relance, sem abrir um único gráfico.</p><div class="viz"><div class="flt"><div class="chips"><span class="on">Abaixo da média</span><span>FIIs</span><span>Ações B3</span><span>Logística</span><span>+ filtro</span></div>
+      <div class="r"><b>HGLG11</b><div class="bar"><i style="width:93%;background:var(--up)"></i></div><span class="mono">93</span></div>
+      <div class="r"><b>PETR4</b><div class="bar"><i style="width:91%;background:var(--up)"></i></div><span class="mono">91</span></div>
+      <div class="r"><b>AMZN</b><div class="bar"><i style="width:88%;background:#5fbf8f"></i></div><span class="mono">88</span></div></div></div></article>
+  </div>
+</div></section>
+
+
+<!-- PLATFORM -->
+<section class="sec" id="plataforma"><div class="wrap">
+  <div class="sec-head"><div><h2 class="h2 rv">Por dentro da plataforma.<br><span class="soft">Telas reais da Treend.</span></h2></div><p class="p rv">Tudo o que você acessa ao assinar: do índice de um único ativo ao mapa do mercado inteiro.</p></div>
+  <div class="tour rv" id="tour">
+    <div class="tour-list"><button class="tour-item on" data-i="0" type="button"><b><span>01</span>Analisar ativo</b><p>O Índice Treend de qualquer ativo em cinco tempos gráficos (1h, 4h, diário, semanal e mensal) lado a lado. Quando as janelas concordam, a leitura é mais forte. Na mesma tela: preço, dividendos e atalho para criar um radar.</p><span class="prog"><i></i></span></button><button class="tour-item" data-i="1" type="button"><b><span>02</span>Cenários · Bolhas</b><p>Escolha "quero comprar" ou "quero vender" e veja os ativos com leitura extrema naquele lado. Cada bolha é um ativo: quanto maior, mais extremo o momento.</p><span class="prog"><i></i></span></button><button class="tour-item" data-i="2" type="button"><b><span>03</span>Cenários · Calor por setor</b><p>O mesmo cenário em um mapa por setor: bancos, energia, varejo, saneamento. Você vê de relance onde estão os descontos e onde o preço já esticou.</p><span class="prog"><i></i></span></button><button class="tour-item" data-i="3" type="button"><b><span>04</span>Mapa de calor</b><p>375 ações da B3 em cinco tempos gráficos numa única grade, com painel do ativo ao lado: pressão de preço, volatilidade e momentum.</p><span class="prog"><i></i></span></button><button class="tour-item" data-i="4" type="button"><b><span>05</span>Radar</b><p>Defina o gatilho (ativo, janela e zona alvo). O agente monitora 24/7 e avisa por e-mail e push quando o cenário aparece.</p><span class="prog"><i></i></span></button><button class="tour-item" data-i="5" type="button"><b><span>06</span>Mercados</b><p>Ações B3, Câmbio, Commodities, Cripto, FIIs e Stocks: seis classes de ativos com a mesma leitura e visão geral própria.</p><span class="prog"><i></i></span></button><button class="tour-item" data-i="6" type="button"><b><span>07</span>Dividendos</b><p>Todas as empresas da B3 que pagam proventos: dividend yield, proventos por ação, payout e último pagamento, com agenda de datas ex e de pagamento dos próximos dias.</p><span class="prog"><i></i></span></button><button class="tour-item" data-i="7" type="button"><b><span>08</span>Projeções</b><p>Zonas de intensidade para quem compra e para quem vende: as faixas de preço projetadas em cada tempo gráfico, com a faixa de 52 semanas e atalho para criar radar.</p><span class="prog"><i></i></span></button><button class="tour-item" data-i="8" type="button"><b><span>09</span>Concierge</b><p>Descreva sua operação em uma frase: o ativo, o valor, o prazo e o que pretende fazer. O Concierge devolve a leitura nos cinco tempos gráficos, uma simulação de entradas, os cenários e as notícias do ativo.</p><span class="prog"><i></i></span></button><button class="tour-item" data-i="9" type="button"><b><span>10</span>Notícias</b><p>As manchetes que movem ações, FIIs, stocks, câmbio, cripto e commodities, organizadas por classe e por ativo, com o Briefing Treend: o que aconteceu e qual o impacto.</p><span class="prog"><i></i></span></button></div>
+    <div><div class="shot"><div class="win-bar"><div class="dots"><i></i><i></i><i></i></div><div class="url"><svg width="11" height="11"><use href="#lock"/></svg>novo.treend.com.br</div><div style="width:47px"></div></div><div class="shot-stage"><img src="./assets/platform/analisar.jpg" alt="Tela Analisar ativo da plataforma Treend" loading="lazy" class="on" width="1800" height="1125"><img src="./assets/platform/bolhas.jpg" alt="Tela Cenários · Bolhas da plataforma Treend" loading="lazy" class="" width="1800" height="1125"><img src="./assets/platform/calor.jpg" alt="Tela Cenários · Calor por setor da plataforma Treend" loading="lazy" class="" width="1800" height="1125"><img src="./assets/platform/mapa.jpg" alt="Tela Mapa de calor da plataforma Treend" loading="lazy" class="" width="1800" height="1125"><img src="./assets/platform/radar.jpg" alt="Tela Radar da plataforma Treend" loading="lazy" class="" width="1800" height="1125"><img src="./assets/platform/mercados.jpg" alt="Tela Mercados da plataforma Treend" loading="lazy" class="" width="1800" height="1125"><img src="./assets/platform/dividendos.jpg" alt="Tela Dividendos da plataforma Treend" loading="lazy" width="1800" height="1125"><img src="./assets/platform/projecoes.jpg" alt="Tela Projeções da plataforma Treend" loading="lazy" width="1800" height="1125"><img src="./assets/platform/concierge.jpg" alt="Tela Concierge da plataforma Treend" loading="lazy" width="1800" height="1125"><img src="./assets/platform/noticias.jpg" alt="Tela Notícias da plataforma Treend" loading="lazy" width="1800" height="1125"></div></div><div class="shot-cap" id="tourCap"><span>5 tempos gráficos</span><span>Dividendos e payout</span><span>Salvar e criar radar</span></div></div>
+  </div>
+  <div class="feat-grid">
+    <article class="feat rv"><img src="./assets/platform/feat-visao-geral.jpg" alt="Visão geral da Treend" loading="lazy"><div><h3>Visão geral do seu mercado</h3><p>Um resumo do dia por classe e por perfil, com a melhor janela agora, notícias e o Concierge.</p></div></article>
+    <article class="feat rv"><img src="./assets/platform/feat-playbook.jpg" alt="Playbook Treend" loading="lazy"><div><h3>Playbook Treend</h3><p>Um guia em seis capítulos que ensina a ler o índice, combinar tempos gráficos e aplicar por classe de ativo.</p></div></article>
+    <article class="feat rv"><img src="./assets/platform/feat-radar.jpg" alt="Radar Treend" loading="lazy"><div><h3>Alertas sem vigiar a tela</h3><p>Configure uma vez. O Radar avisa quando o ativo entra na zona que você definiu.</p></div></article>
+    <article class="feat rv"><img src="./assets/platform/feat-calculadora.jpg" alt="Calculadora de operação em Ações B3" loading="lazy"><div><h3>Quanto rende a sua operação</h3><p>Informe compra, venda e custos: a Calculadora mostra resultado bruto, IR estimado, resultado líquido e os dividendos do período.</p></div></article>
+    <article class="feat rv"><img src="./assets/platform/feat-simulador.jpg" alt="Simulador de cenários em Ações B3" loading="lazy"><div><h3>Simule antes de entrar</h3><p>Escolha ativo, valor e horizonte e veja os cenários pessimista, base e otimista, junto com a leitura de timing da Treend.</p></div></article>
+    <article class="feat rv"><img src="./assets/platform/feat-cambio.jpg" alt="Calculadora de spread de câmbio" loading="lazy"><div><h3>Câmbio sem pagar a mais</h3><p>Compare a taxa que você paga hoje com a referência Treend e veja o impacto em 12 e 24 meses, para remessas e investimentos no exterior.</p></div></article>
+  </div>
+</div></section>
+
+
+
+
+<!-- NEWS -->
+<section class="sec" id="noticias"><div class="wrap">
+  <div class="sec-head"><div><h2 class="h2 rv">As notícias que movem<br><span class="soft">o seu ativo.</span></h2></div><p class="p rv">Manchetes de ações, FIIs, stocks, câmbio, cripto e commodities, com o contexto que a manchete não traz.</p></div>
+  <div class="news">
+    <div class="news-pts rv" id="newsPts">
+      <div class="on"><i></i><div><b>Revista</b><p>As principais histórias do dia em capas e cards, filtradas por classe de ativo.</p></div></div>
+      <div><i></i><div><b>Edição</b><p>A edição do dia em lista numerada, para ler tudo em poucos minutos.</p></div></div>
+      <div><i></i><div><b>Feed com Briefing Treend</b><p>Cada notícia resumida em "o que aconteceu" e no impacto para quem compra e para quem vende.</p></div></div>
+      <div><i></i><div><b>Notícias por ativo</b><p>Na análise de um ativo, como ITUB4, as manchetes daquela empresa em cards com imagem, ao lado do índice e dos dividendos.</p></div></div>
+    </div>
+    <div class="news-app rv" id="newsApp">
+      <div class="news-bar"><div class="news-seg" id="newsSeg"><button class="on" type="button" data-n="0">Revista</button><button type="button" data-n="1">Edição</button><button type="button" data-n="2">Feed</button><button type="button" data-n="3"><img src="./assets/logos/ITUB4.svg" alt="">ITUB4</button></div><span class="news-live">ao vivo</span></div>
+      <div class="news-stage" id="newsStage">
+        <img class="on" src="./assets/news/magazine.jpg" alt="Notícias em modo Revista" loading="lazy" width="1200" height="2000">
+        <img src="./assets/news/edition.jpg" alt="Notícias em modo Edição" loading="lazy" width="1200" height="2000">
+        <img src="./assets/news/feed.jpg" alt="Notícias em modo Feed com Briefing Treend" loading="lazy" width="1200" height="2000">
+        <img src="./assets/news/itub4.jpg" alt="Notícias sobre ITUB4 em cards na análise do ativo" loading="lazy">
+      </div>
+      <svg class="cursor" id="cursor" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2l15 10-6.5 1.4L9.8 20z" fill="#0b1a33" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+  <p class="note">Telas reais da plataforma em 28/10/2026, com o filtro Ações B3.</p>
+</div></section>
+
+<!-- CRYPTO -->
+<section class="sec" id="cripto"><div class="wrap crypto">
+  <div>
+    <h2 class="h2 rv">Cripto com método.<br><span class="soft">Não com hype.</span></h2>
+    <p class="p rv" style="margin-top:22px">Mais de 400 criptomoedas negociadas em USDT, com o mesmo Índice Treend de 0 a 100. Em um mercado que não fecha e muda rápido, o índice separa o desconto real do barulho.</p>
+    <div class="cr-points rv">
+      <div><span>24/7</span><div><b>Mercado que nunca fecha</b><p>O índice é recalculado o tempo todo, inclusive à noite e no fim de semana.</p></div></div>
+      <div><span>CONTEXTO</span><div><b>Semanal e mensal mandam</b><p>As janelas longas dizem se a moeda está cara ou barata no ciclo maior.</p></div></div>
+      <div><span>GATILHO</span><div><b>1h e 4h refinam a entrada</b><p>Em cripto, as janelas curtas mudam rápido: use para o ponto de entrada, não para a tese.</p></div></div>
+      <div><span>RADAR</span><div><b>Alerta quando o desconto aparece</b><p>Configure BTC, ETH ou qualquer altcoin e receba o aviso por e-mail e push.</p></div></div>
+    </div>
+  </div>
+  <div>
+    <div class="shot rv"><div class="win-bar"><div class="dots"><i></i><i></i><i></i></div><div class="url"><svg width="11" height="11"><use href="#lock"/></svg>novo.treend.com.br</div><div style="width:47px"></div></div><div class="shot-stage"><img class="on" src="./assets/platform/cripto-mapa.jpg" alt="Mapa do Índice Treend para criptomoedas" loading="lazy" width="1800" height="1125"></div></div>
+    <div class="cr-stats rv"><div><b class="mono">403</b><span>criptomoedas monitoradas</span></div><div><b class="mono" style="color:var(--up)">218</b><span>abaixo da média no diário</span></div><div><b class="mono" style="color:var(--down)">3</b><span>esticadas no diário</span></div></div>
+    <p class="note">Retrato da plataforma em 28/10/2026. Cripto é um mercado de alto risco; não é recomendação de investimento.</p>
+  </div>
+</div></section>
+
+
+<!-- CÂMBIO -->
+<section class="sec" id="cambio"><div class="wrap">
+  <div class="sec-head"><div><h2 class="h2 rv">Câmbio na janela certa.<br><span class="soft">Sem pagar spread a&nbsp;mais.</span></h2></div><p class="p rv">Para quem importa, exporta, viaja ou investe lá fora: 11 moedas contra o real, com o Índice Treend calibrado para o seu perfil.</p></div>
+  <div class="fx">
+    <div>
+      <div class="fx-claim rv"><b>Você praticamente <em>zera o spread</em> que paga a mais.</b><p>A calculadora compara a taxa que você paga hoje com a referência Treend e mostra quanto fica no banco a cada operação.</p></div>
+      <div class="fx-pts rv">
+        <div><span>01</span><div><b>Dólar, euro, libra, yuan e mais</b><p>Cotação, variação e o Índice Treend de cada moeda em um clique.</p></div></div>
+        <div><span>02</span><div><b>Leitura para o seu perfil</b><p>Importador, exportador, agente de turismo ou renda global: o mesmo câmbio, a leitura certa para quem compra ou vende moeda.</p></div></div>
+        <div><span>03</span><div><b>Quanto custa o seu spread</b><p>Pagando 1,50% com a referência em 0,50%, uma operação de US$ 50 mil/mês deixa R$ 2.695 por mês na mesa.</p></div></div>
+        <div><span>04</span><div><b>Alerta na janela ideal</b><p>O Radar avisa quando a moeda entra na zona certa para o seu lado da operação.</p></div></div>
+      </div>
+    </div>
+    <div class="fx-app rv" id="fxApp">
+      <div class="fx-bar"><div class="fx-seg" id="fxSeg"><button class="on" type="button" data-n="0">🇺🇸 USD</button><button type="button" data-n="1">🇪🇺 EUR</button><button type="button" data-n="2">🇬🇧 GBP</button><button type="button" data-n="3">🇨🇳 CNY</button><button type="button" class="calc" data-n="4">Spread</button></div><span class="news-live">cotação ao vivo</span></div>
+      <div class="fx-stage" id="fxStage">
+        <img class="on" src="./assets/fx/usd.jpg" alt="Dólar: cotação e Índice Treend" loading="lazy">
+        <img src="./assets/fx/eur.jpg" alt="Euro: cotação e Índice Treend" loading="lazy">
+        <img src="./assets/fx/gbp.jpg" alt="Libra: cotação e Índice Treend" loading="lazy">
+        <img src="./assets/fx/cny.jpg" alt="Yuan: cotação e Índice Treend" loading="lazy">
+        <img src="./assets/fx/spread.jpg" alt="Calculadora de spread da Treend" loading="lazy">
+        <div class="fx-save" id="fxSave"><i>R$</i><div><small>Economia estimada em 12 meses</small><b class="mono" id="fxSaveV">R$ 0</b></div></div>
+      </div>
+      <svg class="cursor" id="fxCursor" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2l15 10-6.5 1.4L9.8 20z" fill="#0b1a33" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+    <div class="fx-sim">
+    <div class="rv">
+      <h3 class="h2" style="font-size:clamp(28px,3vw,40px)">Simule o ciclo<br><span class="soft">de cada moeda.</span></h3>
+      <p class="p" style="margin-top:16px">Para quem compra moeda, o índice alto mostra o câmbio descontado: a hora de fechar a operação. Quando o preço estica, a Treend sinaliza esperar.</p>
+      <div class="fx-tabs" id="qTabs"><button class="on" type="button" data-c="0">🇺🇸 USD</button><button type="button" data-c="1">🇪🇺 EUR</button><button type="button" data-c="2">🇬🇧 GBP</button><button type="button" data-c="3">🇨🇳 CNY</button></div>
+      <div class="fx-prog"><i id="qProg"></i></div>
+    </div>
+    <div class="chart rv" id="qChart">
+      <div class="ch-head">
+        <div class="ch-asset"><span class="fx-flag" id="qFlag">🇺🇸</span><div><b id="qPair">USD/BRL</b><span id="qName">Dólar americano · Diário</span></div></div>
+        <div class="ch-price"><span class="lbl">Cotação</span><b class="mono" id="qPx">R$ 5,0000</b></div>
+        <div class="ch-idx"><span class="lbl">Índice · quem compra</span><div><b class="mono" id="qSc">90</b><em id="qZ">MUITO ABAIXO DA MÉDIA</em></div></div>
+      </div>
+      <div class="ch-plot">
+        <svg viewBox="0 0 640 300" preserveAspectRatio="none">
+          <defs><linearGradient id="qg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#385fe1" stop-opacity=".14"/><stop offset="1" stop-color="#385fe1" stop-opacity="0"/></linearGradient><clipPath id="qClip"><rect id="qClipR" x="0" y="0" width="0" height="300"/></clipPath></defs>
+          <g id="qGrid"></g>
+          <path id="qArea" d="" fill="url(#qg)" clip-path="url(#qClip)"/>
+          <path id="qPath" d="" fill="none" stroke="none"/>
+          <g id="qVol"></g><g id="qCandles"></g>
+          <line id="qGuide" x1="0" x2="0" y1="0" y2="300" stroke="#0b1a33" stroke-opacity=".18" stroke-dasharray="2 4"/>
+          <line id="qHline" x1="0" x2="600" y1="0" y2="0" stroke="#0b1a33" stroke-opacity=".12" stroke-dasharray="2 4"/>
+          <circle id="qHalo" r="18" fill="#10B981" fill-opacity=".16"/><circle id="qDot" r="6" fill="#10B981" stroke="#fff" stroke-width="2.5"/>
+        </svg>
+        <div class="ch-axis" id="qAxis"></div>
+        <div class="ch-pin up" id="qPinLow"><i></i>Desconto raro</div>
+        <div class="ch-pin down" id="qPinHigh"><i></i>Esticado</div>
+        <div class="ch-tag mono" id="qTag">5,0000</div>
+      </div>
+      <div class="ch-foot">
+        <div class="ch-scale"><div class="ch-track"><i id="qMark"></i></div><div class="ch-names"><span>Esticado</span><span>Atenção</span><span>Neutro</span><span>Abaixo</span><span>Muito abaixo</span></div></div>
+        <div class="ch-tf" id="qTf"></div>
+      </div>
+    </div>
+  </div>
+  <p class="note">Telas reais da plataforma em 30/10/2026. Exemplo da calculadora: US$ 50 mil por mês, spread pago de 1,50% contra a referência Treend de 0,50%. Valores ilustrativos; a economia depende da sua operação e da negociação com a sua instituição. O simulador usa a faixa real de 30 dias de cada moeda em um ciclo ilustrativo.</p>
+</div></section>
+
+<!-- MCP -->
+<section class="sec" id="mcp"><div class="wrap">
+  <div class="mcp">
+    <div>
+      <h2 class="h2 rv">A Treend dentro<br><span class="soft">da sua IA.</span></h2>
+      <p class="p rv" style="margin-top:22px;max-width:480px">Com o <b style="color:var(--ink)">Treend MCP</b>, ChatGPT, Claude, Gemini, Grok e agentes de IA consultam o Índice Treend de qualquer ativo, em qualquer tempo gráfico, direto na conversa. Você pergunta em português; a IA busca os dados na Treend e explica. Na sua conta, ela também gerencia seus ativos, radares, alertas e histórico.</p>
+      <div class="ais rv"><span class="ai"><img src="./assets/ai/openai.svg" alt="">ChatGPT</span><span class="ai"><img src="./assets/ai/claude-color.svg" alt="">Claude</span><span class="ai"><img src="./assets/ai/gemini-color.svg" alt="">Gemini</span><span class="ai"><img src="./assets/ai/grok.svg" alt="">Grok</span><span class="ai more">+ agentes compatíveis com MCP</span></div>
+      <div class="mcp-steps rv">
+        <div><span>01</span><div><b>Solicite o acesso</b><p>Na plataforma, em <b>MCP</b>. O acesso é liberado por conta.</p></div></div>
+        <div><span>02</span><div><b>Conecte seu link pessoal</b><p>Cole o endereço <code>…/mcp/tr_••••</code> nas conexões da sua IA.</p></div></div>
+        <div><span>03</span><div><b>Pergunte naturalmente</b><p>Scores, rankings e visão do mercado, em linguagem natural.</p></div></div>
+      </div>
+      <a class="btn btn-line rv" href="#planos" data-checkout style="margin-top:28px">Solicitar acesso ao MCP <svg><use href="#arr"/></svg></a>
+    </div>
+    <div class="chat rv" id="chat">
+      <div class="chat-top"><div class="chat-tabs" role="tablist"><button class="on" data-c="0">Analisar ativo</button><button data-c="1">Ranking</button><button data-c="2">Mercados</button><button data-c="3">Câmbio</button></div><div class="chat-who"><img src="./assets/ai/openai.svg" alt="ChatGPT"><img src="./assets/ai/claude-color.svg" alt="Claude"><img src="./assets/ai/gemini-color.svg" alt="Gemini"><img src="./assets/ai/grok.svg" alt="Grok"></div></div>
+      <div class="chat-body" id="chatBody"></div>
+      <div class="chat-in"><span>Pergunte sobre qualquer ativo…</span><i>↑</i></div>
+    </div>
+  </div>
+  <div class="tools">
+    <div class="rv"><code>analisar_ativo</code><p>Preço, variação e índice em 5 tempos gráficos. Em FIIs, P/VP e DY.</p></div>
+    <div class="rv"><code>ranking_oportunidades</code><p>Os mais descontados ou mais esticados de uma classe.</p></div>
+    <div class="rv"><code>visao_geral_mercado</code><p>O retrato do momento de cada mercado.</p></div>
+    <div class="rv"><code>buscar_ativo</code><p>Encontra o ativo pelo nome ou código.</p></div>
+    <div class="rv"><code>listar_classes</code><p>Ações B3, Stocks, Cripto, Commodities, Câmbio e FIIs.</p></div>
+    <div class="rv"><code>meus_ativos</code><p>Consulta sua lista; <code>adicionar_meu_ativo</code> e <code>remover_meu_ativo</code> a atualizam pela conversa.</p></div>
+    <div class="rv"><code>projecoes_ativo</code><p>Zonas de preço projetadas para comprar e vender em cada tempo gráfico. Em câmbio, <code>projecoes_cambio</code>.</p></div>
+    <div class="rv"><code>concierge_cambio</code><p>Descreva a operação (moeda, valor, prazo) e receba a leitura e a simulação.</p></div>
+    <div class="rv"><code>noticias</code><p>As manchetes do mercado ou de um ativo, direto na conversa.</p></div>
+    <div class="rv"><code>criar_radar</code><p>Cria e ajusta radares (<code>alterar_radar</code>, <code>meus_radares</code>) para ser avisado na zona certa.</p></div>
+    <div class="rv"><code>criar_alerta</code><p>Alertas de preço e de zona; <code>meus_alertas</code> e <code>remover_alerta</code> para gerenciar.</p></div>
+    <div class="rv"><code>meu_historico</code><p>Suas análises e operações salvas; <code>remover_historico</code> para limpar.</p></div>
+  </div>
+  <p class="note">Respostas com dados reais consultados via Treend MCP em 28/10/2026 (câmbio em 30/10/2026), apenas para demonstração. A disponibilidade do MCP é liberada por conta. Não é recomendação de investimento.</p>
+</div></section>
+
+<!-- SIMULATOR -->
+<section class="sec" id="simulador"><div class="wrap">
+  <div class="sec-head"><div><h2 class="h2 rv">Prove antes de assinar.</h2></div><p class="p rv">Três ativos por mercado estão liberados. Pesquise qualquer outro: ele aparece aqui, bloqueado para assinantes.</p></div>
+  <div class="sim rv">
+    <div class="sim-l">
+      <span class="lbl">Pesquisar ativo</span>
+      <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input id="q" type="text" autocomplete="off" placeholder="VALE3, AAPL, SOJA, BTC…" aria-label="Pesquisar ativo"><kbd>↵</kbd><ul class="sugg" id="sugg" hidden></ul></div>
+      <div class="seg2"><button class="on" data-m="acoes">Ações</button><button data-m="fiis">FIIs</button><button data-m="stocks">Stocks</button><button data-m="commod">Commodities</button><button data-m="crypto">Cripto</button></div>
+      <div class="picks" id="picks"></div>
+    </div>
+    <div class="sim-r" id="res">
+      <div class="res-top"><div class="res-id"><img id="rLogo" src="./assets/logos/PETR4.svg" alt=""><div><b id="rTk"></b><span id="rNm"></span></div></div><div style="text-align:right"><span class="lbl">Index Score</span><div class="res-sc mono" id="rSc">0</div></div></div>
+      <div class="scalebar" style="margin-top:40px"><div class="track"><i id="rMark" style="left:0"></i></div><div class="ticks mono"><span style="left:0">0</span><span style="left:20%">20</span><span style="left:45%">45</span><span style="left:70%">70</span><span style="left:90%">90</span><span style="left:100%">100</span></div></div>
+      <span class="res-z" id="rZ"></span>
+      <p class="res-t" id="rT"></p>
+      <p class="note" style="margin-top:auto;padding-top:24px">Dados ilustrativos. Não é recomendação de compra ou venda.</p>
+      <div class="lock"><span class="ic"><svg><use href="#lock"/></svg></span><h4>Score de <span id="lTk"></span> bloqueado</h4><p>Você testou a prévia. Desbloqueie o Índice Treend de +5.000 ativos com a Treend Pro.</p><a class="btn btn-blue" href="#planos" data-checkout style="margin-top:6px">Desbloquear por R$ 129/ano <svg><use href="#arr"/></svg></a></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- CALC -->
+<section class="sec"><div class="wrap">
+  <div class="sec-head"><div><h2 class="h2 rv">Um aporte no topo<br><span class="soft">custa mais que a assinatura.</span></h2></div><p class="p rv">Correções de 15% a 30% depois de um topo de ciclo são comuns, mesmo em ativos de excelente qualidade.</p></div>
+  <div class="calc rv">
+    <div class="calc-in">
+      <label><span class="rw">Valor do aporte <b class="mono" id="cA"></b></span><input id="amt" type="range" min="1000" max="100000" step="1000" value="10000"></label>
+      <label><span class="rw">Queda depois do topo <b class="mono" id="cD"></b></span><input id="drp" type="range" min="5" max="50" value="20"></label>
+      <p class="note" style="margin-top:30px">Simulação ilustrativa. Não representa retorno ou perda garantidos.</p>
+    </div>
+    <div class="calc-out"><div><span class="lbl">Você deixa na mesa</span><strong class="mono" id="cL"></strong><p>em um único aporte feito no momento errado.</p></div><div><div class="vs"><span>Treend Pro por 1 ano</span><b class="mono">R$ 129</b></div><div class="vs" style="border:0;padding-top:8px"><span>A perda equivale a</span><b id="cX"></b></div></div></div>
+  </div>
+  <p class="impact rv">Você nunca mais comprará topo.</p>
+</div></section>
+
+<!-- PRICE -->
+<section class="sec" id="planos"><div class="wrap">
+  <div class="sec-head"><div><h2 class="h2 rv">Um ano de timing.<br><span class="soft">Pelo preço de um almoço por mês.</span></h2></div></div>
+  <div class="price-wrap">
+    <div class="inc rv">
+      <div><span>01</span><div><b>Acesso ilimitado aos 6 mercados</b><p>Ações B3, FIIs, Stocks, Commodities, Câmbio e Cripto.</p></div></div>
+      <div><span>02</span><div><b>Index Score Quantitativo</b><p>Indicador de topo e fundo, atualizado diariamente.</p></div></div>
+      <div><span>03</span><div><b>Filtros avançados</b><p>Ativos e oportunidades de ciclo.</p></div></div>
+      <div><span>04</span><div><b>Alertas de Movimento</b><p>Quando seus ativos chegarem à zona que você definiu.</p></div></div>
+      <div><span>05</span><div><b>Dashboard ultra-rápida</b><p>Minimalista, sem poluição visual.</p></div></div>
+    </div>
+    <div class="ticket rv">
+      <div class="top"><img src="./assets/treend-blue.svg" alt="Treend" width="145" height="40"><span class="offer">Oferta ativa</span></div>
+      <div class="amt"><sup>R$</sup><b class="mono">129</b><small>/ ano</small></div>
+      <p class="eq">equivalente a R$ 10,75/mês</p>
+      <a class="btn btn-blue" href="#planos" data-checkout>Garantir meu acesso Pro <svg><use href="#arr"/></svg></a>
+      <ul><li><svg><use href="#chk"/></svg>Pagamento seguro via Stripe, ativação imediata</li><li><svg><use href="#chk"/></svg>Garantia incondicional de 7 dias</li><li><svg><use href="#chk"/></svg>Cancele a renovação quando quiser</li></ul>
+    </div>
+  </div>
+</div></section>
+
+<!-- PROOF -->
+<section class="sec"><div class="wrap proof">
+  <figure class="quote rv"><blockquote>Eu sabia escolher boas empresas, mas vivia errando o timing de entrada. O Index Score da Treend me impediu de comprar no topo de um ciclo e me mostrou exatamente o fundo de ações consolidadas. Só isso já pagou anos de assinatura.</blockquote><footer><img class="avatar" src="./assets/avatar-lucas.jpg" alt="Lucas M., assinante Treend" width="48" height="48"><div><b>Lucas M.</b><br>Assinante Treend</div></footer></figure>
+  <div class="case rv"><div><span class="lbl">Case · META · setembro de 2026</span><b class="mono">+22%</b></div><div><h3>Valorização em META associada à metodologia Treend.</h3><p style="margin-top:10px">Resultado informado pela Treend. Período exato, preços de entrada e saída e comprovação ainda não fornecidos; o dado não representa retorno verificado nem garante resultados futuros.</p></div></div>
+  <div class="guar rv"><div class="d mono">7<small>dias</small></div><div><h3>Você não precisa ter certeza agora.</h3><p>Garantia incondicional. Teste o Index Score nos seus ativos; se não agregar ao seu processo, devolvemos 100% do valor.</p></div></div>
+</div></section>
+
+<!-- FAQ -->
+<section class="sec" id="faq"><div class="wrap faq">
+  <div><h2 class="h2 rv">Perguntas<br>frequentes</h2></div>
+  <div>
+    <details open><summary>A Treend faz recomendação de compra ou venda?<i></i></summary><p>Não. A Treend é uma plataforma de dados e inteligência quantitativa. Entregamos indicadores claros (Index Score) para que você tome decisões autônomas e embasadas.</p></details>
+    <details><summary>A Treend substitui ferramentas de dados fundamentalistas?<i></i></summary><p>Ela funciona como o módulo de timing que falta na rotina do investidor. Com o Index Score e a cobertura de Ações, FIIs, Stocks e Commodities, sua central de análise fica mais ágil e completa.</p></details>
+    <details><summary>Como funciona o pagamento?<i></i></summary><p>Pagamento seguro via Stripe. A cobrança é anual, de R$ 129, renovada automaticamente a cada 12 meses. Você pode cancelar a renovação quando quiser.</p></details>
+    <details><summary>Tenho garantia?<i></i></summary><p>Sim, garantia incondicional de 7 dias. Se os indicadores não agregarem ao seu processo de investimento, devolvemos 100% do seu dinheiro.</p></details>
+    <details><summary>Existe garantia de valorização?<i></i></summary><p>Não. Investimentos envolvem riscos. O Index Score apoia a leitura de momento, mas não garante retorno. Resultados passados não garantem resultados futuros.</p></details>
+  </div>
+</div></section>
+
+<section class="final">
+  <div class="mesh" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="wrap">
+    <h2 class="rv"><span>Pare de comprar no escuro.</span><span style="color:var(--faint)">Veja o momento certo.</span></h2>
+    <p class="p rv">O Index Score está pronto. Os 6 mercados estão prontos. O próximo passo é seu.</p>
+    <a class="btn btn-blue rv" href="#planos" data-checkout>Desbloquear por R$ 129/ano <svg><use href="#arr"/></svg></a>
+  </div>
+</section>
+</main>
+
+<footer class="site"><div class="wrap">
+  <img src="./assets/treend-blue.svg" alt="Treend" width="145" height="40">
+  <nav><a href="https://treend.com.br/acoes/">Ações</a><a href="https://treend.com.br/fiis/">FIIs</a><a href="https://treend.com.br/stocks/">Stocks</a><a href="https://treend.com.br/commodities/">Commodities</a><a href="https://treend.com.br/politicas-de-privacidade/">Privacidade</a></nav>
+  <p class="disc">© <span id="yr"></span> Treend. A Treend não faz recomendação de investimento. Os indicadores são informativos e não garantem rentabilidade futura.</p>
+</div></footer>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mT">
+  <div class="modal-bg" data-close></div>
+  <div class="modal-box">
+    <button class="modal-x" type="button" data-close aria-label="Fechar">✕</button>
+    <img src="./assets/treend-blue.svg" alt="Treend" width="145" height="40">
+    <h3 id="mT">Falta pouco para liberar seu acesso</h3>
+    <p class="sub">Preencha seus dados e siga para o pagamento seguro no Stripe. R$ 129/ano.</p>
+    <form id="lead" novalidate>
+      <label><span>Nome</span><input name="nome" autocomplete="name" placeholder="Seu nome completo"></label>
+      <label><span>E-mail</span><input name="email" type="email" autocomplete="email" placeholder="voce@email.com"></label>
+      <label><span>WhatsApp</span><input name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" placeholder="(11) 99999-9999"></label>
+      <p class="err" id="err" role="alert"></p>
+      <button class="btn btn-blue" type="submit"><span>Ir para o pagamento</span> <svg><use href="#arr"/></svg></button>
+      <p class="safe">Seus dados estão seguros · Garantia de 7 dias</p>
+    </form>
+  </div>
+</div>
+
+<div class="sticky" id="sticky"><p>Treend Pro <span>· R$ 129/ano</span></p><a class="btn btn-blue" href="#planos" data-checkout>Assinar <svg><use href="#arr"/></svg></a></div>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+$('#yr').textContent = new Date().getFullYear();
+
+// Same five zones as the platform: the higher the index, the more discounted the price in that window
+const ZONES = [
+  { min: 90, c: '#10B981', bg: '#e7f8f1', fg: '#0e9f6e', label: 'MUITO ABAIXO DA MÉDIA', short: 'ABAIXO+' },
+  { min: 70, c: '#5fbf8f', bg: '#ecf8f2', fg: '#2f9a6a', label: 'ABAIXO DA MÉDIA', short: 'ABAIXO' },
+  { min: 45, c: '#d4a017', bg: '#fbf4e2', fg: '#a17707', label: 'NEUTRO', short: 'NEUTRO' },
+  { min: 21, c: '#f08a24', bg: '#fdf0e3', fg: '#c2620c', label: 'ATENÇÃO', short: 'ATENÇÃO' },
+  { min: 0, c: '#EF4444', bg: '#fdecec', fg: '#dc2626', label: 'ESTICADO', short: 'ESTICADO' },
+];
+const zone = s => ZONES.find(z => s >= z.min);
+const A = './assets/';
+const MK = {
+  acoes: { label: 'Ações B3', free: [
+    ['PETR4', 'Petrobras', 'logos/PETR4.svg', 91, 'Preço em região de suporte histórico com exaustão de venda.'],
+    ['ITUB4', 'Itaú Unibanco', 'logos/ITUB4.svg', 56, 'Preço em equilíbrio com a média histórica; momentum neutro.'],
+    ['WEGE3', 'WEG', 'logos/WEGE3.svg', 14, 'Distância extrema da média com divergência de força compradora.']],
+    locked: [['VALE3', 'Vale', 'logos/VALE3.svg'], ['BBAS3', 'Banco do Brasil', 'logos/BBAS3.svg'], ['BBDC4', 'Bradesco', 'logos/BBDC4.svg'], ['ABEV3', 'Ambev', 'logos/ABEV3.svg'], ['B3SA3', 'B3', 'logos/B3SA3.svg'], ['MGLU3', 'Magazine Luiza', 'logos/MGLU3.svg'], ['TAEE11', 'Taesa', 'logos/TAEE11.svg'], ['PRIO3', 'PRIO', 'logos/PRIO3.svg']] },
+  fiis: { label: 'FIIs', free: [
+    ['HGLG11', 'CSHG Logística', 'logos/HGLG11.svg', 93, 'P/VP abaixo da média histórica com fluxo vendedor exaurido.'],
+    ['KNRI11', 'Kinea Renda Imobiliária', 'logos/KNRI11.svg', 74, 'Cotação em equilíbrio com o valor patrimonial; ciclo neutro.'],
+    ['XPML11', 'XP Malls', 'logos/XPML11.svg', 32, 'Cotação esticada acima da média com sinais de exaustão compradora.']],
+    locked: [['MXRF11', 'Maxi Renda', 'logos/MXRF11.svg'], ['VISC11', 'Vinci Shopping Centers', 'logos/VISC11.svg'], ['BTLG11', 'BTG Logística', 'logos/BTLG11.svg'], ['HGRE11', 'CSHG Real Estate', 'logos/HGRE11.svg']] },
+  stocks: { label: 'Stocks', free: [
+    ['AMZN', 'Amazon', 'logos/AMZN.svg', 88, 'Teste de suporte de longo prazo com volume vendedor decrescente.'],
+    ['MSFT', 'Microsoft', 'logos/MSFT.svg', 52, 'Consolidação lateral após correção; momentum neutro.'],
+    ['NVDA', 'NVIDIA', 'logos/NVDA.svg', 9, 'Sobrecompra extrema em múltiplos tempos gráficos; risco de realização.']],
+    locked: [['AAPL', 'Apple', 'logos/AAPL.svg'], ['TSLA', 'Tesla', 'logos/TSLA.svg'], ['GOOGL', 'Alphabet', 'logos/GOOGL.svg'], ['META', 'Meta', 'logos/META.svg'], ['NFLX', 'Netflix', 'logos/NFLX.svg'], ['AMD', 'AMD', 'logos/AMD.svg']] },
+  commod: { label: 'Commodities', free: [
+    ['SOJA', 'Soja FOB Santos', 'logos/SOJA.svg', 95, 'Índice diário de 94,9: preço muito abaixo do comportamento usual. Desconto raro na janela diária.'],
+    ['OURO', 'Ouro (micro futuro)', 'logos/OURO.svg', 76, 'Índice diário de 76: preço abaixo da média, sem atingir o nível mais raro.'],
+    ['BRENT', 'Petróleo Brent', 'logos/BRENT.svg', 26, 'Índice diário de 25,8: preço acima do comportamento usual. Zona de atenção.']],
+    locked: [['TRIGO', 'Trigo KC HRW', 'logos/TRIGO.svg'], ['MILHO', 'Milho', 'logos/MILHO.svg'], ['CAFE', 'Café arábica', 'logos/CAFE.svg'], ['MINERIO', 'Minério de ferro', 'logos/MINERIO.svg'], ['WTI', 'Petróleo WTI', 'logos/WTI.svg'], ['COBRE', 'Cobre', 'logos/COBRE.svg'], ['LITIO', 'Lítio', 'logos/LITIO.svg']] },
+  crypto: { label: 'Cripto', free: [
+    ['ETH', 'Ethereum', 'logos/ETH.svg', 75, 'Índice diário de 75: preço abaixo do comportamento usual. Em cripto, confirme no semanal antes de agir.'],
+    ['BTC', 'Bitcoin', 'logos/BTC.svg', 60, 'Índice diário de 60: preço perto do comportamento usual. Sem desconto nem excesso relevantes.'],
+    ['PEPE', 'Pepe', 'logos/PEPE.svg', 31, 'Índice diário de 31: preço acima do comportamento usual. Zona de atenção.']],
+    locked: [['SOL', 'Solana', 'logos/SOL.svg'], ['XRP', 'XRP', 'logos/XRP.svg'], ['BNB', 'BNB', 'logos/BNB.svg'], ['ZEC', 'Zcash', 'logos/ZEC.svg'], ['DOGE', 'Dogecoin', 'logos/DOGE.svg']] },
+};
+const ALL = [];
+for (const [m, d] of Object.entries(MK)) {
+  d.free.forEach(([t, n, l, s, r]) => ALL.push({ t, n, logo: A + l, s, r, m, cat: d.label }));
+  d.locked.forEach(([t, n, l]) => ALL.push({ t, n, logo: l ? A + l : './favicon.svg', m, cat: d.label, locked: true }));
+}
+const FREE = ALL.filter(a => !a.locked);
+
+
+/* hero: typed second line, like treend.com.br */
+(() => {
+  const el = $('#twText'), full = el.textContent, chars = [...full];
+  if (reduce) return;
+  let n = chars.length, dir = -1, t = 0;
+  const step = () => {
+    n += dir; el.textContent = chars.slice(0, n).join('');
+    if (n === chars.length) { dir = -1; t = setTimeout(step, 3800); }
+    else if (n === 0) { dir = 1; t = setTimeout(step, 600); }
+    else t = setTimeout(step, dir < 0 ? 32 : 80);
+  };
+  t = setTimeout(step, 2600);
+})();
+
+/* nav + sticky */
+const sticky = $('#sticky');
+addEventListener('scroll', () => sticky.classList.toggle('show', scrollY > 1100 && scrollY < document.body.scrollHeight - innerHeight - 400), { passive: true });
+
+/* reveal */
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .12 });
+$$('.rv').forEach((el, i) => { el.style.transitionDelay = (el.closest('.hero') ? i * 70 : 0) + 'ms'; io.observe(el); });
+
+/* product window: rows with sparklines; scores tick */
+const spark = (s, c) => { let y = 13, d = 'M0 ' + y; for (let x = 6; x <= 90; x += 6) { y = Math.max(3, Math.min(23, y + (Math.random() - .5) * 8 + (s < 30 ? -.6 : s > 70 ? .6 : 0))); d += ` L${x} ${y.toFixed(1)}`; } return `<svg viewBox="0 0 90 26"><path d="${d}" fill="none" stroke="${c}" stroke-width="1.6"/></svg>`; };
+const rowsEl = $('#rows');
+const LIST = FREE.slice().sort((a, b) => b.s - a.s).slice(0, 7);
+rowsEl.innerHTML = LIST.map((a, i) => { const z = zone(a.s); return `<div class="row" data-i="${i}"><img src="${a.logo}" alt=""><div><b>${a.t}</b><span>${a.cat}</span></div>${spark(a.s, z.c)}<div class="bar"><i style="width:${a.s}%;background:${z.c}"></i></div><span class="sc mono" style="color:${z.c}">${a.s}</span></div>`; }).join('');
+function inspect(a) {
+  const z = zone(a.s);
+  $('#iLogo').src = a.logo; $('#iTk').textContent = a.t; $('#iNm').textContent = `${a.n} · ${a.cat}`;
+  $('#iSc').textContent = a.s; $('#iSc').style.color = z.c;
+  const iz = $('#iZ'); iz.textContent = z.label; iz.style.background = z.bg; iz.style.color = z.fg;
+  $('#iArc').style.strokeDashoffset = 100 - a.s; $('#iArc').style.stroke = z.c;
+  $('#iTx').textContent = a.r;
+}
+let ii = 0;
+function cycleWin() {
+  const i = ii++ % LIST.length, a = LIST[i];
+  $$('.row').forEach(r => r.classList.toggle('flash', +r.dataset.i === i));
+  inspect(a);
+}
+cycleWin();
+if (!reduce) setInterval(cycleWin, 2600);
+const toast = $('#toast');
+const TOASTS = [['HGLG11 muito abaixo da média', 'Índice Treend 93 · agora'], ['PETR4 muito abaixo da média', 'Índice Treend 91 · agora'], ['NVDA com preço esticado', 'Índice Treend 9 · agora']];
+let ti = 0;
+function popToast() { const [t, s] = TOASTS[ti++ % TOASTS.length]; $('#tT').textContent = t; $('#tS').textContent = s; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3200); }
+setTimeout(popToast, 1800); if (!reduce) setInterval(popToast, 7000);
+/* window settles into place as it scrolls in */
+const win = $('#win');
+function tilt() { const r = win.getBoundingClientRect(), p = Math.min(1, Math.max(0, 1 - r.top / innerHeight)); win.style.transform = `translateY(${(1 - p) * 40}px) scale(${.95 + p * .05})`; }
+if (!reduce) { addEventListener('scroll', tilt, { passive: true }); tilt(); }
+
+/* tape */
+const tp = FREE.map(a => { const z = zone(a.s); return `<span>${a.t}<em style="color:${z.c}">${a.s}</em><span style="color:${z.c}">${z.short}</span></span>`; }).join('');
+$('#tape').innerHTML = tp + tp;
+
+/* statement: words light up with scroll */
+const st = $('#stmt');
+const HL = ['topo', 'ciclo.', 'hora', 'errada.'];
+st.innerHTML = st.textContent.split(' ').map(w => `<span class="w${HL.includes(w) ? ' hl' : ''}">${w}</span>`).join(' ');
+const words = $$('#stmt .w');
+function lightWords() { const r = st.getBoundingClientRect(), p = Math.min(1, Math.max(0, (innerHeight * .85 - r.top) / (r.height + innerHeight * .35))); const n = Math.round(p * words.length); words.forEach((w, i) => w.classList.toggle('lit', i < n)); }
+addEventListener('scroll', lightWords, { passive: true }); lightWords();
+
+/* cycle story: scroll drives a candle chart through a full cycle (illustrative) */
+const cyc = $('#ciclo'), path = $('#cPath'), dot = $('#cDot'), halo = $('#cHalo'), guide = $('#cGuide'), hline = $('#cHline'), cSc = $('#cSc');
+const L = path.getTotalLength(), steps = $$('.cstep'), bars = $$('.cycle-nav b');
+const scoreAt = y => Math.round(Math.max(4, Math.min(96, (y - 30) / 225 * 100)));
+const priceAt = y => 48 - (y - 30) / 230 * 20;
+const brl2 = v => 'R$ ' + v.toFixed(2).replace('.', ',');
+const svgN = (t, a) => { const e = document.createElementNS('http://www.w3.org/2000/svg', t); for (const k in a) e.setAttribute(k, a[k]); return e; };
+// grid + price axis
+const grid = $('#cGrid'), axis = $('#cAxis');
+[40, 95, 150, 205, 260].forEach(y => { grid.append(svgN('line', { x1: 0, x2: 600, y1: y, y2: y, stroke: '#eef2f9' })); const sp = document.createElement('span'); sp.style.top = (y / 300 * 100) + '%'; sp.textContent = priceAt(y).toFixed(2).replace('.', ','); axis.append(sp); });
+// candles + volume sampled along the curve (deterministic noise)
+const N = 46, CW = 600 / N, candles = [];
+let seed = 7; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+for (let i = 0; i < N; i++) {
+  const x = (i + .5) * CW, p0 = path.getPointAtLength(L * i / N), p1 = path.getPointAtLength(L * (i + 1) / N);
+  const o = p0.y + (rnd() - .5) * 6, c = p1.y + (rnd() - .5) * 6, hi = Math.min(o, c) - 3 - rnd() * 9, lo = Math.max(o, c) + 3 + rnd() * 9;
+  const z = zone(scoreAt((o + c) / 2)), g = svgN('g', { opacity: .16 });
+  g.append(svgN('line', { x1: x, x2: x, y1: hi, y2: lo, stroke: z.c, 'stroke-width': 1.2 }));
+  g.append(svgN('rect', { x: x - CW * .32, y: Math.min(o, c), width: CW * .64, height: Math.max(2, Math.abs(c - o)), rx: 1.5, fill: c < o ? z.c : '#fff', stroke: z.c, 'stroke-width': 1.2 }));
+  $('#cCandles').append(g);
+  const vh = 8 + rnd() * 22 + (Math.abs(c - o) * .8);
+  const v = svgN('rect', { x: x - CW * .32, y: 300 - vh, width: CW * .64, height: vh, rx: 1.5, fill: '#c9d4ea', opacity: .25 });
+  $('#cVol').append(v);
+  candles.push([g, v, x]);
+}
+const pinLow = $('#pinLow'), pinHigh = $('#pinHigh'), cTagEl = $('#cTag'), plot = $('.ch-plot');
+const tfEl = $('#cTf'), TF = ['1h', '4h', 'D', 'S', 'M'], TFoff = [-9, -4, 0, 5, 9];
+tfEl.innerHTML = TF.map(t => `<div><span>${t}</span><b class="mono">—</b></div>`).join('');
+const tfB = [...tfEl.querySelectorAll('b')];
+function place(el, x, y) { el.style.left = (x / 600 * 100) + '%'; el.style.top = (y / 300 * 100) + '%'; }
+function story() {
+  const r = cyc.getBoundingClientRect();
+  const p = Math.min(1, Math.max(0, -r.top / (r.height - innerHeight)));
+  const t = .1 + p * .62;
+  const pt = path.getPointAtLength(L * t);
+  $('#cClipR').setAttribute('width', pt.x);
+  candles.forEach(([g, v, x]) => { const on = x <= pt.x + 2; g.setAttribute('opacity', on ? 1 : .16); v.setAttribute('opacity', on ? .9 : .25); });
+  [dot, halo].forEach(c => { c.setAttribute('cx', pt.x); c.setAttribute('cy', pt.y); });
+  guide.setAttribute('x1', pt.x); guide.setAttribute('x2', pt.x);
+  hline.setAttribute('y1', pt.y); hline.setAttribute('y2', pt.y);
+  const s = scoreAt(pt.y), z = zone(s), px = priceAt(pt.y);
+  cSc.textContent = s; cSc.style.color = z.c; dot.setAttribute('fill', z.c); halo.setAttribute('fill', z.c);
+  const em = $('#cZ'); em.textContent = z.label; em.style.background = z.bg; em.style.color = z.fg;
+  $('#cPx').textContent = brl2(px);
+  cTagEl.textContent = px.toFixed(2).replace('.', ','); cTagEl.style.top = (pt.y / 300 * 100) + '%'; cTagEl.style.background = z.c;
+  $('#cMark').style.left = s + '%';
+  tfB.forEach((b, i) => { const v = Math.max(2, Math.min(98, s + TFoff[i] * (s > 50 ? -1 : 1))); b.textContent = v; b.style.color = zone(v).c; });
+  // pins at the trough and at the peak, shown once the cursor passes them
+  place(pinLow, 112, 268); pinLow.classList.toggle('show', pt.x > 100);
+  place(pinHigh, 380, 6); pinHigh.classList.toggle('show', pt.x > 372);
+  const idx = Math.min(2, Math.floor(p * 3));
+  steps.forEach((el, i) => el.classList.toggle('on', i === idx));
+  bars.forEach((b, i) => b.style.width = (Math.min(1, Math.max(0, p * 3 - i)) * 100) + '%');
+}
+addEventListener('scroll', story, { passive: true }); addEventListener('resize', story); story();
+
+/* bento: spotlight follows cursor; scale marker drifts */
+$$('.card').forEach(c => c.addEventListener('pointermove', e => { const r = c.getBoundingClientRect(); c.style.setProperty('--mx', (e.clientX - r.left) + 'px'); c.style.setProperty('--my', (e.clientY - r.top) + 'px'); }));
+let bi = 0; if (!reduce) setInterval(() => { $('#bMark').style.left = FREE[bi++ % FREE.length].s + '%'; }, 2200);
+
+
+/* platform tour: auto-advancing tabs, paused on hover */
+const tour = $('#tour'), titems = $$('.tour-item'), timgs = $$('#tour .shot-stage img');
+const TCAPS = [["5 tempos gráficos", "Dividendos e payout", "Salvar e criar radar"], ["Lado comprador ou vendedor", "Leituras extremas", "Por classe de ativo"], ["Agrupado por setor", "1h a mensal", "Verde a vermelho"], ["375 ações da B3", "Grade por janela", "Painel com detalhes"], ["Monitoramento 24/7", "E-mail e push", "Gatilho por zona"], ["375 ações B3", "232 commodities", "4.790 stocks"], ["272 pagadoras", "DY 12 meses", "Agenda de proventos"], ["Zonas de compra e venda", "Faixa de 52 semanas", "Por tempo gráfico"], ["Pergunte em português", "Simulação de entradas", "Cenários e notícias"], ["Revista, Edição e Feed", "Briefing Treend", "Notícias por ativo"]];
+let tcur = 0, ttimer = 0;
+function tgo(i) {
+  tcur = (i + titems.length) % titems.length;
+  titems.forEach((b, k) => { b.classList.toggle('on', k === tcur); const p = b.querySelector('.prog i'); p.style.animation = 'none'; void p.offsetWidth; p.style.animation = ''; });
+  timgs.forEach((im, k) => im.classList.toggle('on', k === tcur));
+  $('#tourCap').innerHTML = TCAPS[tcur].map(x => `<span>${x}</span>`).join('');
+  clearTimeout(ttimer); if (!reduce) ttimer = setTimeout(() => { if (!tour.classList.contains('paused')) tgo(tcur + 1); }, 7000);
+}
+titems.forEach((b, i) => b.onclick = () => tgo(i));
+tour.addEventListener('pointerenter', () => tour.classList.add('paused'));
+tour.addEventListener('pointerleave', () => { tour.classList.remove('paused'); tgo(tcur + 1); });
+new IntersectionObserver(es => { if (es[0].isIntersecting) { tgo(tcur); } else clearTimeout(ttimer); }, { threshold: .3 }).observe(tour);
+
+
+/* MCP chat demo — answers built from real Treend MCP responses */
+const tag = (z, c, bg) => `<small style="background:${bg};color:${c}">${z}</small>`;
+const OK = (t) => tag(t, '#0e9f6e', '#e7f8f1'), OK2 = (t) => tag(t, '#2f9a6a', '#ecf8f2'), NE = (t) => tag(t, '#a17707', '#fbf4e2'), AT = (t) => tag(t, '#c2620c', '#fdf0e3');
+const CHATS = [
+  { q: 'Como está PETR4 em cada tempo gráfico?', tool: 'analisar_ativo · PETR4',
+    a: `<b>PETR4 · R$ 52,88</b> (+0,17% hoje). As janelas curtas estão abaixo da média, as longas ainda pedem atenção:
+      <div class="res"><div><span>Tempo gráfico</span><span>Índice</span><span>Zona</span></div>
+      <div><span>1 hora</span><em>75,6</em>${OK2('ABAIXO')}</div><div><span>4 horas</span><em>79,0</em>${OK2('ABAIXO')}</div><div><span>Diário</span><em>60,6</em>${NE('NEUTRO')}</div><div><span>Semanal</span><em>36,7</em>${AT('ATENÇÃO')}</div><div><span>Mensal</span><em>26,0</em>${AT('ATENÇÃO')}</div></div>
+      Leitura: desconto no curto prazo, mas <b>sem alinhamento de janelas</b>. O contexto semanal e mensal ainda não confirma.` },
+  { q: 'Quais FIIs estão com mais desconto hoje?', tool: 'ranking_oportunidades · fiis · diário',
+    a: `Os FIIs com índice diário mais alto agora, cruzados com o P/VP:
+      <div class="res"><div><span>FII</span><span>Índice</span><span>P/VP</span></div>
+      <div><span><b>JFLL11</b> · Tijolo</span><em>95,5</em><em>0,44</em></div><div><span><b>MMVE11</b> · Misto</span><em>95,0</em><em>0,46</em></div><div><span><b>VGII11</b> · CRI Infra</span><em>96,2</em><em>1,02</em></div><div><span><b>PNDL11</b> · Logística</span><em>95,4</em><em>1,78</em></div></div>
+      JFLL11 e MMVE11 combinam índice alto com P/VP abaixo de 1: a Treend chama isso de <b>assimetria de compra</b>. VGII11 e PNDL11 estão em oportunidade, mas negociados com ágio.` },
+  { q: 'Quais mercados você consegue analisar pela Treend?', tool: 'listar_classes',
+    a: `Pela Treend eu consigo consultar <b>seis classes de ativos</b>, todas com o mesmo índice de 0 a 100 em cinco tempos gráficos:
+      <div class="res"><div><span>Classe</span><span></span><span>Exemplos</span></div>
+      <div><span><b>Ações B3</b></span><span></span><span>PETR4, VALE3, ITUB4</span></div><div><span><b>Stocks</b></span><span></span><span>AAPL, NVDA, MSFT</span></div><div><span><b>FIIs</b></span><span></span><span>com P/VP e DY</span></div><div><span><b>Commodities</b></span><span></span><span>petróleo, ouro, grãos</span></div><div><span><b>Câmbio</b></span><span></span><span>USD/BRL, EUR/BRL</span></div><div><span><b>Cripto</b></span><span></span><span>BTC, ETH, SOL</span></div></div>
+      É só me dizer o ativo ou pedir um ranking.` },
+
+  { q: 'Sou importador e vou comprar US$ 50 mil. Compro dólar agora ou espero?', tool: 'analisar_ativo · USD/BRL + projecoes_cambio · importador',
+    a: `<b>USD/BRL · R$ 5,4332</b> (+0,90% hoje). Para quem compra dólar, o momento é de <b>preço esticado</b> no curto prazo:
+      <div class="res"><div><span>Tempo gráfico</span><span>Índice</span><span>Zona</span></div>
+      <div><span>1 hora</span><em>19,2</em>${tag('ESTICADO', '#dc2626', '#fdecec')}</div><div><span>4 horas</span><em>24,2</em>${AT('ATENÇÃO')}</div><div><span>Diário</span><em>20,5</em>${AT('ATENÇÃO')}</div><div><span>Semanal</span><em>34,0</em>${AT('ATENÇÃO')}</div><div><span>Mensal</span><em>48,5</em>${NE('NEUTRO')}</div></div>
+      As zonas de compra do importador hoje vão de <b>R$ 5,4314</b> (zona 1) a <b>R$ 5,4186</b> (zona 6, a mais vantajosa). Fechar os US$ 50 mil na zona 6 em vez de agora custaria cerca de <b>R$ 730 a menos</b>. Leitura: escalonar e deixar um alerta no Radar para a zona 6.` },
+];
+const chatBody = $('#chatBody');
+let chatT = [], ci = 0, chatAuto = 0;
+function playChat(i) {
+  ci = i; chatT.forEach(clearTimeout); chatT = [];
+  $$('.chat-tabs button').forEach((b, k) => b.classList.toggle('on', k === i));
+  const c = CHATS[i];
+  chatBody.innerHTML = `<div class="msg-u">${c.q}</div>`;
+  const step = (ms, fn) => chatT.push(setTimeout(fn, reduce ? 0 : ms));
+  step(500, () => chatBody.insertAdjacentHTML('beforeend', `<span class="tool"><i></i><img src="./assets/treend-blue.svg" alt="Treend">${c.tool}</span><span class="typing" id="typ"><i></i><i></i><i></i></span>`));
+  step(1500, () => { $('#typ')?.remove(); chatBody.insertAdjacentHTML('beforeend', `<div class="msg-a">${c.a}</div>`); });
+}
+$$('.chat-tabs button').forEach(b => b.onclick = () => { clearInterval(chatAuto); playChat(+b.dataset.c); });
+new IntersectionObserver(es => { if (es[0].isIntersecting && !chatBody.children.length) { playChat(0); if (!reduce) chatAuto = setInterval(() => playChat((ci + 1) % CHATS.length), 9000); } }, { threshold: .35 }).observe($('#chat'));
+
+
+/* news: a cursor walks the real navigation (Revista → Edição → Feed → ITUB4) while each screen scrolls */
+const nApp = $('#newsApp'), nStage = $('#newsStage'), nImgs = [...nStage.querySelectorAll('img')], nBtns = $$('#newsSeg button'), nPts = $$('#newsPts>div'), nCur = $('#cursor');
+let ni2 = 0, nTimer = 0, nOn = false;
+function nShow(i) {
+  ni2 = i;
+  nBtns.forEach((b, k) => b.classList.toggle('on', k === i));
+  nPts.forEach((d, k) => d.classList.toggle('on', k === i));
+  nImgs.forEach((im, k) => {
+    const on = k === i;
+    im.style.animation = 'none'; void im.offsetWidth; im.style.animation = '';
+    im.style.transform = '';
+    if (on) im.style.setProperty('--d', Math.max(0, im.offsetHeight - nStage.offsetHeight) + 'px');
+    im.classList.toggle('on', on);
+  });
+}
+function nCursorTo(i, cb) {
+  const b = nBtns[i].getBoundingClientRect(), a = nApp.getBoundingClientRect();
+  nCur.style.transform = `translate(${b.left - a.left + b.width / 2 - 4}px, ${b.top - a.top + b.height / 2 - 2}px)`;
+  setTimeout(() => { nCur.classList.remove('click'); void nCur.offsetWidth; nCur.classList.add('click'); cb(); }, reduce ? 0 : 950);
+}
+function nLoop() { clearTimeout(nTimer); if (!nOn || reduce) return; nTimer = setTimeout(() => nCursorTo((ni2 + 1) % nBtns.length, () => { nShow((ni2 + 1) % nBtns.length); nLoop(); }), 7200); }
+nBtns.forEach((b, i) => b.onclick = () => { nCursorTo(i, () => { nShow(i); nLoop(); }); });
+nImgs.forEach(im => im.addEventListener('load', () => { if (im.classList.contains('on')) nShow(ni2); }));
+new IntersectionObserver(es => { nOn = es[0].isIntersecting; if (nOn) { nImgs.forEach(im => im.loading = 'eager'); nCursorTo(ni2, () => nShow(ni2)); nLoop(); } else clearTimeout(nTimer); }, { threshold: .3 }).observe(nApp);
+
+
+/* câmbio: cursor walks USD → EUR → GBP → CNY → Spread; the savings badge counts up on the calculator */
+const fxApp = $('#fxApp'), fxStage = $('#fxStage'), fxImgs = [...fxStage.querySelectorAll('img')], fxBtns = $$('#fxSeg button'), fxCur = $('#fxCursor'), fxSave = $('#fxSave'), fxSaveV = $('#fxSaveV');
+let fxI = 0, fxT = 0, fxOn = false, fxRaf = 0;
+function fxCount() { cancelAnimationFrame(fxRaf); const t0 = performance.now(), to = 32340; const f = t => { const k = Math.min((t - t0) / 1400, 1); fxSaveV.textContent = (to * (1 - (1 - k) ** 3)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }); if (k < 1) fxRaf = requestAnimationFrame(f); }; fxRaf = requestAnimationFrame(f); }
+function fxShow(i) {
+  fxI = i;
+  fxBtns.forEach((b, k) => b.classList.toggle('on', k === i));
+  fxImgs.forEach((im, k) => im.classList.toggle('on', k === i));
+  const calc = i === fxBtns.length - 1;
+  fxSave.classList.toggle('show', calc); if (calc) fxCount();
+}
+function fxTo(i, cb) {
+  const b = fxBtns[i].getBoundingClientRect(), a = fxApp.getBoundingClientRect();
+  fxCur.style.transform = `translate(${b.left - a.left + b.width / 2 - 4}px, ${b.top - a.top + b.height / 2 - 2}px)`;
+  setTimeout(() => { fxCur.classList.remove('click'); void fxCur.offsetWidth; fxCur.classList.add('click'); cb(); }, reduce ? 0 : 950);
+}
+function fxLoop() { clearTimeout(fxT); if (!fxOn || reduce) return; const n = (fxI + 1) % fxBtns.length; fxT = setTimeout(() => fxTo(n, () => { fxShow(n); fxLoop(); }), fxI === fxBtns.length - 1 ? 5200 : 3600); }
+fxBtns.forEach((b, i) => b.onclick = () => fxTo(i, () => { fxShow(i); fxLoop(); }));
+new IntersectionObserver(es => { fxOn = es[0].isIntersecting; if (fxOn) { fxImgs.forEach(im => im.loading = 'eager'); fxTo(fxI, () => fxShow(fxI)); fxLoop(); } else clearTimeout(fxT); }, { threshold: .3 }).observe(fxApp);
+
+
+/* câmbio simulator: candles + index for buyers, cycling USD → EUR → GBP → CNY */
+(() => {
+  const FX = [
+    { flag: '🇺🇸', pair: 'USD/BRL', name: 'Dólar americano', lo: 4.9648, hi: 5.3849, d: 'M0 205 C70 232 110 252 160 238 S240 150 290 118 S360 58 410 48 S490 92 540 140 S590 182 600 186' },
+    { flag: '🇪🇺', pair: 'EUR/BRL', name: 'Euro', lo: 5.5617, hi: 6.0488, d: 'M0 120 C60 92 100 84 150 122 S220 238 280 246 S350 172 400 122 S480 58 520 44 S580 58 600 70' },
+    { flag: '🇬🇧', pair: 'GBP/BRL', name: 'Libra esterlina', lo: 6.5852, hi: 7.2214, d: 'M0 150 C50 170 90 230 140 242 S210 202 260 150 S330 68 380 58 S460 130 510 180 S580 212 600 202' },
+    { flag: '🇨🇳', pair: 'CNY/BRL', name: 'Yuan chinês', lo: 0.7432, hi: 0.8084, d: 'M0 90 C60 70 110 110 160 172 S230 250 290 242 S360 160 420 110 S500 48 560 58 S590 70 600 76' },
+  ];
+  const NS = 'http://www.w3.org/2000/svg', mk = (t, a) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
+  const path = $('#qPath'), area = $('#qArea'), dot = $('#qDot'), halo = $('#qHalo'), guide = $('#qGuide'), hline = $('#qHline');
+  const tabs = $$('#qTabs button'), tf = $('#qTf'), TFoff = [-9, -4, 0, 5, 9];
+  tf.innerHTML = ['1h', '4h', 'D', 'S', 'M'].map(t => `<div><span>${t}</span><b class="mono">—</b></div>`).join('');
+  const tfB = [...tf.querySelectorAll('b')];
+  [40, 95, 150, 205, 260].forEach(y => $('#qGrid').append(mk('line', { x1: 0, x2: 600, y1: y, y2: y, stroke: '#eef2f9' })));
+  const scoreAt = y => Math.round(Math.max(3, Math.min(97, (y - 30) / 225 * 100)));
+  let cur = 0, L = 0, candles = [], fx = FX[0], raf = 0, t0 = 0, visible = false, next = 0;
+  const DUR = reduce ? 1 : 7000;
+  const priceAt = y => fx.hi - (y - 30) / 230 * (fx.hi - fx.lo);
+  const f4 = v => v.toFixed(4).replace('.', ',');
+  const place = (el, x, y) => { el.style.left = (x / 600 * 100) + '%'; el.style.top = (y / 300 * 100) + '%'; };
+  function build(i) {
+    cur = i; fx = FX[i];
+    tabs.forEach((b, k) => b.classList.toggle('on', k === i));
+    $('#qFlag').textContent = fx.flag; $('#qPair').textContent = fx.pair; $('#qName').textContent = `${fx.name} · Diário`;
+    path.setAttribute('d', fx.d); area.setAttribute('d', fx.d + ' V300 H0Z'); L = path.getTotalLength();
+    const ax = $('#qAxis'); ax.replaceChildren(...[40, 95, 150, 205, 260].map(y => { const sp = document.createElement('span'); sp.style.top = (y / 300 * 100) + '%'; sp.textContent = f4(priceAt(y)); return sp; }));
+    $('#qCandles').replaceChildren(); $('#qVol').replaceChildren(); candles = [];
+    let seed = 11 + i * 7; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+    const N = 46, CW = 600 / N; let lowY = 0, lowX = 0, highY = 999, highX = 0;
+    for (let k = 0; k < N; k++) {
+      const x = (k + .5) * CW, p0 = path.getPointAtLength(L * k / N), p1 = path.getPointAtLength(L * (k + 1) / N);
+      const o = p0.y + (rnd() - .5) * 6, c = p1.y + (rnd() - .5) * 6, hi = Math.min(o, c) - 3 - rnd() * 8, lo = Math.max(o, c) + 3 + rnd() * 8;
+      const z = zone(scoreAt((o + c) / 2)), g = mk('g', { opacity: .16 });
+      g.append(mk('line', { x1: x, x2: x, y1: hi, y2: lo, stroke: z.c, 'stroke-width': 1.2 }));
+      g.append(mk('rect', { x: x - CW * .32, y: Math.min(o, c), width: CW * .64, height: Math.max(2, Math.abs(c - o)), rx: 1.5, fill: c < o ? z.c : '#fff', stroke: z.c, 'stroke-width': 1.2 }));
+      $('#qCandles').append(g);
+      const vh = 8 + rnd() * 22 + Math.abs(c - o) * .8, v = mk('rect', { x: x - CW * .32, y: 300 - vh, width: CW * .64, height: vh, rx: 1.5, fill: '#c9d4ea', opacity: .25 });
+      $('#qVol').append(v); candles.push([g, v, x]);
+      if (p0.y > lowY) { lowY = p0.y; lowX = p0.x; } if (p0.y < highY) { highY = p0.y; highX = p0.x; }
+    }
+    place($('#qPinLow'), Math.max(70, lowX), Math.min(272, lowY + 26)); $('#qPinLow').lastChild.textContent = `Desconto raro · ${scoreAt(lowY)}`;
+    place($('#qPinHigh'), highX, Math.max(6, highY - 34)); $('#qPinHigh').lastChild.textContent = `Esticado · ${scoreAt(highY)}`;
+    $('#qPinLow').dataset.x = lowX; $('#qPinHigh').dataset.x = highX;
+    t0 = performance.now();
+  }
+  function frame(now) {
+    const p = Math.min(1, (now - t0) / DUR), t = .04 + p * .9, pt = path.getPointAtLength(L * t);
+    $('#qClipR').setAttribute('width', pt.x);
+    candles.forEach(([g, v, x]) => { const on = x <= pt.x + 2; g.setAttribute('opacity', on ? 1 : .16); v.setAttribute('opacity', on ? .9 : .25); });
+    [dot, halo].forEach(c => { c.setAttribute('cx', pt.x); c.setAttribute('cy', pt.y); });
+    guide.setAttribute('x1', pt.x); guide.setAttribute('x2', pt.x); hline.setAttribute('y1', pt.y); hline.setAttribute('y2', pt.y);
+    const sc = scoreAt(pt.y), z = zone(sc), px = priceAt(pt.y);
+    $('#qSc').textContent = sc; $('#qSc').style.color = z.c; dot.setAttribute('fill', z.c); halo.setAttribute('fill', z.c);
+    const em = $('#qZ'); em.textContent = z.label; em.style.background = z.bg; em.style.color = z.fg;
+    $('#qPx').textContent = 'R$ ' + f4(px);
+    const tag = $('#qTag'); tag.textContent = f4(px); tag.style.top = (pt.y / 300 * 100) + '%'; tag.style.background = z.c;
+    $('#qMark').style.left = sc + '%';
+    tfB.forEach((b, k) => { const v = Math.max(2, Math.min(98, sc + TFoff[k] * (sc > 50 ? -1 : 1))); b.textContent = v; b.style.color = zone(v).c; });
+    $('#qPinLow').classList.toggle('show', pt.x > +$('#qPinLow').dataset.x - 4);
+    $('#qPinHigh').classList.toggle('show', pt.x > +$('#qPinHigh').dataset.x - 4);
+    $('#qProg').style.width = (p * 100) + '%';
+    if (p >= 1) { if (visible && !reduce) { clearTimeout(next); next = setTimeout(() => { build((cur + 1) % FX.length); raf = requestAnimationFrame(frame); }, 1600); } return; }
+    raf = requestAnimationFrame(frame);
+  }
+  tabs.forEach((b, i) => b.onclick = () => { cancelAnimationFrame(raf); clearTimeout(next); build(i); raf = requestAnimationFrame(frame); });
+  build(0); frame(t0 + DUR * .5);
+  new IntersectionObserver(es => { visible = es[0].isIntersecting; cancelAnimationFrame(raf); clearTimeout(next); if (visible) { t0 = performance.now(); raf = requestAnimationFrame(frame); } }, { threshold: .3 }).observe($('#qChart'));
+})();
+
+/* simulator */
+let market = 'acoes', cur = null, frame = 0;
+const res = $('#res'), picks = $('#picks'), q = $('#q'), sugg = $('#sugg');
+function count(el, to) { cancelAnimationFrame(frame); const from = parseInt(el.textContent, 10) || 0, t0 = performance.now(); const f = t => { const k = Math.min((t - t0) / 700, 1); el.textContent = Math.round(from + (to - from) * (1 - (1 - k) ** 3)); if (k < 1) frame = requestAnimationFrame(f); }; frame = requestAnimationFrame(f); }
+function show(a) {
+  cur = a;
+  $('#rLogo').src = a.logo; $('#rTk').textContent = a.t; $('#rNm').textContent = `${a.n} · ${a.cat}`;
+  res.classList.toggle('locked', !!a.locked);
+  const sc = $('#rSc');
+  if (a.locked) { cancelAnimationFrame(frame); sc.textContent = '??'; $('#lTk').textContent = a.t; }
+  else { const z = zone(a.s); sc.style.color = z.c; count(sc, a.s); $('#rMark').style.left = a.s + '%'; const rz = $('#rZ'); rz.textContent = z.label; rz.style.background = z.bg; rz.style.color = z.fg; $('#rT').textContent = a.r; }
+  picks.replaceChildren(...ALL.filter(x => x.m === market && !x.locked).map(x => { const b = document.createElement('button'); b.type = 'button'; b.className = 'pick' + (x === cur ? ' on' : ''); b.innerHTML = `<img src="${x.logo}" alt=""><div><b>${x.t}</b><span>${x.n}</span></div><em style="color:${zone(x.s).c}">${x.s}</em>`; b.onclick = () => show(x); return b; }));
+}
+$$('.seg2 button').forEach(b => b.onclick = () => { market = b.dataset.m; $$('.seg2 button').forEach(x => x.classList.toggle('on', x === b)); show(ALL.find(a => a.m === market && !a.locked)); });
+function suggest(v) {
+  v = v.trim().toUpperCase();
+  const list = (v ? ALL.filter(a => a.t.includes(v) || a.n.toUpperCase().includes(v)) : ALL).slice().sort((x, y) => !!x.locked - !!y.locked);
+  sugg.replaceChildren();
+  if (!list.length) { const li = document.createElement('li'); li.textContent = v.length >= 3 ? `Enter para ver ${v}` : 'Nenhum ativo encontrado'; sugg.append(li); }
+  list.forEach(a => { const li = document.createElement('li'); li.innerHTML = `<span style="display:flex;align-items:center;gap:9px"><img src="${a.logo}" alt="" style="width:22px;height:22px;border-radius:50%"><span><b>${a.t}</b> <i>· ${a.cat}</i></span></span>` + (a.locked ? '<i>🔒 Pro</i>' : `<b class="mono" style="color:${zone(a.s).c}">${a.s}</b>`); li.onmousedown = e => { e.preventDefault(); pick(a); }; sugg.append(li); });
+  sugg.hidden = false;
+}
+function pick(a) { show(a); q.value = ''; sugg.hidden = true; q.blur(); }
+q.addEventListener('focus', () => suggest(q.value));
+q.addEventListener('input', () => suggest(q.value));
+q.addEventListener('blur', () => sugg.hidden = true);
+q.addEventListener('keydown', e => {
+  if (e.key === 'Escape') q.blur();
+  if (e.key !== 'Enter') return;
+  const v = q.value.trim().toUpperCase();
+  const hit = ALL.find(a => a.t === v) || ALL.find(a => a.t.includes(v) || a.n.toUpperCase().includes(v));
+  const a = hit || (v.length >= 3 && { t: v, n: 'Ativo monitorado pela Treend', cat: 'Treend Pro', logo: './favicon.svg', locked: true });
+  if (a) pick(a);
+});
+addEventListener('keydown', e => { if (e.key === '/' && document.activeElement.tagName !== 'INPUT') { e.preventDefault(); q.focus(); } });
+show(ALL[0]);
+
+/* calculator */
+const brl = v => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+const amt = $('#amt'), drp = $('#drp');
+const fill = el => el.style.setProperty('--v', ((el.value - el.min) / (el.max - el.min) * 100) + '%');
+function calc() {
+  const loss = +amt.value * +drp.value / 100, x = Math.floor(loss / 129);
+  $('#cA').textContent = brl(+amt.value); $('#cD').textContent = drp.value + '%'; $('#cL').textContent = brl(loss);
+  $('#cX').textContent = x >= 1 ? `${x}x a assinatura anual` : 'parte de 1 ano';
+  fill(amt); fill(drp);
+}
+amt.oninput = drp.oninput = calc; calc();
+
+/* lead → Admin (Leads Stripe) → Stripe */
+const STRIPE = 'https://buy.stripe.com/6oU8wP91n2Ij6vb8PZ0Ny0c';
+const SB_URL = 'https://mztkmlufajogxjltllhs.supabase.co', SB_KEY = 'sb_publishable_JBn3pZt9SpNfBHBpI57BIg_5TOjFfjZ';
+const modal = $('#modal'), form = $('#lead'), err = $('#err');
+const open = () => { modal.classList.add('open'); document.body.style.overflow = 'hidden'; setTimeout(() => form.nome.focus(), 60); };
+const close = () => { modal.classList.remove('open'); document.body.style.overflow = ''; };
+$$('[data-checkout]').forEach(a => { a.href = STRIPE; a.addEventListener('click', e => { e.preventDefault(); open(); }); });
+$$('[data-close]').forEach(el => el.onclick = close);
+addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+form.whatsapp.addEventListener('input', e => { const d = e.target.value.replace(/\D/g, '').slice(0, 11); e.target.value = d.length > 10 ? `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}` : d.length > 6 ? `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}` : d.length > 2 ? `(${d.slice(0, 2)}) ${d.slice(2)}` : d; });
+async function insertLead(row) {
+  const post = body => fetch(`${SB_URL}/rest/v1/stripe_leads`, { method: 'POST', keepalive: true, headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' }, body: JSON.stringify(body) });
+  let r = await post(row);
+  if (!r.ok) {
+    // Table without a whatsapp column yet: keep the number next to the plan so Admin still shows it
+    const e = await r.json().catch(() => ({}));
+    if (e.code === 'PGRST204' || e.code === '42703') { const { whatsapp, ...rest } = row; r = await post({ ...rest, plan: `${rest.plan} | WhatsApp: ${whatsapp}` }); }
+  }
+  return r.ok;
+}
+const fail = (m, f) => { err.textContent = m; f.focus(); };
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const nome = form.nome.value.trim(), email = form.email.value.trim().toLowerCase(), dg = form.whatsapp.value.replace(/\D/g, '');
+  err.textContent = '';
+  if (nome.length < 2) return fail('Informe seu nome.', form.nome);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail('Informe um e-mail válido.', form.email);
+  if (dg.length < 10) return fail('Informe um WhatsApp com DDD.', form.whatsapp);
+  const btn = form.querySelector('button'); btn.disabled = true; btn.querySelector('span').textContent = 'Abrindo pagamento…';
+  try { await Promise.race([insertLead({ name: nome, email, whatsapp: '+55' + dg, plan: 'pro-anual-v4', coupon: new URLSearchParams(location.search).get('coupon') || null }), new Promise(r => setTimeout(r, 2500))]); } catch {}
+  const u = new URL(STRIPE); u.searchParams.set('prefilled_email', email); location.href = u;
+});
+})();
+</script>
+<script>
+/* Treend page analytics: one row per page view in `page_views` (Admin → Comercial → Analytics do site).
+   No cookies; an anonymous id in localStorage estimates unique visitors. Respects Do Not Track. */
+(() => {
+  try {
+    if (navigator.doNotTrack === '1' || /bot|crawl|spider|headless|lighthouse/i.test(navigator.userAgent)) return;
+    const URL_ = 'https://mztkmlufajogxjltllhs.supabase.co/rest/v1/page_views';
+    const KEY = 'sb_publishable_JBn3pZt9SpNfBHBpI57BIg_5TOjFfjZ';
+    const id = (store, k) => { try { let v = store.getItem(k); if (!v) { v = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2)); store.setItem(k, v); } return v; } catch { return null; } };
+    const q = new URLSearchParams(location.search);
+    const ref = document.referrer && new URL(document.referrer).host !== location.host ? document.referrer : null;
+    const row = {
+      path: location.pathname, page: document.title.slice(0, 200), referrer: ref,
+      utm_source: q.get('utm_source'), utm_medium: q.get('utm_medium'), utm_campaign: q.get('utm_campaign'),
+      visitor_id: id(localStorage, 'treend-vid'), session_id: id(sessionStorage, 'treend-sid'),
+      device: matchMedia('(max-width: 768px)').matches ? 'mobile' : 'desktop',
+    };
+    fetch(URL_, { method: 'POST', keepalive: true, headers: { apikey: KEY, Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' }, body: JSON.stringify(row) }).catch(() => {});
+  } catch { /* analytics must never break the page */ }
+})();
+</script>
+</body>
+</html>
