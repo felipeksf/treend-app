@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Como a Treend decide que a moeda está barata ou cara</title>
+  <meta name="description" content="A Treend compara o preço atual com o histórico do próprio ativo e devolve um número de 0 a 100, em vários tempos gráficos.">
+  <link rel="canonical" href="https://novo.treend.com.br/pt/treend-pro/como-funciona">
+  <link rel="alternate" hreflang="pt-BR" href="https://novo.treend.com.br/pt/treend-pro/como-funciona">
+  <link rel="alternate" hreflang="en-US" href="https://novo.treend.com.br/en/treend-pro/how-it-works">
+  <link rel="alternate" hreflang="es" href="https://novo.treend.com.br/es/treend-pro/como-funciona">
+  <link rel="alternate" hreflang="x-default" href="https://novo.treend.com.br/en/treend-pro/how-it-works">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Treend">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:title" content="Como a Treend decide que a moeda está barata ou cara">
+  <meta property="og:description" content="A Treend compara o preço atual com o histórico do próprio ativo e devolve um número de 0 a 100, em vários tempos gráficos.">
+  <meta property="og:url" content="https://novo.treend.com.br/pt/treend-pro/como-funciona">
+  <meta property="og:image" content="https://novo.treend.com.br/lp/assets/treend-blue.svg">
+  <meta property="article:modified_time" content="2026-11-05">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Como a Treend decide que a moeda está barata ou cara">
+  <meta name="twitter:description" content="A Treend compara o preço atual com o histórico do próprio ativo e devolve um número de 0 a 100, em vários tempos gráficos.">
+  <meta name="twitter:image" content="https://novo.treend.com.br/lp/assets/treend-blue.svg">
+  <link rel="icon" href="/lp/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+  <style>*{box-sizing:border-box;margin:0}
+:root{--bg:#fbfcff;--paper:#fff;--ink:#0b1a33;--ink-2:#33415c;--mute:#6b7891;--rule:#e4e9f3;--blue:#385fe1;--blue-d:#2449ba}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:400 17px/1.65 Geist,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:46rem;margin:0 auto;padding:0 16px}
+header{border-bottom:1px solid var(--rule);background:var(--paper)}
+header .wrap{display:flex;align-items:center;gap:16px;height:60px}
+.logo{font:700 19px/1 Manrope,system-ui,sans-serif;color:var(--blue);text-decoration:none;letter-spacing:-.02em}
+nav{margin-left:auto;display:flex;gap:18px;font-size:15px}
+nav a{color:var(--ink-2);text-decoration:none}
+nav a:hover{color:var(--blue)}
+main{padding:32px 0 56px}
+.crumb{font-size:14px;color:var(--mute);margin-bottom:18px}
+.crumb a{color:var(--mute)}
+h1{font:700 clamp(28px,5vw,40px)/1.2 Manrope,system-ui,sans-serif;letter-spacing:-.02em;margin-bottom:20px}
+h2{font:700 clamp(21px,3vw,26px)/1.3 Manrope,system-ui,sans-serif;letter-spacing:-.01em;margin:38px 0 12px}
+p{margin:0 0 16px}
+ul,ol{margin:0 0 18px;padding-left:22px}
+li{margin-bottom:9px}
+a{color:var(--blue)}
+a:hover{color:var(--blue-d)}
+strong{font-weight:650}
+.lead{font-size:19px;color:var(--ink-2);border-left:3px solid var(--blue);padding-left:16px;margin-bottom:26px}
+.lead p{margin:0}
+.cta{display:inline-block;background:var(--blue);color:#fff;text-decoration:none;font-weight:600;padding:13px 22px;border-radius:10px;margin:6px 0 10px}
+.cta:hover{background:var(--blue-d);color:#fff}
+.verified{color:var(--mute);font-size:14px;border-top:1px solid var(--rule);padding-top:18px;margin-top:38px}
+footer{border-top:1px solid var(--rule);background:var(--paper);padding:22px 0;color:var(--mute);font-size:14px}
+footer a{color:var(--mute)}
+.langs{display:flex;gap:14px;margin-top:8px}
+.notice{background:var(--tint,#f3f6fd);border:1px solid var(--rule);border-radius:10px;padding:10px 14px;font-size:15px;margin-bottom:22px}
+@media (prefers-color-scheme:dark){.notice{background:#16233b}}
+@media (prefers-color-scheme:dark){
+:root{--bg:#0a1020;--paper:#101a2e;--ink:#eaf0fc;--ink-2:#b9c6de;--mute:#8694ae;--rule:#1e2b45;--blue:#8cacff;--blue-d:#b3c8ff}
+}</style>
+  <script async src="https://easyindex.app/t.js" data-site="ei_site_9D81sfJX7o5JNdwC"></script>
+  <script type="application/ld+json">[{"@context":"https://schema.org","@type":"Organization","name":"Treend","url":"https://novo.treend.com.br","description":"A Treend compara o preço atual com o histórico do próprio ativo e devolve um número de 0 a 100, em vários tempos gráficos.","sameAs":["https://www.instagram.com/treend.io/","https://www.tiktok.com/@treend.io"]},{"@context":"https://schema.org","@type":"Product","name":"Treend Pro","description":"Índice de 0 a 100 por tempo gráfico que diz se o preço de um ativo está incomum para ele: câmbio, ações brasileiras, stocks, FIIs e commodities.","brand":{"@type":"Brand","name":"Treend"},"offers":{"@type":"Offer","price":"199","priceCurrency":"USD","url":"https://novo.treend.com.br/offer/","availability":"https://schema.org/InStock"}},{"@context":"https://schema.org","@type":"Article","headline":"Como a Treend decide que a moeda está barata ou cara","description":"A Treend compara o preço atual com o histórico do próprio ativo e devolve um número de 0 a 100, em vários tempos gráficos.","inLanguage":"pt-BR","mainEntityOfPage":"https://novo.treend.com.br/pt/treend-pro/como-funciona","dateModified":"2026-11-05","datePublished":"2026-11-05","publisher":{"@type":"Organization","name":"Treend","url":"https://novo.treend.com.br"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Treend","item":"https://novo.treend.com.br"},{"@type":"ListItem","position":2,"name":"Treend Pro","item":"https://novo.treend.com.br/pt/treend-pro"},{"@type":"ListItem","position":3,"name":"Como a Treend decide que a moeda está barata ou cara","item":"https://novo.treend.com.br/pt/treend-pro/como-funciona"}]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"O número alto quer dizer que é hora de comprar?","acceptedAnswer":{"@type":"Answer","text":"Quer dizer que o preço está incomum para baixo no histórico daquele ativo. A decisão de comprar é sua."}},{"@type":"Question","name":"Preciso saber ler gráfico?","acceptedAnswer":{"@type":"Answer","text":"Não. A leitura é um número e um aviso."}},{"@type":"Question","name":"A comparação é entre ativos ou do ativo com ele mesmo?","acceptedAnswer":{"@type":"Answer","text":"Sempre do ativo com ele mesmo, usando o histórico dele."}},{"@type":"Question","name":"Serve para moeda e para ação?","acceptedAnswer":{"@type":"Answer","text":"Sim, com a mesma leitura: câmbio, ações brasileiras, ações americanas, fundos imobiliários e commodities."}}]}]</script>
+  <script>
+(function(){
+  var KEY='treend-lang', FLAG='treend-lang-auto';
+  function store(l){try{localStorage.setItem(KEY,l)}catch(e){}}
+  function stored(){try{var v=localStorage.getItem(KEY);return v==='pt'||v==='en'||v==='es'?v:null}catch(e){return null}}
+  function browser(){
+    try{
+      var ls=(navigator.languages&&navigator.languages.length)?navigator.languages:[navigator.language];
+      for(var i=0;i<ls.length;i++){var l=String(ls[i]).toLowerCase().slice(0,2);
+        if(l==='pt'||l==='en'||l==='es')return l}
+    }catch(e){}
+    return null;
+  }
+  // Clicking a language in the footer or the home list is an explicit choice: remember it.
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[hreflang]');
+    if(a)store(String(a.getAttribute('hreflang')).slice(0,2));
+  });
+  var here=document.documentElement.lang.slice(0,2).toLowerCase();
+  var want=stored()||browser();
+  if(!want||want===here)return;
+  var alts={};
+  Array.prototype.forEach.call(document.querySelectorAll('link[rel=alternate][hreflang]'),function(l){
+    var k=l.getAttribute('hreflang').slice(0,2).toLowerCase();
+    if(k!=='x-'&&!alts[k])alts[k]=l.getAttribute('href');
+  });
+  var target=alts[want]||window.__langHome&&window.__langHome[want];
+  if(!target)return;
+  store(want);                                  // stored before leaving, so this never loops
+  try{sessionStorage.setItem(FLAG,here)}catch(e){}
+  location.replace(target);
+})();
+</script>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="logo" href="/pt/treend-pro">Treend</a>
+  <nav>
+    <a href="/pt/treend-pro">Treend Pro</a>
+    <a href="https://novo.treend.com.br/offer/">Preço</a>
+    <a href="https://novo.treend.com.br/login">Entrar</a>
+  </nav>
+</div></header>
+<main><div class="wrap">
+  <nav class="crumb" aria-label="breadcrumb">
+    <a href="https://novo.treend.com.br">Treend</a> / <a href="/pt/treend-pro">Treend Pro</a>
+  </nav>
+  <h1>Como a Treend decide que a moeda está barata ou cara</h1>
+  <div class="lead"><p>A Treend compara o preço atual de cada ativo com o histórico dele mesmo e devolve um número de 0 a 100, em vários tempos gráficos. Número alto significa preço incomum para baixo em relação ao passado daquele ativo; número baixo significa o contrário. A comparação é sempre do ativo com ele mesmo, nunca entre ativos diferentes.</p></div>
+  <h2>Fatos</h2>
+<ul>
+<li><strong>Mais de 5.000 ativos cobertos.</strong> A leitura existe para câmbio, ações brasileiras, ações americanas, fundos imobiliários e commodities. <a href="https://novo.treend.com.br/offer/">Página de preço da Treend</a></li>
+<li><strong>Spread de 1% a 4% por operação de câmbio.</strong> É o custo que a leitura de momento não substitui: ele continua sendo negociado com a sua instituição. <a href="https://www.remessaonline.com.br/blog/o-que-e-o-spread/" rel="nofollow noopener" target="_blank">Remessa Online</a></li>
+<li><strong>22,62% de variação do dólar ao longo de 2024.</strong> É a amplitude que torna a comparação com o histórico útil: dentro dela existe faixa alta e faixa baixa. <a href="https://programadordesucesso.com.br/converter-dolar-em-real/" rel="nofollow noopener" target="_blank">Programador de Sucesso</a></li>
+<li><strong>Cotações são publicadas minuto a minuto, com anos de fechamentos diários.</strong> Esse histórico é a base da comparação. <a href="https://pt.investing.com/currencies/usd-brl" rel="nofollow noopener" target="_blank">Investing</a></li>
+</ul>
+<h2>O que significa o número de 0 a 100?</h2>
+<p>Significa a posição do preço de hoje dentro do histórico do próprio ativo. Perto de 100, o preço está numa faixa em que aquele ativo raramente esteve e que, para quem compra, é incomum de barata. Perto de 0, o oposto. O número não é uma nota de qualidade do ativo e não diz se a empresa ou a moeda é boa: diz onde o preço está.</p>
+<h2>Por que existem vários tempos gráficos?</h2>
+<p>Porque a mesma cotação pode ser alta num período e baixa noutro. Um dólar que está no alto da faixa do último mês pode estar no meio da faixa dos últimos cinco anos. Quem fecha câmbio na semana precisa da leitura curta; quem decide um aporte para o ano precisa da longa. A Treend mostra as duas, e a divergência entre elas é informação, não erro.</p>
+<h2>Como a Treend avisa?</h2>
+<p>Você escolhe o ativo e a faixa que te interessa, e recebe o aviso quando ele entra nessa faixa. É a diferença entre configurar uma vez e acompanhar tela todo dia. O aviso vale tanto para a moeda que você precisa comprar quanto para a que você precisa vender.</p>
+<h2>A Treend prevê o preço?</h2>
+<p>Não. Ela não projeta o que vai acontecer e não afirma que o preço vai subir ou cair. Tudo que a leitura diz é onde o preço de hoje está em relação ao passado daquele ativo. Essa é uma afirmação sobre o presente, verificável no histórico, e não uma afirmação sobre o futuro.</p>
+<h2>Quais são os erros comuns?</h2>
+<ul>
+<li><strong>Ler o número como nota do ativo.</strong> Ele mede preço em relação ao histórico, não qualidade.</li>
+<li><strong>Comparar o número de dois ativos diferentes.</strong> Cada leitura é do ativo com ele mesmo.</li>
+<li><strong>Usar um tempo gráfico só.</strong> A divergência entre períodos é parte da resposta.</li>
+<li><strong>Esperar o extremo.</strong> A faixa dura dias ou semanas; o ponto exato só se identifica depois.</li>
+</ul>
+<h2>Como o Treend Pro entrega isso?</h2>
+<p>O Treend Pro dá a leitura de 0 a 100 para mais de 5.000 ativos, em vários tempos gráficos, e manda o aviso quando o ativo escolhido entra na faixa definida por você. Cobre câmbio, ações brasileiras, ações americanas, fundos imobiliários e commodities, no mesmo lugar. São US$ 199 por mês, com garantia incondicional de 7 dias.</p>
+<h2>Perguntas frequentes</h2>
+<p><strong>O número alto quer dizer que é hora de comprar?</strong></p>
+<p>Quer dizer que o preço está incomum para baixo no histórico daquele ativo. A decisão de comprar é sua.</p>
+<p><strong>Preciso saber ler gráfico?</strong></p>
+<p>Não. A leitura é um número e um aviso.</p>
+<p><strong>A comparação é entre ativos ou do ativo com ele mesmo?</strong></p>
+<p>Sempre do ativo com ele mesmo, usando o histórico dele.</p>
+<p><strong>Serve para moeda e para ação?</strong></p>
+<p>Sim, com a mesma leitura: câmbio, ações brasileiras, ações americanas, fundos imobiliários e commodities.</p>
+<h2>Continue lendo</h2>
+<ul>
+<li><a href="https://novo.treend.com.br/pt/treend-pro">O que é a Treend</a></li>
+<li><a href="https://novo.treend.com.br/pt/treend-pro/limites">O que a Treend não faz e o que pode dar errado</a></li>
+<li><a href="https://novo.treend.com.br/pt/treend-pro/para-quem-e">Para quem a Treend serve</a></li>
+<li><a href="https://novo.treend.com.br/pt/cambio/dolar-caro-ou-barato">Como saber se o dólar está caro ou barato hoje</a></li>
+<li><a href="https://novo.treend.com.br/pt/treend-pro/vs-acompanhar-a-cotacao">Vale pagar pela Treend ou basta acompanhar a cotação de graça</a></li>
+</ul>
+  
+  <p class="verified"><time datetime="2026-11-05">Verificado em 5 de novembro de 2026</time></p>
+</div></main>
+<footer><div class="wrap">
+  <p>Treend &middot; <a href="https://novo.treend.com.br/offer/">Preço</a> &middot; <a href="https://novo.treend.com.br/login">Entrar</a></p>
+  <div class="langs"><a href="/en/treend-pro/how-it-works" hreflang="en-US">English</a>
+    <a href="/es/treend-pro/como-funciona" hreflang="es">Español</a></div>
+</div></footer>
+<script>
+(function(){
+  var FLAG='treend-lang-auto', from=null;
+  try{from=sessionStorage.getItem(FLAG);sessionStorage.removeItem(FLAG)}catch(e){}
+  if(!from)return;
+  var alt=document.querySelector('link[rel=alternate][hreflang^="'+from+'"]');
+  if(!alt)return;
+  var label={pt:'Ver esta página em português',en:'View this page in English',es:'Ver esta página en español'}[from];
+  var said={pt:'Esta página está no seu idioma.',en:'This page is in your language.',es:'Esta página está en tu idioma.'}[document.documentElement.lang.slice(0,2)]||'';
+  var d=document.createElement('div');
+  d.className='notice';
+  d.innerHTML=said+' <a href="'+alt.getAttribute('href')+'" hreflang="'+from+'">'+label+'</a>';
+  var m=document.querySelector('main .wrap');
+  if(m)m.insertBefore(d,m.firstChild);
+})();
+</script>
+</body>
+</html>
