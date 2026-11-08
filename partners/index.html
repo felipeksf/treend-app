@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#fbfcff">
-<title>Treend Partner Program — câmbio: receita recorrente indicando a Treend</title>
+<title>Treend Partner Program · Câmbio | Receita recorrente indicando a Treend</title>
 <meta name="description" content="Programa de parceiros da Treend para quem atende clientes impactados pelo câmbio: importadores, exportadores, turismo, remessas e renda global. Receita recorrente por indicação, página de parceiro, dashboard de leads e material de vendas pronto.">
 <link rel="canonical" href="https://novo.treend.com.br/partners/">
 <meta name="robots" content="index,follow">
@@ -43,10 +43,6 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button{fon
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
 /* type */
-.eyebrow{display:inline-flex;align-items:center;gap:10px;font:500 12px 'Geist Mono',monospace;letter-spacing:.04em;color:var(--mute);text-transform:uppercase}
-.eyebrow:before{content:'';width:6px;height:6px;border-radius:1px;background:var(--blue)}
-.h2{font-size:clamp(34px,4.4vw,58px);font-weight:500;letter-spacing:-.045em;line-height:1.02}
-.h2 .soft{color:var(--faint)}
 .p{color:var(--ink-2);font-size:17px;line-height:1.6}
 .lbl{font:500 11px 'Geist Mono',monospace;letter-spacing:.04em;text-transform:uppercase;color:var(--faint)}
 .note{margin-top:14px;font-size:12px;color:var(--faint)}
@@ -69,6 +65,7 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button{fon
 .nav .logo img{height:30px;width:auto}
 .nav nav{display:flex;gap:4px;font-size:14px;color:var(--ink-2)}
 .nav nav a{padding:7px 12px;border-radius:999px;transition:background .2s}
+.nav nav .m-login{display:none}
 .nav nav a:hover{background:var(--tint)}
 .nav .act{display:flex;gap:6px}
 .nav .btn{height:40px;padding:0 16px;font-size:14px}
@@ -130,8 +127,6 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button{fon
 
 /* ── SECTIONS ── */
 .sec{padding:140px 0 0}
-.sec-head{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin-bottom:56px}
-.sec-head .p{max-width:480px;justify-self:end}
 
 /* ── STATEMENT ── */
 .statement{padding:150px 0 0}
@@ -156,17 +151,6 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button{fon
 .card ul svg{flex:none;width:14px;height:14px;margin-top:4px;color:var(--blue)}
 .card .viz{flex:1;display:flex;align-items:flex-end;margin-top:24px}
 .card img.shot-img{width:100%;border-radius:12px;box-shadow:0 0 0 1px var(--rule);object-fit:cover;object-position:top left;aspect-ratio:16/10}
-
-/* persona cards */
-.who{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.who article{position:relative;padding:26px;border-radius:18px;background:var(--paper);box-shadow:0 0 0 1px var(--rule);transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
-.who article:hover{transform:translateY(-3px);box-shadow:0 0 0 1px var(--rule-2),0 20px 40px -24px rgba(11,26,51,.35)}
-.who .ic{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;background:var(--tint-2);color:var(--blue-d)}
-.who .ic svg{width:20px;height:20px}
-.who h3{margin-top:18px;font-size:19px;font-weight:500;letter-spacing:-.025em}
-.who p{margin-top:8px;font-size:14px;color:var(--ink-2)}
-.who .fit{margin-top:16px;padding-top:14px;border-top:1px solid var(--rule);font-size:13px;color:var(--mute)}
-.who .fit b{color:var(--ink);font-weight:600}
 
 /* pains */
 .pains{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -345,17 +329,79 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
 .board-head h4{font-size:14px;font-weight:600;letter-spacing:-.01em}
 .mini i{transition:height .8s var(--ease)}
 
+/* ── CABEÇALHO EDITORIAL (numerado, alinhamento variável) ── */
+.head{position:relative;margin-bottom:54px;padding-top:26px;border-top:1px solid var(--rule)}
+.head .n{position:absolute;top:-1px;left:0;padding-right:14px;background:var(--bg);font:500 12px 'Geist Mono';letter-spacing:.08em;color:var(--blue);transform:translateY(-50%)}
+.head h2{font-size:clamp(32px,4.1vw,54px);font-weight:500;letter-spacing:-.045em;line-height:1.03;max-width:16ch}
+.head p{margin-top:18px;max-width:52ch;color:var(--ink-2);font-size:17px;line-height:1.6}
+.head.wide h2{max-width:22ch}
+.head.split{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:end}
+.head.split p{margin-top:0;justify-self:end}
+.head.mid{text-align:center}
+.head.mid .n{position:static;display:inline-block;padding:0;transform:none;background:none}
+.head.mid h2{max-width:20ch;margin:14px auto 0}
+.head.mid p{margin-inline:auto}
+.kicker{display:block;margin-bottom:12px;font:500 12px 'Geist Mono';letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+
+/* ── LISTA EDITORIAL DE PERFIS ── */
+.roster{border-top:1px solid var(--rule)}
+.roster article{display:grid;grid-template-columns:52px 1.1fr 1.4fr;gap:28px;align-items:baseline;padding:26px 0;border-bottom:1px solid var(--rule);transition:background .35s}
+.roster article:hover{background:linear-gradient(90deg,var(--tint),transparent 70%)}
+.roster .i{font:500 12px 'Geist Mono';color:var(--faint);padding-top:4px}
+.roster h3{font-size:clamp(20px,2.1vw,26px);font-weight:500;letter-spacing:-.03em;line-height:1.15}
+.roster h3 em{display:block;margin-top:7px;font:400 13px/1.4 Geist;font-style:normal;color:var(--mute)}
+.roster p{font-size:15px;color:var(--ink-2);line-height:1.6}
+.roster p b{display:block;margin-top:9px;font:500 13px 'Geist Mono';color:var(--blue-d);letter-spacing:-.01em}
+
+/* ── THREAD DE CONVERSA (pitch) ── */
+.thread{position:relative;padding:26px 24px 30px;border-radius:22px;background:#f6f8fe;box-shadow:0 0 0 1px var(--rule)}
+.thread .top{display:flex;align-items:center;gap:11px;padding-bottom:18px;border-bottom:1px solid var(--rule-2)}
+.thread .av{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--ink);color:#fff;font:600 13px 'Geist Mono'}
+.thread .top b{display:block;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.thread .top span{font-size:12px;color:var(--mute)}
+.thread ol{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:12px}
+.thread li{max-width:82%;padding:13px 16px;border-radius:16px;font-size:15px;line-height:1.5;opacity:0;transform:translateY(10px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.thread li.in{opacity:1;transform:none}
+.thread li.them{background:var(--paper);box-shadow:0 0 0 1px var(--rule);border-bottom-left-radius:5px}
+.thread li.you{margin-left:auto;background:var(--ink);color:#fff;border-bottom-right-radius:5px}
+.thread li.you b{color:#8fe3c4;font-weight:600}
+.thread li small{display:block;margin-top:6px;font:11px 'Geist Mono';opacity:.55}
+.thread .typing{display:inline-flex;gap:4px;padding:4px 0}
+.thread .typing i{width:6px;height:6px;border-radius:50%;background:var(--faint);animation:typ 1.2s infinite}
+.thread .typing i:nth-child(2){animation-delay:.18s}.thread .typing i:nth-child(3){animation-delay:.36s}
+@keyframes typ{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+.thread .foot{margin-top:20px;padding-top:16px;border-top:1px solid var(--rule-2);font-size:13px;color:var(--mute)}
+.thread .foot b{color:var(--ink);font-weight:600}
+
+/* ── PULL QUOTE ── */
+.pullq{margin:0;padding:56px 0 0}
+.pullq p{font-size:clamp(24px,3vw,40px);font-weight:500;letter-spacing:-.04em;line-height:1.16;max-width:20ch}
+.pullq p span{color:var(--blue)}
+.pullq footer{margin-top:20px;font:500 13px 'Geist Mono';color:var(--mute)}
+
+@media(max-width:900px){
+  .head.split{grid-template-columns:1fr;gap:20px}.head.split p{justify-self:start}
+  .head h2,.head.wide h2{max-width:none}
+  .roster article{grid-template-columns:40px 1fr;gap:10px 16px}
+  .roster p{grid-column:2}
+  .thread li{max-width:92%}
+}
+
 /* ── RESPONSIVE ── */
 @media(max-width:1060px){
-  .nav nav{position:absolute;top:70px;left:0;right:0;display:none;flex-direction:column;gap:2px;padding:10px;border-radius:18px;background:rgba(255,255,255,.95);backdrop-filter:blur(18px);box-shadow:0 0 0 1px rgba(11,26,51,.07),0 20px 40px -20px rgba(11,26,51,.4)}
+  .nav nav{position:absolute;top:72px;left:0;right:0;display:none;flex-direction:column;gap:0;padding:8px;border-radius:20px;background:var(--paper);box-shadow:0 0 0 1px var(--rule-2),0 28px 60px -22px rgba(11,26,51,.45)}
   .nav nav.open{display:flex}
+  .nav nav a{padding:13px 14px;border-radius:12px;font-size:15px;color:var(--ink)}
+  .nav nav a+a{border-top:1px solid var(--rule)}
+  .nav nav a:active{background:var(--tint-2)}
+  .nav nav .m-login{display:block;margin-top:6px;border-top:0;color:var(--mute);font-size:14px}
   .menu-toggle{display:grid}
+  .menu-toggle[aria-expanded="true"]{background:var(--tint-2);color:var(--ink)}
   .board-grid{grid-template-columns:1fr}.board-side{border-left:0;border-top:1px solid var(--rule)}
 }
 @media(max-width:900px){
-  .sec-head,.pains,.pitch,.calc,.who,.sim{grid-template-columns:1fr}
+  .pains,.pitch,.calc,.sim{grid-template-columns:1fr}
   .sim-l{border-right:0;border-bottom:1px solid var(--rule)}
-  .sec-head .p{justify-self:start}
   .bento{grid-template-columns:1fr}.c4,.c5,.c6,.c7,.c8{grid-column:auto}
   .steps{grid-template-columns:1fr 1fr}.steps>div:nth-child(2n){border-right:0}
   .sec{padding-top:100px}.statement{padding-top:110px}
@@ -373,7 +419,11 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
   .formbox{padding:24px}
   .sim-l,.sim-r{padding:22px}.res-sc{font-size:62px}.lock{inset:92px 0 0}
   .calc-in,.calc-out{padding:24px}
-  .sticky{left:16px;right:16px;transform:translateY(140%);justify-content:space-between}.sticky.show{transform:none}.sticky p span{display:none}
+  .sticky{left:12px;right:12px;gap:10px;padding:8px 8px 8px 16px;transform:translateY(140%);justify-content:space-between}
+  .sticky.show{transform:none}
+  .sticky p span{display:none}
+  .sticky p{min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:13px}
+  .sticky .btn{flex:none;padding:0 14px;font-size:14px}
 }
 </style>
 </head>
@@ -383,18 +433,12 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
   <symbol id="arr" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="chk" viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-  <symbol id="ic-advisor" viewBox="0 0 24 24"><path d="M3 20v-1a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="9" cy="8" r="3.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 11h5M16 15h5M16 7h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
-  <symbol id="ic-creator" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m10 9 5 3-5 3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 21h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
-  <symbol id="ic-house" viewBox="0 0 24 24"><path d="M4 21V8l8-5 8 5v13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 21v-6h6v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
-  <symbol id="ic-group" viewBox="0 0 24 24"><circle cx="8" cy="9" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17" cy="10" r="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M2 19a6 6 0 0 1 12 0M15 19a5 5 0 0 1 7-4.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
-  <symbol id="ic-fx" viewBox="0 0 24 24"><path d="M3 8h13l-3-3M21 16H8l3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-  <symbol id="ic-agency" viewBox="0 0 24 24"><path d="M3 21V6l6-3v18M9 21h12V11h-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M13 15h2M13 18h2M5 9h1M5 13h1M5 17h1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
 </svg>
 
 <header class="nav"><div class="wrap bar">
   <a class="logo" href="https://treend.com.br" aria-label="Treend — início"><img src="../lp/assets/treend-blue.svg" alt="Treend" width="145" height="40"></a>
   <nav id="section-menu" aria-label="Seções">
-    <a href="#para-quem">Pra quem é</a><a href="#dores">As dores</a><a href="#valor">O valor</a><a href="#transformacao">A transformação</a><a href="#demo">Demonstração</a><a href="#pitch">Pitch</a><a href="#potencial">Potencial</a><a href="#faq">FAQ</a>
+    <a href="#para-quem">Pra quem é</a><a href="#dores">As dores</a><a href="#valor">O valor</a><a href="#transformacao">A transformação</a><a href="#demo">Demonstração</a><a href="#pitch">Pitch</a><a href="#potencial">Potencial</a><a href="#faq">FAQ</a><a class="m-login" href="https://novo.treend.com.br/login">Entrar na plataforma</a>
   </nav>
   <div class="act">
     <a class="btn btn-line" href="https://novo.treend.com.br/login">Entrar</a>
@@ -412,7 +456,7 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
   <div class="wrap hero-top">
     <span class="pill rv">Programa oficial de parceiros · Câmbio <b>Treend Partner Program</b></span>
     <h1 class="rv"><span>Seus clientes fecham</span><span>câmbio toda semana.</span><span>Ganhe <em style="font-style:normal" class="b">toda vez</em> que eles fecham bem.</span></h1>
-    <p class="p rv">O Treend Partner Program é para quem atende empresas e pessoas impactadas pelo câmbio: importadores, exportadores, turismo, remessas e renda global. Você leva a leitura de moeda da Treend para a sua carteira e passa a ter <strong>receita recorrente</strong> por cada assinatura que nasce do seu nome.</p>
+    <p class="p rv">Se a sua carteira tem importador, exportador, agência de turismo, remessa ou aporte no exterior, você já convive com a pergunta. Leve a leitura de moeda da Treend para esses clientes e passe a ter <strong>receita recorrente</strong> por cada assinatura que nasce do seu nome.</p>
     <div class="ctas rv">
       <a class="btn btn-blue" href="#cadastro">Entrar no programa <svg><use href="#arr"/></svg></a>
       <a class="btn btn-line" href="#demo">Ver a tela que você mostra</a>
@@ -442,7 +486,7 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
           <span class="lbl">Receita recorrente do parceiro</span>
           <div class="big"><b class="mono" id="boardMrr">—</b><span class="lbl">/ mês</span></div>
           <div class="mini" aria-hidden="true"><i style="height:22%"></i><i style="height:34%"></i><i style="height:30%"></i><i style="height:48%"></i><i style="height:57%"></i><i style="height:52%"></i><i style="height:71%"></i><i style="height:84%"></i><i style="height:100%"></i></div>
-          <p>Câmbio não é evento único: o cliente volta a fechar operação todo mês. Enquanto ele continua assinante, a sua comissão continua entrando.</p>
+          <p>Câmbio não acontece uma vez só. O cliente volta a fechar operação todo mês, e a sua comissão acompanha o tempo em que ele fica.</p>
         </div>
       </div>
     </div>
@@ -453,34 +497,35 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
 
 <!-- STATEMENT -->
 <section class="statement"><div class="wrap">
-  <p id="stmt" class="rv">Seu cliente não perde dinheiro só no spread que paga. Ele perde no dia que escolhe para fechar. Entre a pior e a melhor janela do mesmo mês existe uma diferença que ninguém mostra para ele — e é exatamente isso que você passa a entregar.</p>
+  <p id="stmt" class="rv">Seu cliente não perde dinheiro só no spread que paga. Ele perde no dia que escolhe para fechar. Entre a pior e a melhor janela do mesmo mês existe uma diferença que ninguém mostra para ele. É exatamente isso que você passa a entregar.</p>
 </div></section>
 
 <!-- PRA QUEM É -->
 <section class="sec" id="para-quem"><div class="wrap">
-  <div class="sec-head">
-    <div><span class="eyebrow rv">Pra quem é</span><h2 class="h2 rv" style="margin-top:18px">Para quem atende<br><span class="soft">quem depende do câmbio.</span></h2></div>
-    <p class="p rv">Se a sua carteira tem gente que compra ou vende moeda com frequência, o programa foi desenhado para você. Estes são os perfis que mais convertem:</p>
+  <div class="head split">
+    <div><span class="n">01</span><h2 class="rv">Seis carteiras que já vivem de moeda.</h2></div>
+    <p class="rv">Se o seu cliente compra ou vende moeda com alguma frequência, ele já paga o custo de fechar na hora errada. A lista abaixo é de quem costuma converter mais rápido no programa.</p>
   </div>
-  <div class="who">
-    <article class="rv"><div class="ic"><svg><use href="#ic-fx"/></svg></div><h3>Correspondentes e casas de câmbio</h3><p>Você já fecha a operação. O que falta é o argumento de janela: mostrar ao cliente que aquele é um bom dia para fechar, e não só uma boa taxa.</p><p class="fit"><b>Melhor caso:</b> carteira que opera várias vezes por mês.</p></article>
-    <article class="rv"><div class="ic"><svg><use href="#ic-agency"/></svg></div><h3>Consultorias de comércio exterior</h3><p>Importador e exportador vivem de margem. Uma variação de 3% no câmbio come o lucro de um embarque inteiro — e você é quem avisa.</p><p class="fit"><b>Melhor caso:</b> clientes com pagamentos ou recebimentos em moeda todo mês.</p></article>
-    <article class="rv"><div class="ic"><svg><use href="#ic-advisor"/></svg></div><h3>Assessores com renda global</h3><p>Antes de aplicar lá fora, o cliente precisa comprar o dólar. A conversão mal feita apaga parte do retorno da carteira internacional.</p><p class="fit"><b>Melhor caso:</b> clientes com aporte recorrente no exterior.</p></article>
-    <article class="rv"><div class="ic"><svg><use href="#ic-house"/></svg></div><h3>Turismo e intercâmbio</h3><p>Agências que compram moeda para o cliente fecham em datas definidas pela viagem, não pelo mercado. Antecipar a compra na janela certa é serviço que diferencia.</p><p class="fit"><b>Melhor caso:</b> agências com pacotes e remessas de mensalidade.</p></article>
-    <article class="rv"><div class="ic"><svg><use href="#ic-group"/></svg></div><h3>Contabilidade e BPO financeiro</h3><p>Quem fecha o caixa da empresa vê o custo do câmbio depois que ele já aconteceu. Com a Treend, a conversa muda de relatório para decisão.</p><p class="fit"><b>Melhor caso:</b> carteiras de PJ com despesa em moeda estrangeira.</p></article>
-    <article class="rv"><div class="ic"><svg><use href="#ic-creator"/></svg></div><h3>Creators e comunidades de câmbio</h3><p>Expatriados, nômades, quem recebe em dólar ou manda dinheiro para fora: audiência que acompanha cotação todo dia e nunca teve uma leitura objetiva.</p><p class="fit"><b>Melhor caso:</b> newsletter, grupo ou canal sobre moeda e vida no exterior.</p></article>
+  <div class="roster">
+    <article class="rv"><span class="i">01</span><h3>Correspondentes e casas de câmbio<em>Operação fechada no balcão ou por mesa</em></h3><p>Você já entrega a taxa. O que ainda não entrega é a janela: dizer ao cliente que hoje é um bom dia para fechar, e não apenas que você conseguiu um bom preço.<b>Converte melhor com carteira que opera toda semana</b></p></article>
+    <article class="rv"><span class="i">02</span><h3>Consultorias de comércio exterior<em>Importação e exportação</em></h3><p>Margem de importador é fina. Uma oscilação de três por cento no dólar come o lucro de um embarque inteiro, e quem avisa antes do pagamento vira parte da operação.<b>Converte melhor com cliente que paga fornecedor todo mês</b></p></article>
+    <article class="rv"><span class="i">03</span><h3>Assessores com renda global<em>Aporte e carteira no exterior</em></h3><p>Antes de aplicar lá fora, o cliente precisa comprar o dólar. Uma conversão feita no pior dia do mês apaga em silêncio parte do retorno que você levou meses para construir.<b>Converte melhor com aporte recorrente no exterior</b></p></article>
+    <article class="rv"><span class="i">04</span><h3>Turismo e intercâmbio<em>Pacotes, mensalidades e remessas</em></h3><p>A data da compra de moeda é escolhida pela viagem, nunca pelo mercado. Antecipar ou fracionar dentro de uma janela boa é um serviço que quase nenhuma agência oferece.<b>Converte melhor com mensalidade recorrente no exterior</b></p></article>
+    <article class="rv"><span class="i">05</span><h3>Contabilidade e BPO financeiro<em>Carteiras PJ com despesa em moeda</em></h3><p>Quem fecha o caixa vê o custo do câmbio depois que ele já aconteceu. Com a leitura em mãos, a reunião mensal deixa de ser relatório e passa a ser decisão.<b>Converte melhor com PJ que remete para fora</b></p></article>
+    <article class="rv"><span class="i">06</span><h3>Creators e comunidades de câmbio<em>Expatriados, nômades e quem recebe em dólar</em></h3><p>É um público que já abre o app de cotação várias vezes por dia e nunca teve nada melhor do que a própria intuição para decidir quando converter.<b>Converte melhor com canal sobre moeda e vida fora</b></p></article>
   </div>
 </div></section>
 
 <!-- AS DORES -->
 <section class="sec" id="dores"><div class="wrap">
-  <div class="sec-head">
-    <div><span class="eyebrow rv">As dores</span><h2 class="h2 rv" style="margin-top:18px">O que trava você<br><span class="soft">e o seu cliente.</span></h2></div>
-    <p class="p rv">Antes de falar de comissão, vale olhar o que o programa resolve dos dois lados da mesa.</p>
+  <div class="head">
+    <span class="n">02</span>
+    <h2 class="rv">Seis coisas que hoje custam caro dos dois lados da mesa.</h2>
+    <p class="rv">Antes de falar de comissão, vale olhar o que muda para quem você atende. À esquerda, como é hoje. À direita, o que entra no lugar.</p>
   </div>
   <div class="pains">
     <div class="pain rv">
-      <div class="before"><span class="lbl bad">Hoje</span><h4>O cliente fecha câmbio no pior dia do mês</h4><p>A data é escolhida pela necessidade, nunca pelo mercado — e a diferença só aparece no extrato.</p></div>
+      <div class="before"><span class="lbl bad">Hoje</span><h4>O cliente fecha câmbio no pior dia do mês</h4><p>A data é escolhida pela necessidade, nunca pelo mercado, e a diferença só aparece no extrato.</p></div>
       <div><span class="lbl good">Com o programa</span><h4>Uma leitura de janela, de 0 a 100</h4><p>O índice mostra se a moeda está descontada ou esticada contra o próprio histórico, antes de fechar.</p></div>
     </div>
     <div class="pain rv">
@@ -488,7 +533,7 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
       <div><span class="lbl good">Com o programa</span><h4>Spread e janela na mesma conversa</h4><p>A calculadora mostra quanto o spread custa por ano, e o índice mostra quanto o dia escolhido custa.</p></div>
     </div>
     <div class="pain rv">
-      <div class="before"><span class="lbl bad">Hoje</span><h4>“Eu espero ou fecho agora?” sem resposta</h4><p>A pergunta chega toda semana e a resposta sai de opinião, notícia ou palpite — e sobra para você.</p></div>
+      <div class="before"><span class="lbl bad">Hoje</span><h4>“Eu espero ou fecho agora?” sem resposta</h4><p>A pergunta chega toda semana e a resposta sai de opinião, notícia ou palpite. A conta sobra para você.</p></div>
       <div><span class="lbl good">Com o programa</span><h4>Critério objetivo para responder</h4><p>Leitura por moeda e por perfil, em 5 tempos gráficos, com alerta quando entra na zona definida.</p></div>
     </div>
     <div class="pain rv">
@@ -500,7 +545,7 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
       <div><span class="lbl good">Com o programa</span><h4>Leads e assinaturas no painel</h4><p>Página de parceiro com link próprio, leads identificados e conversão acompanhada.</p></div>
     </div>
     <div class="pain rv">
-      <div class="before"><span class="lbl bad">Hoje</span><h4>Cada moeda em um lugar diferente</h4><p>Dólar no portal do banco, euro na planilha, yuan no boleto do fornecedor. Nenhuma leitura comum.</p></div>
+      <div class="before"><span class="lbl bad">Hoje</span><h4>Cada moeda em um lugar diferente</h4><p>Dólar no portal do banco, euro na planilha, yuan no boleto do fornecedor. Nenhuma leitura em comum.</p></div>
       <div><span class="lbl good">Com o programa</span><h4>As moedas do seu cliente na mesma tela</h4><p>Dólar, euro, libra, yuan e outras moedas contra o real, com a mesma escala de 0 a 100.</p></div>
     </div>
   </div>
@@ -508,15 +553,15 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
 
 <!-- O VALOR GERADO -->
 <section class="sec" id="valor"><div class="wrap">
-  <div class="sec-head">
-    <div><span class="eyebrow rv">O valor gerado</span><h2 class="h2 rv" style="margin-top:18px">O que você recebe<br><span class="soft">ao entrar no programa.</span></h2></div>
-    <p class="p rv">Não é só uma comissão. É uma estrutura comercial inteira de câmbio para você vender sem montar nada.</p>
+  <div class="head split">
+    <div><span class="n">03</span><h2 class="rv">Você entra com a carteira. O resto já está montado.</h2></div>
+    <p class="rv">Comissão é o começo da conversa. O que sustenta a parceria é a estrutura comercial que vem junto: produto, página, medição e argumento.</p>
   </div>
   <div class="bento">
     <article class="card c7 rv">
       <span class="num">01</span>
       <h3>Receita recorrente por assinatura ativa</h3>
-      <p>Você é remunerado por cada assinante que nasce da sua indicação, mês após mês, enquanto ele continuar ativo. O ticket do Treend Pro é de US$ 199/mês — receita em dólar, cliente que renova sozinho porque volta a fechar câmbio todo mês.</p>
+      <p>Você é remunerado por cada assinante que nasce da sua indicação, mês após mês, enquanto ele continuar ativo. O ticket do Treend Pro é de US$ 199 por mês: receita em dólar, de um cliente que renova porque volta a fechar câmbio todo mês.</p>
       <ul>
         <li><svg><use href="#chk"/></svg>Comissão recorrente, não só na primeira venda</li>
         <li><svg><use href="#chk"/></svg>Cobrança, nota e suporte por conta da Treend</li>
@@ -527,7 +572,7 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
     <article class="card c5 rv">
       <span class="num">02</span>
       <h3>Sua página de parceiro</h3>
-      <p>Um endereço próprio com o seu nome, a sua chamada e o seu link de cadastro. Quem entra por ali fica marcado como seu lead no painel da Treend — nada de planilha paralela.</p>
+      <p>Um endereço próprio com o seu nome, a sua chamada e o seu link de cadastro. Quem entra por ali fica marcado como seu lead no painel da Treend, sem planilha paralela.</p>
       <div class="viz"><img class="shot-img" src="../lp/assets/fx/eur.jpg" alt="Tela de câmbio da Treend: cotação e índice do euro" loading="lazy"></div>
     </article>
     <article class="card c5 rv">
@@ -554,9 +599,10 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
 
 <!-- A TRANSFORMAÇÃO -->
 <section class="sec" id="transformacao"><div class="wrap">
-  <div class="sec-head">
-    <div><span class="eyebrow rv">A transformação</span><h2 class="h2 rv" style="margin-top:18px">Antes e depois<br><span class="soft">de ser parceiro Treend.</span></h2></div>
-    <p class="p rv">A mudança não é só financeira. Muda o que você entrega ao cliente de câmbio, como ele percebe o seu trabalho e de onde vem a sua receita.</p>
+  <div class="head">
+    <span class="n">04</span>
+    <h2 class="rv">O que muda de lugar na sua operação.</h2>
+    <p class="rv">A parte financeira é a mais visível, mas não é a única. Muda o que você entrega, como o cliente enxerga o seu papel e de onde vem a sua receita no fim do mês.</p>
   </div>
   <div class="cmp rv">
     <table>
@@ -576,9 +622,10 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
 
 <!-- COMO FUNCIONA -->
 <section class="sec" id="como-funciona"><div class="wrap">
-  <div class="sec-head">
-    <div><span class="eyebrow rv">Como funciona</span><h2 class="h2 rv" style="margin-top:18px">Quatro passos<br><span class="soft">até a primeira comissão.</span></h2></div>
-    <p class="p rv">Do cadastro à primeira assinatura indicada na sua carteira de câmbio, sem contrato de adesão e sem custo de entrada.</p>
+  <div class="head mid">
+    <span class="n">05</span>
+    <h2 class="rv">Quatro passos até a primeira comissão.</h2>
+    <p class="rv">Do cadastro à primeira assinatura indicada, sem contrato de adesão e sem custo de entrada.</p>
   </div>
   <div class="steps rv">
     <div><span>01</span><h4>Cadastro</h4><p>Preencha o formulário desta página. Seu cadastro entra na lista <strong>Partner Program</strong> no painel da Treend.</p></div>
@@ -590,9 +637,9 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
 
 <!-- DEMO AO VIVO -->
 <section class="sec" id="demo"><div class="wrap">
-  <div class="sec-head">
-    <div><span class="eyebrow rv">Demonstração ao vivo</span><h2 class="h2 rv" style="margin-top:18px">A tela que você<br><span class="soft">mostra para fechar.</span></h2></div>
-    <p class="p rv">É assim que a conversa vira venda: o cliente diz a moeda que precisa fechar, você abre a plataforma e o índice responde na hora. Teste agora com as moedas da carteira dele.</p>
+  <div class="head split">
+    <div><span class="n">06</span><h2 class="rv">Abra a tela. Deixe o número falar.</h2></div>
+    <p class="rv">O cliente diz a moeda que precisa fechar e a leitura aparece na hora. Mexa aí embaixo como você mexeria na frente dele, inclusive no botão de quem vende moeda.</p>
   </div>
   <div class="sim rv">
     <div class="sim-l">
@@ -622,15 +669,15 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
       <div class="lock">
         <span class="ic"><svg><use href="#lock"/></svg></span>
         <h4>Leitura de <span id="lTk"></span> bloqueada</h4>
-        <p>Essa é exatamente a hora em que o cliente quer assinar — e a assinatura nasce do seu link. As demais moedas são liberadas no Treend Pro.</p>
+        <p>Essa é exatamente a hora em que o cliente quer assinar, e a assinatura nasce do seu link. As demais moedas são liberadas no Treend Pro.</p>
         <a class="btn btn-blue" href="#cadastro" style="margin-top:6px">Quero indicar e ser remunerado <svg><use href="#arr"/></svg></a>
       </div>
     </div>
   </div>
 
-  <div class="sec-head" style="margin:120px 0 56px">
-    <div><span class="eyebrow rv">O argumento que fecha</span><h2 class="h2 rv" style="margin-top:18px">Quanto o seu cliente<br><span class="soft">deixa na mesa por ano.</span></h2></div>
-    <p class="p rv">A mesma calculadora de spread que você abre na frente dele. Coloque o volume que ele movimenta e o spread que ele paga hoje — o número costuma encerrar a discussão.</p>
+  <div class="head split" style="margin-top:120px">
+    <div><span class="n">07</span><h2 class="rv">O número que costuma encerrar a discussão.</h2></div>
+    <p class="rv">A mesma calculadora de spread que você abre na frente dele. Coloque o volume que ele movimenta e o spread que paga hoje, e deixe a conta aparecer na tela dele.</p>
   </div>
   <div class="calc rv">
     <div class="calc-in">
@@ -666,37 +713,49 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
 
 <!-- PITCH -->
 <section class="sec" id="pitch"><div class="wrap">
-  <div class="sec-head">
-    <div><span class="eyebrow rv">Gatilhos de pitch</span><h2 class="h2 rv" style="margin-top:18px">O que dizer<br><span class="soft">para vender.</span></h2></div>
-    <p class="p rv">Ganchos prontos para abrir a conversa de câmbio e respostas para as objeções que aparecem sempre. Use como está ou adapte à sua voz.</p>
+  <div class="head split">
+    <div><span class="n">08</span><h2 class="rv">A conversa que vende, do jeito que ela acontece.</h2></div>
+    <p class="rv">Nenhum parceiro fecha lendo um script. Fecha respondendo bem a uma pergunta que o cliente já estava fazendo. Abaixo, uma troca típica e as objeções que aparecem depois dela.</p>
   </div>
   <div class="pitch">
-    <div class="hooks">
-      <div class="hook rv"><span class="lbl">Gancho · custo invisível</span><p>Você negocia o spread até o último centésimo. E o dia em que você fecha, quanto custa?</p></div>
-      <div class="hook rv"><span class="lbl">Gancho · amplitude do mês</span><p>Entre a pior e a melhor janela do mesmo mês existe uma diferença que não aparece em lugar nenhum do seu extrato.</p></div>
-      <div class="hook rv"><span class="lbl">Gancho · simplicidade</span><p>De 0 a 100: perto de 100, a moeda está barata contra o próprio histórico para quem compra. Perto de 0, está esticada. É essa a leitura.</p></div>
-      <div class="hook rv"><span class="lbl">Gancho · recorrência</span><p>Você não fecha câmbio uma vez na vida. Fecha todo mês. Um erro pequeno, repetido doze vezes, vira um número grande.</p></div>
-      <div class="hook rv"><span class="lbl">Gancho · fechamento</span><p>Faz sentido a gente olhar a sua próxima remessa com esse índice antes de você fechar, e comparar com o que você faria sem ele?</p></div>
+    <div class="thread rv" id="thread">
+      <div class="top"><span class="av">RM</span><div><b>Ricardo · Importadora</b><span>cliente da sua carteira</span></div></div>
+      <ol>
+        <li class="them">Preciso pagar o fornecedor até sexta. Fecho hoje ou espero?<small>09:12</small></li>
+        <li class="you">Deixa eu olhar aqui. O dólar está em <b>92 de 100</b> na leitura de hoje para quem compra.<small>09:14</small></li>
+        <li class="them">E isso quer dizer o quê, na prática?<small>09:14</small></li>
+        <li class="you">Que ele está barato contra o próprio histórico. Não é previsão, é posição: nos últimos meses, poucas vezes ficou tão descontado quanto hoje.<small>09:15</small></li>
+        <li class="them">Semana passada você não tinha falado nada.<small>09:16</small></li>
+        <li class="you">Porque semana passada estava em 31. Era zona de atenção, e eu teria pedido para você segurar se desse.<small>09:16</small></li>
+        <li class="them">Então fecha hoje. Dá para deixar isso ligado para as próximas?<small>09:18</small></li>
+        <li class="you">Dá. Eu configuro um alerta na faixa que você quiser e te aviso antes do próximo pagamento.<small>09:19</small></li>
+      </ol>
+      <div class="foot">Conversa ilustrativa. Os números são os da prévia desta página. <b>É aqui que a assinatura é vendida:</b> na segunda vez em que ele pergunta.</div>
     </div>
     <div>
-      <span class="eyebrow rv">Quebra de objeções</span>
-      <div class="obj rv" style="margin-top:20px">
-        <details open><summary>“Eu já negocio uma taxa boa com o meu banco.”<i></i></summary><p>Ótimo, e continue negociando. Taxa é uma coisa, janela é outra: a Treend não disputa o seu spread, ela mostra em que dia aquela taxa vale mais. As duas economias se somam.</p></details>
-        <details><summary>“Não dá para escolher o dia, pago quando vence.”<i></i></summary><p>Nem sempre dá, mas quase sempre existe alguma folga: antecipar ou dividir a compra em partes dentro da janela já muda o resultado. O índice serve justamente para decidir onde usar essa folga.</p></details>
+      <span class="kicker rv">Depois do sim vem o “mas”</span>
+      <div class="obj rv">
+        <details open><summary>“Já negocio uma taxa boa com o meu banco.”<i></i></summary><p>Ótimo, e continue negociando. Taxa é uma coisa, janela é outra. A Treend não disputa o seu spread: ela mostra em que dia aquela taxa rende mais. As duas economias se somam.</p></details>
+        <details><summary>“Não dá para escolher o dia, pago quando vence.”<i></i></summary><p>Nem sempre dá, mas quase sempre existe alguma folga. Antecipar em dois dias ou dividir a compra em partes dentro da janela já muda o resultado do mês. O índice serve para decidir onde gastar essa folga.</p></details>
         <details><summary>“A Treend acerta para onde o dólar vai?”<i></i></summary><p>Não, e nem se propõe a isso. Ela diz se a moeda está cara ou barata contra o próprio histórico hoje. É leitura de posição, não previsão.</p></details>
-        <details><summary>“É mais uma assinatura para pagar.”<i></i></summary><p>Compare com a calculadora de spread na frente dele: em muitos casos a assinatura é uma fração do que ele deixa na mesa em um único mês de operação.</p></details>
-        <details><summary>“Não tenho tempo de acompanhar cotação.”<i></i></summary><p>E não precisa. O Radar avisa quando a moeda entra na zona que vocês definirem — ele só olha a tela quando vale a pena olhar.</p></details>
-        <details><summary>“Minha operação é de exportação, não de compra.”<i></i></summary><p>A leitura existe para os dois lados. Quem vende moeda quer o oposto de quem compra, e a plataforma mostra o índice calibrado para o perfil da operação.</p></details>
+        <details><summary>“É mais uma assinatura para pagar.”<i></i></summary><p>Abra a calculadora de spread na frente dele. Em boa parte dos casos a assinatura é uma fração do que ele deixa na mesa em um único mês de operação.</p></details>
+        <details><summary>“Não tenho tempo de acompanhar cotação.”<i></i></summary><p>E não precisa. O Radar avisa quando a moeda entra na faixa que vocês definirem. Ele só olha a tela quando vale a pena olhar.</p></details>
+        <details><summary>“Minha operação é de exportação.”<i></i></summary><p>A leitura existe para os dois lados. Quem vende moeda quer o oposto de quem compra, e a plataforma mostra o índice calibrado para o perfil da operação. Teste o botão na demonstração acima.</p></details>
       </div>
     </div>
   </div>
+
+  <figure class="pullq rv">
+    <p>Quem responde “compro agora?” com um número <span>deixa de ser fornecedor</span> e vira parte da decisão.</p>
+    <footer>o que muda na relação com o cliente</footer>
+  </figure>
 </div></section>
 
 <!-- POTENCIAL -->
 <section class="sec" id="potencial"><div class="wrap">
-  <div class="sec-head">
-    <div><span class="eyebrow rv">O potencial</span><h2 class="h2 rv" style="margin-top:18px">Quanto a sua carteira<br><span class="soft">pode gerar por mês.</span></h2></div>
-    <p class="p rv">Agora o seu lado. Mexa nos controles com os números da sua carteira de câmbio: o cálculo usa o ticket de US$ 199/mês do Treend Pro e a comissão recorrente que você quiser simular.</p>
+  <div class="head split">
+    <div><span class="n">09</span><h2 class="rv">Agora o seu lado da conta.</h2></div>
+    <p class="rv">Coloque os números da sua carteira. O cálculo usa o ticket de US$ 199 por mês do Treend Pro e a comissão recorrente que você quiser simular.</p>
   </div>
   <div class="calc rv">
     <div class="calc-in">
@@ -744,9 +803,10 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
 
 <!-- FAQ -->
 <section class="sec" id="faq"><div class="wrap">
-  <div class="sec-head">
-    <div><span class="eyebrow rv">FAQ</span><h2 class="h2 rv" style="margin-top:18px">Perguntas<br><span class="soft">antes de entrar.</span></h2></div>
-    <p class="p rv">O que normalmente é perguntado por quem atende clientes de câmbio e está avaliando a parceria.</p>
+  <div class="head">
+    <span class="n">10</span>
+    <h2 class="rv">O que perguntam antes de assinar o acordo.</h2>
+    <p class="rv">Reunimos aqui as dúvidas que mais aparecem na primeira conversa com quem atende clientes de câmbio.</p>
   </div>
   <div class="obj rv">
     <details open><summary>Tem custo para entrar no programa?<i></i></summary><p>Não. O cadastro e a ativação como parceiro não têm custo. Você investe o seu canal de distribuição; a Treend investe produto, plataforma e suporte.</p></details>
@@ -756,7 +816,7 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
     <details><summary>Preciso recomendar operação de câmbio para vender?<i></i></summary><p>Não, e não deve. A Treend é plataforma de dados: você apresenta uma ferramenta de leitura quantitativa de moeda, sem recomendar operação nem prometer resultado.</p></details>
     <details><summary>Quanto tempo leva para começar?<i></i></summary><p>Depois do cadastro, o time comercial faz contato para alinhar perfil e condições. Com a proposta aceita, a ativação da página de parceiro e do acesso é feita em seguida.</p></details>
     <details><summary>Posso usar a plataforma com os meus clientes em call?<i></i></summary><p>Sim. O acesso de parceiro existe justamente para demonstração ao vivo, com as moedas e o volume do seu cliente na tela.</p></details>
-    <details><summary>Quais moedas estão cobertas?<i></i></summary><p>As principais moedas contra o real — dólar, euro, libra, yuan, entre outras — com cotação, variação e o índice de cada uma. Na prévia desta página, dólar, euro e libra estão liberados.</p></details>
+    <details><summary>Quais moedas estão cobertas?<i></i></summary><p>As principais moedas contra o real, como dólar, euro, libra e yuan, com cotação, variação e o índice de cada uma. Na prévia desta página, dólar, euro e libra estão liberados.</p></details>
     <details><summary>Atende parceiro fora do Brasil?<i></i></summary><p>Sim. O ticket é em dólar e a leitura de câmbio serve a quem opera moeda de qualquer lugar. Informe o seu país no campo de mensagem do formulário.</p></details>
   </div>
 </div></section>
@@ -850,12 +910,17 @@ if (stmt && !reduce) {
 }
 
 /* nav menu (mobile) */
-const toggle = $('.menu-toggle'), menu = $('#section-menu');
-toggle.addEventListener('click', () => {
+const toggle = $('.menu-toggle'), menu = $('#section-menu'), header = $('header.nav');
+const closeMenu = () => { menu.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); };
+toggle.addEventListener('click', e => {
+  e.stopPropagation();
   const open = menu.classList.toggle('open');
   toggle.setAttribute('aria-expanded', String(open));
 });
-menu.addEventListener('click', e => { if (e.target.tagName === 'A') { menu.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); } });
+menu.addEventListener('click', e => { if (e.target.closest('a')) closeMenu(); });
+document.addEventListener('click', e => { if (!header.contains(e.target)) closeMenu(); });
+addEventListener('keydown', e => { if (e.key === 'Escape' && menu.classList.contains('open')) { closeMenu(); toggle.focus(); } });
+matchMedia('(min-width:1061px)').addEventListener('change', closeMenu);
 
 /* sticky cta */
 const sticky = $('#sticky'), formbox = $('#formbox');
@@ -1008,6 +1073,19 @@ fetch('https://economia.awesomeapi.com.br/json/last/USD-BRL')
   }, { threshold: .25 }).observe(feed);
 })();
 
+/* ══ conversa do pitch: mensagens entram em sequência ══ */
+(() => {
+  const th = $('#thread'); if (!th) return;
+  const msgs = [...th.querySelectorAll('li')];
+  if (reduce) return msgs.forEach(m => m.classList.add('in'));
+  let started = false;
+  new IntersectionObserver((es, ob) => {
+    if (!es[0].isIntersecting || started) return;
+    started = true; ob.disconnect();
+    msgs.forEach((m, i) => setTimeout(() => m.classList.add('in'), i * 480));
+  }, { threshold: .2 }).observe(th);
+})();
+
 /* ══ SIMULADOR 2 · Índice da moeda ao vivo (mesma prévia da página de ofertas) ══ */
 (() => {
   const res = $('#res'); if (!res) return;
@@ -1041,7 +1119,7 @@ fetch('https://economia.awesomeapi.com.br/json/last/USD-BRL')
       : `“O ${m} está em ${v} de 100 para quem vende: a moeda está cara contra o próprio histórico. Quem recebe de fora converte melhor numa janela como essa.”`;
     if (v >= 50) return `“${m} em ${v}: a janela está a favor, sem ser o extremo. Dá para fechar em partes e deixar o restante para a próxima leitura.”`;
     if (v >= 36) return `“${m} em ${v} pede cautela: a moeda já saiu da faixa confortável para esse lado da operação. Se houver folga no prazo, vale esperar.”`;
-    return `“${m} em ${v} de 100: é o pior ponto da faixa para quem ${buy ? 'compra' : 'vende'}. Fechar aqui é exatamente o erro que não aparece no extrato — e que se repete todo mês.”`;
+    return `“${m} em ${v} de 100: é o pior ponto da faixa para quem ${buy ? 'compra' : 'vende'}. Fechar aqui é exatamente o erro que não aparece no extrato e se repete todo mês.”`;
   }
   const picks = $('#picks'), q = $('#q'), sugg = $('#sugg');
   let side = 'compra', cur = null, raf = 0;
