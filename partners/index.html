@@ -278,6 +278,73 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
 .rv.in{opacity:1;transform:none;filter:none}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none;filter:none}}
 
+/* ── SCALE BAR ── */
+.scalebar{width:100%}
+.scalebar .track{position:relative;height:12px;border-radius:9px;background:linear-gradient(90deg,#EF4444 0 20%,#f08a24 20% 44%,#d4a017 44% 69%,#5fbf8f 69% 89%,#10B981 89%)}
+.scalebar .track i{position:absolute;top:-8px;width:4px;height:28px;border-radius:3px;background:var(--ink);box-shadow:0 0 0 5px rgba(11,26,51,.08);transform:translateX(-50%);transition:left .7s var(--ease)}
+.scalebar .ticks{position:relative;height:16px;margin-top:10px;font:12px 'Geist Mono';color:var(--faint)}
+.scalebar .ticks span{position:absolute;transform:translateX(-50%)}
+.scalebar .ticks span:first-child{transform:none}.scalebar .ticks span:last-child{transform:translateX(-100%)}
+
+/* ── DEMO SIMULATOR ── */
+.sim{display:grid;grid-template-columns:340px 1fr;border-radius:20px;overflow:hidden;background:var(--paper);box-shadow:0 0 0 1px var(--rule),0 40px 80px -50px rgba(36,73,186,.45)}
+.sim-l{padding:24px;border-right:1px solid var(--rule);background:#fcfdff}
+.search{position:relative;margin-top:10px}
+.search>svg{position:absolute;left:13px;top:22px;width:16px;height:16px;transform:translateY(-50%);color:var(--faint)}
+.search kbd{position:absolute;right:10px;top:22px;transform:translateY(-50%);padding:2px 6px;border-radius:5px;background:var(--tint);font:11px 'Geist Mono';color:var(--mute)}
+.search input{width:100%;height:44px;padding:0 44px 0 38px;border-radius:10px;border:0;background:var(--paper);box-shadow:0 0 0 1px var(--rule-2);font:500 14px Geist;color:var(--ink);text-transform:uppercase;outline:none;transition:box-shadow .2s}
+.search input::placeholder{text-transform:none;color:var(--faint);font-weight:400}
+.search input:focus{box-shadow:0 0 0 1px var(--blue),0 0 0 4px rgba(56,95,225,.15)}
+.sugg{position:absolute;z-index:5;left:0;right:0;top:50px;max-height:270px;overflow:auto;padding:6px;list-style:none;border-radius:12px;background:var(--paper);box-shadow:0 0 0 1px var(--rule),0 24px 50px -20px rgba(11,26,51,.35)}
+.sugg li{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:8px;font-size:13px;cursor:pointer}
+.sugg li:hover{background:var(--tint)}
+.sugg i{font-style:normal;color:var(--mute)}
+.seg2{display:flex;flex-wrap:wrap;gap:2px;margin-top:18px;padding:3px;border-radius:10px;background:var(--tint)}
+.seg2 button{flex:1 1 auto;height:32px;padding:0 6px;border-radius:8px;font-size:12px;color:var(--mute)}
+.seg2 button.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgba(11,26,51,.12)}
+.picks{display:grid;gap:6px;margin-top:12px}
+.pick{display:flex;align-items:center;gap:10px;width:100%;padding:9px;border-radius:10px;text-align:left;transition:background .2s}
+.pick:hover{background:var(--tint)}
+.pick.on{background:var(--tint-2)}
+.pick img{width:28px;height:28px;border-radius:50%;object-fit:cover;background:#fff;box-shadow:0 0 0 1px var(--rule)}
+.pick b{font-size:13px;font-weight:600}.pick span{display:block;font-size:11px;color:var(--mute)}
+.pick em{margin-left:auto;font:600 13px 'Geist Mono';font-style:normal}
+.sim-r{position:relative;padding:30px;display:flex;flex-direction:column;min-height:440px}
+.res-top{display:flex;justify-content:space-between;gap:14px}
+.res-id{display:flex;gap:12px;align-items:center}
+.res-id img{width:46px;height:46px;border-radius:50%;object-fit:cover;background:#fff;box-shadow:0 0 0 1px var(--rule)}
+.res-id b{display:block;font-size:24px;font-weight:600;letter-spacing:-.03em;line-height:1.1}
+.res-id span{font-size:13px;color:var(--mute)}
+.res-sc{font-size:84px;font-weight:500;letter-spacing:-.07em;line-height:.85;transition:color .4s,filter .4s}
+.res-z{align-self:flex-start;margin-top:26px;padding:5px 10px;border-radius:7px;font:600 12px 'Geist Mono';letter-spacing:.03em}
+.res-t{margin-top:12px;color:var(--ink-2);font-size:16px;max-width:460px}
+.say{margin-top:18px;padding:16px 18px;border-radius:14px;background:var(--tint);font-size:15px;color:var(--ink);line-height:1.45}
+.say span{display:block;margin-bottom:6px;font:500 11px 'Geist Mono';letter-spacing:.04em;text-transform:uppercase;color:var(--mute)}
+.say b{font-weight:500}
+.lock{position:absolute;inset:104px 0 0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;background:rgba(255,255,255,.72);backdrop-filter:blur(12px)}
+.sim-r.locked .lock{display:flex}
+.sim-r.locked .res-sc{filter:blur(10px);color:var(--faint)!important}
+.lock .ic{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:var(--ink);color:#fff}
+.lock .ic svg{width:20px;height:20px}
+.lock h4{font-size:22px;font-weight:500;letter-spacing:-.03em}
+.lock p{max-width:360px;color:var(--ink-2);font-size:14px}
+
+/* ── REVENUE RAMP CHART ── */
+.ramp{position:relative;margin-top:22px}
+.ramp svg{width:100%;height:150px;overflow:visible;display:block}
+.ramp .rx{display:flex;justify-content:space-between;margin-top:8px;font:11px 'Geist Mono';color:var(--faint)}
+.ramp-tip{position:absolute;right:0;padding:5px 9px;border-radius:8px;background:var(--ink);color:#fff;font:600 11px 'Geist Mono';white-space:nowrap;box-shadow:0 10px 24px -12px rgba(11,26,51,.6);transition:top .4s var(--ease),opacity .3s;pointer-events:none}
+
+/* live board bits */
+.plead.new{animation:flashrow 1.4s var(--ease)}
+@keyframes flashrow{0%{background:rgba(56,95,225,.14)}100%{background:transparent}}
+.livedot{display:inline-flex;align-items:center;gap:7px;font:500 11px 'Geist Mono';letter-spacing:.04em;text-transform:uppercase;color:var(--mute)}
+.livedot i{width:7px;height:7px;border-radius:50%;background:var(--up);box-shadow:0 0 0 0 rgba(16,185,129,.55);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 7px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+.board-head{display:flex;justify-content:space-between;align-items:center;margin:20px 0 2px}
+.board-head h4{font-size:14px;font-weight:600;letter-spacing:-.01em}
+.mini i{transition:height .8s var(--ease)}
+
 /* ── RESPONSIVE ── */
 @media(max-width:1060px){
   .nav nav{position:absolute;top:70px;left:0;right:0;display:none;flex-direction:column;gap:2px;padding:10px;border-radius:18px;background:rgba(255,255,255,.95);backdrop-filter:blur(18px);box-shadow:0 0 0 1px rgba(11,26,51,.07),0 20px 40px -20px rgba(11,26,51,.4)}
@@ -286,7 +353,8 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
   .board-grid{grid-template-columns:1fr}.board-side{border-left:0;border-top:1px solid var(--rule)}
 }
 @media(max-width:900px){
-  .sec-head,.pains,.pitch,.calc,.who{grid-template-columns:1fr}
+  .sec-head,.pains,.pitch,.calc,.who,.sim{grid-template-columns:1fr}
+  .sim-l{border-right:0;border-bottom:1px solid var(--rule)}
   .sec-head .p{justify-self:start}
   .bento{grid-template-columns:1fr}.c4,.c5,.c6,.c7,.c8{grid-column:auto}
   .steps{grid-template-columns:1fr 1fr}.steps>div:nth-child(2n){border-right:0}
@@ -303,6 +371,7 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
   .pain{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr}.steps>div{border-right:0}
   .formbox{padding:24px}
+  .sim-l,.sim-r{padding:22px}.res-sc{font-size:62px}.lock{inset:92px 0 0}
   .calc-in,.calc-out{padding:24px}
   .sticky{left:16px;right:16px;transform:translateY(140%);justify-content:space-between}.sticky.show{transform:none}.sticky p span{display:none}
 }
@@ -325,7 +394,7 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
 <header class="nav"><div class="wrap bar">
   <a class="logo" href="https://treend.com.br" aria-label="Treend — início"><img src="../lp/assets/treend-blue.svg" alt="Treend" width="145" height="40"></a>
   <nav id="section-menu" aria-label="Seções">
-    <a href="#para-quem">Pra quem é</a><a href="#dores">As dores</a><a href="#valor">O valor</a><a href="#transformacao">A transformação</a><a href="#pitch">Pitch</a><a href="#potencial">Potencial</a><a href="#faq">FAQ</a>
+    <a href="#para-quem">Pra quem é</a><a href="#dores">As dores</a><a href="#valor">O valor</a><a href="#transformacao">A transformação</a><a href="#demo">Demonstração</a><a href="#pitch">Pitch</a><a href="#potencial">Potencial</a><a href="#faq">FAQ</a>
   </nav>
   <div class="act">
     <a class="btn btn-line" href="https://novo.treend.com.br/login">Entrar</a>
@@ -360,16 +429,14 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
       <div class="win-bar"><div class="dots"><i></i><i></i><i></i></div><div class="url"><svg width="11" height="11"><use href="#lock"/></svg>novo.treend.com.br/parceiro</div><div style="width:47px"></div></div>
       <div class="board-grid">
         <div class="board-main">
-          <div class="kpis">
-            <div class="kpi"><span class="lbl">Leads no mês</span><b class="mono">38</b><small>+12 esta semana</small></div>
-            <div class="kpi"><span class="lbl">Assinaturas ativas</span><b class="mono">11</b><small>+3 este mês</small></div>
-            <div class="kpi"><span class="lbl">Conversão</span><b class="mono">29%</b><small>lead → assinante</small></div>
+          <div class="board-head" style="margin-top:0"><h4>Seus leads</h4><span class="livedot"><i></i>Ao vivo</span></div>
+          <div class="kpis" style="margin-top:12px">
+            <div class="kpi"><span class="lbl">Leads no mês</span><b class="mono" id="kLeads">0</b><small id="kLeadsD">+0 esta semana</small></div>
+            <div class="kpi"><span class="lbl">Assinaturas ativas</span><b class="mono" id="kSubs">0</b><small id="kSubsD">+0 este mês</small></div>
+            <div class="kpi"><span class="lbl">Conversão</span><b class="mono" id="kConv">0%</b><small>lead → assinante</small></div>
           </div>
-          <div class="plead"><div><b>Rafael A.</b><span>rafael@•••••.com · Instagram</span></div><div class="hide-sm mono" style="font-size:12px;color:var(--mute)">há 2 h</div><div class="hide-sm"><span class="tag ok">Assinou</span></div><div class="mono" style="text-align:right;font-weight:600">US$ 199</div></div>
-          <div class="plead"><div><b>Marina C.</b><span>marina@•••••.com · Lista de e-mail</span></div><div class="hide-sm mono" style="font-size:12px;color:var(--mute)">há 6 h</div><div class="hide-sm"><span class="tag ok">Assinou</span></div><div class="mono" style="text-align:right;font-weight:600">US$ 199</div></div>
-          <div class="plead"><div><b>Escritório Vértice</b><span>contato@•••••.com · Indicação direta</span></div><div class="hide-sm mono" style="font-size:12px;color:var(--mute)">ontem</div><div class="hide-sm"><span class="tag wait">Em conversa</span></div><div class="mono" style="text-align:right;color:var(--mute)">—</div></div>
-          <div class="plead"><div><b>Diego P.</b><span>diego@•••••.com · Página de parceiro</span></div><div class="hide-sm mono" style="font-size:12px;color:var(--mute)">ontem</div><div class="hide-sm"><span class="tag ok">Assinou</span></div><div class="mono" style="text-align:right;font-weight:600">US$ 199</div></div>
-          <p class="note">Painel ilustrativo. Os dados que aparecem no seu painel são os seus leads e as suas assinaturas.</p>
+          <div id="feed"></div>
+          <p class="note">Simulação ao vivo. No seu painel, os leads e as assinaturas são os seus.</p>
         </div>
         <div class="board-side">
           <span class="lbl">Receita recorrente do parceiro</span>
@@ -521,6 +588,46 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
   </div>
 </div></section>
 
+<!-- DEMO AO VIVO -->
+<section class="sec" id="demo"><div class="wrap">
+  <div class="sec-head">
+    <div><span class="eyebrow rv">Demonstração ao vivo</span><h2 class="h2 rv" style="margin-top:18px">A tela que você<br><span class="soft">mostra para fechar.</span></h2></div>
+    <p class="p rv">É assim que a conversa vira venda: o cliente diz o ativo, você abre a plataforma e o índice responde na hora. Teste agora — pesquise qualquer ativo da carteira dele.</p>
+  </div>
+  <div class="sim rv">
+    <div class="sim-l">
+      <span class="lbl">Pesquisar ativo do seu cliente</span>
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="q" type="text" autocomplete="off" placeholder="VALE3, AAPL, SOJA, BTC, USD…" aria-label="Pesquisar ativo">
+        <kbd>↵</kbd>
+        <ul class="sugg" id="sugg" hidden></ul>
+      </div>
+      <div class="seg2" role="group" aria-label="Mercado">
+        <button type="button" class="on" data-m="acoes">Ações</button><button type="button" data-m="fiis">FIIs</button><button type="button" data-m="stocks">Stocks</button><button type="button" data-m="commod">Commodities</button><button type="button" data-m="crypto">Cripto</button><button type="button" data-m="fx">Câmbio</button>
+      </div>
+      <div class="picks" id="picks"></div>
+    </div>
+    <div class="sim-r" id="res">
+      <div class="res-top">
+        <div class="res-id"><img id="rLogo" src="../lp/assets/logos/PETR4.svg" alt=""><div><b id="rTk"></b><span id="rNm"></span></div></div>
+        <div style="text-align:right"><span class="lbl">Index Score</span><div class="res-sc mono" id="rSc">0</div></div>
+      </div>
+      <div class="scalebar" style="margin-top:38px"><div class="track"><i id="rMark" style="left:0"></i></div><div class="ticks mono"><span style="left:0">0</span><span style="left:20%">20</span><span style="left:45%">45</span><span style="left:70%">70</span><span style="left:90%">90</span><span style="left:100%">100</span></div></div>
+      <span class="res-z" id="rZ"></span>
+      <p class="res-t" id="rT"></p>
+      <div class="say"><span>O que você diz neste momento</span><b id="rSay">—</b></div>
+      <p class="note" style="margin-top:auto;padding-top:20px">Prévia ilustrativa, igual à da página de ofertas. Não é recomendação de compra ou venda.</p>
+      <div class="lock">
+        <span class="ic"><svg><use href="#lock"/></svg></span>
+        <h4>Score de <span id="lTk"></span> bloqueado</h4>
+        <p>Essa é exatamente a hora em que o cliente quer assinar — e a assinatura nasce do seu link. Mais de 5.000 ativos liberados no Treend Pro.</p>
+        <a class="btn btn-blue" href="#cadastro" style="margin-top:6px">Quero indicar e ser remunerado <svg><use href="#arr"/></svg></a>
+      </div>
+    </div>
+  </div>
+</div></section>
+
 <!-- PITCH -->
 <section class="sec" id="pitch"><div class="wrap">
   <div class="sec-head">
@@ -580,6 +687,18 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
         <div><span>Em 12 meses</span><b id="oYear">—</b></div>
         <div><span>Ao longo da permanência média</span><b id="oLtv">—</b></div>
         <div><span>Receita gerada para a Treend</span><b id="oGross">—</b></div>
+      </div>
+      <div class="ramp" id="ramp">
+        <span class="lbl">Comissão acumulada ao longo da permanência</span>
+        <svg viewBox="0 0 600 150" preserveAspectRatio="none" aria-hidden="true">
+          <defs><linearGradient id="rg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#385fe1" stop-opacity=".30"/><stop offset="1" stop-color="#385fe1" stop-opacity="0"/></linearGradient></defs>
+          <g id="rGrid"></g>
+          <path id="rArea" d="" fill="url(#rg)"/>
+          <path id="rLine" d="" fill="none" stroke="#385fe1" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle id="rDot" r="5" fill="#385fe1" stroke="#fff" stroke-width="2.5" cx="0" cy="150"/>
+        </svg>
+        <div class="rx"><span>mês 1</span><span id="rxMid">—</span><span id="rxEnd">—</span></div>
+        <div class="ramp-tip" id="rTip" style="top:60px;opacity:0">—</div>
       </div>
       <p class="note" id="fxNote">Conversão em reais pela cotação de referência do dia.</p>
       <a class="btn btn-blue" style="margin-top:24px" href="#cadastro">Começar com esse potencial <svg><use href="#arr"/></svg></a>
@@ -728,14 +847,53 @@ function calc() {
   $('#vRate').textContent = rate.value + '%';
   $('#vMonths').textContent = m;
   $('#oMonth').textContent = fmtUsd(month);
-  $('#boardMrr').textContent = fmtUsd(month);
   $('#oYear').textContent = fmtUsd(month * 12);
   $('#oLtv').textContent = fmtUsd(month * m);
   $('#oGross').textContent = fmtUsd(n * TICKET) + ' / mês';
   $('#oMonthBrl').textContent = usdBrl ? fmtBrl(month * usdBrl) : '—';
   $('#fxNote').textContent = usdBrl
-    ? 'Conversão pela cotação de referência de hoje: US$ 1 = ' + fmtBrl(usdBrl).replace('R$ ', 'R$ ') + '.'
+    ? 'Conversão pela cotação de referência de hoje: US$ 1 = ' + fmtBrl(usdBrl) + '.'
     : fxFailed ? 'Cotação indisponível agora para converter em reais.' : 'Buscando a cotação do dia para converter em reais…';
+  drawRamp(month, m);
+}
+
+/* curva de comissão acumulada — redesenhada a cada ajuste dos controles */
+const W = 600, H = 150;
+let rampRaf = 0;
+$('#rGrid').replaceChildren(...[0, 37.5, 75, 112.5, 150].map(y => {
+  const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  l.setAttribute('x1', 0); l.setAttribute('x2', W); l.setAttribute('y1', y); l.setAttribute('y2', y);
+  l.setAttribute('stroke', '#eef2f9'); l.setAttribute('stroke-width', 1);
+  return l;
+}));
+function drawRamp(month, m) {
+  const total = month * m || 1;
+  const pts = [];
+  for (let i = 1; i <= m; i++) {
+    const x = m === 1 ? W : (i - 1) / (m - 1) * W;
+    pts.push([x, H - (month * i / total) * (H - 14) - 7]);
+  }
+  const d = pts.map((pt, i) => (i ? 'L' : 'M') + pt[0].toFixed(1) + ' ' + pt[1].toFixed(1)).join(' ');
+  $('#rLine').setAttribute('d', d);
+  $('#rArea').setAttribute('d', d + ` L${W} ${H} L0 ${H} Z`);
+  const last = pts[pts.length - 1];
+  $('#rDot').setAttribute('cx', last[0]); $('#rDot').setAttribute('cy', last[1]);
+  $('#rxMid').textContent = 'mês ' + Math.max(1, Math.round(m / 2));
+  $('#rxEnd').textContent = 'mês ' + m;
+  const tip = $('#rTip');
+  tip.textContent = fmtUsd(month * m) + ' acumulados';
+  // fica logo abaixo do ponto final, dentro da área vazia sob a curva
+  tip.style.top = Math.round(22 + last[1] + 14) + 'px';
+  tip.style.opacity = 1;
+  // marca o ponto final com um pulso curto a cada ajuste
+  cancelAnimationFrame(rampRaf);
+  const t0 = performance.now();
+  const pulse = t => {
+    const k = Math.min((t - t0) / 420, 1);
+    $('#rDot').setAttribute('r', 5 + Math.sin(k * Math.PI) * 3.5);
+    if (k < 1) rampRaf = requestAnimationFrame(pulse);
+  };
+  rampRaf = requestAnimationFrame(pulse);
 }
 [subs, rate, months].forEach(el => el.addEventListener('input', calc));
 calc();
@@ -744,6 +902,213 @@ fetch('https://economia.awesomeapi.com.br/json/last/USD-BRL')
   .then(j => { const v = Number(j.USDBRL && j.USDBRL.bid); if (!(v > 0)) throw new Error('fx'); usdBrl = v; })
   .catch(() => { fxFailed = true; })
   .finally(calc);
+
+/* ══ SIMULADOR 1 · painel do parceiro ao vivo ══ */
+(() => {
+  const feed = $('#feed');
+  if (!feed) return;
+  const PEOPLE = [
+    ['Rafael A.', 'rafael', 'Instagram'], ['Marina C.', 'marina', 'Lista de e-mail'],
+    ['Escritório Vértice', 'contato', 'Indicação direta'], ['Diego P.', 'diego', 'Página de parceiro'],
+    ['Camila R.', 'camila', 'YouTube'], ['Thiago M.', 'thiago', 'Grupo de WhatsApp'],
+    ['Ana Beatriz S.', 'anabeatriz', 'Newsletter'], ['Lucas F.', 'lucas', 'Página de parceiro'],
+    ['Consultoria Nórdica', 'financeiro', 'Indicação direta'], ['Patrícia L.', 'patricia', 'Instagram'],
+    ['Eduardo N.', 'eduardo', 'Comunidade'], ['Helena V.', 'helena', 'Página de parceiro']
+  ];
+  const TICKET = 199;
+  let leads = 34, subs = 9, weekly = 11, monthly = 3, pi = 0, first = true;
+  const fmt = n => 'US$ ' + n.toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+  const counters = new WeakMap();
+  function count(el, to, suffix = '') {
+    cancelAnimationFrame(counters.get(el) || 0);
+    const from = parseInt(String(el.textContent).replace(/\D/g, ''), 10) || 0, t0 = performance.now();
+    const f = t => {
+      const k = Math.min((t - t0) / 650, 1), v = Math.round(from + (to - from) * (1 - (1 - k) ** 3));
+      el.textContent = (suffix === 'usd' ? fmt(v) : v + suffix);
+      if (k < 1) counters.set(el, requestAnimationFrame(f));
+    };
+    counters.set(el, requestAnimationFrame(f));
+  }
+  const bars = $$('.mini i');
+  function paint() {
+    count($('#kLeads'), leads);
+    count($('#kSubs'), subs);
+    count($('#kConv'), Math.round(subs / leads * 100), '%');
+    count($('#boardMrr'), Math.round(subs * TICKET * .25), 'usd');
+    $('#kLeadsD').textContent = '+' + weekly + ' esta semana';
+    $('#kSubsD').textContent = '+' + monthly + ' este mês';
+    bars.forEach((b, i) => { const base = 18 + i * 9; b.style.height = Math.min(100, base + (i === bars.length - 1 ? subs * 1.2 : subs * .5)) + '%'; });
+  }
+  function row(p, signed, when) {
+    const d = document.createElement('div');
+    d.className = 'plead' + (first ? '' : ' new');
+    d.innerHTML = `<div><b>${p[0]}</b><span>${p[1]}@•••••.com · ${p[2]}</span></div>`
+      + `<div class="hide-sm mono t" style="font-size:12px;color:var(--mute)">${when}</div>`
+      + `<div class="hide-sm"><span class="tag ${signed ? 'ok' : 'wait'}">${signed ? 'Assinou' : 'Em conversa'}</span></div>`
+      + `<div class="mono" style="text-align:right;${signed ? 'font-weight:600' : 'color:var(--mute)'}">${signed ? 'US$ 199' : '—'}</div>`;
+    return d;
+  }
+  [[PEOPLE[0], true, 'há 2 h'], [PEOPLE[1], true, 'há 6 h'], [PEOPLE[2], false, 'ontem'], [PEOPLE[3], true, 'ontem']]
+    .forEach(([p, sg, w]) => feed.append(row(p, sg, w)));
+  first = false; pi = 4; paint();
+
+  let timer = null, live = false;
+  function tick() {
+    const p = PEOPLE[pi++ % PEOPLE.length], signed = Math.random() < .42;
+    feed.prepend(row(p, signed, 'agora'));
+    while (feed.children.length > 4) feed.lastElementChild.remove();
+    const AGO = ['agora', 'há 3 min', 'há 11 min', 'há 26 min'];
+    [...feed.children].forEach((el, i) => { const t = el.querySelector('.t'); if (t) t.textContent = AGO[i] || 'há 1 h'; });
+    leads++; weekly++;
+    if (signed) { subs++; monthly++; }
+    paint();
+    timer = setTimeout(tick, 3200 + Math.random() * 2600);
+  }
+  if (!reduce) new IntersectionObserver(es => {
+    const vis = es[0].isIntersecting;
+    if (vis && !live) { live = true; timer = setTimeout(tick, 2200); }
+    else if (!vis && live) { live = false; clearTimeout(timer); }
+  }, { threshold: .25 }).observe(feed);
+})();
+
+/* ══ SIMULADOR 2 · Index Score ao vivo (mesma prévia da página de ofertas) ══ */
+(() => {
+  const res = $('#res'); if (!res) return;
+  const ZONES = [
+    { min: 90, c: '#10B981', bg: '#e7f8f1', fg: '#0e9f6e', label: 'MUITO ABAIXO DA MÉDIA' },
+    { min: 70, c: '#5fbf8f', bg: '#ecf8f2', fg: '#2f9a6a', label: 'ABAIXO DA MÉDIA' },
+    { min: 45, c: '#d4a017', bg: '#fbf4e2', fg: '#a17707', label: 'NEUTRO' },
+    { min: 21, c: '#f08a24', bg: '#fdf0e3', fg: '#c2620c', label: 'ATENÇÃO' },
+    { min: 0, c: '#EF4444', bg: '#fdecec', fg: '#dc2626', label: 'ESTICADO' }
+  ];
+  const zone = v => ZONES.find(z => v >= z.min);
+  const A = '../lp/assets/';
+  const MK = {
+    acoes: { label: 'Ações B3', free: [
+      ['PETR4', 'Petrobras', 'logos/PETR4.svg', 91, 'Preço em região de suporte histórico com exaustão de venda.'],
+      ['ITUB4', 'Itaú Unibanco', 'logos/ITUB4.svg', 56, 'Preço em equilíbrio com a média histórica; momentum neutro.'],
+      ['WEGE3', 'WEG', 'logos/WEGE3.svg', 14, 'Distância extrema da média com divergência de força compradora.']],
+      locked: [['VALE3', 'Vale', 'logos/VALE3.svg'], ['BBAS3', 'Banco do Brasil', 'logos/BBAS3.svg'], ['BBDC4', 'Bradesco', 'logos/BBDC4.svg'], ['ABEV3', 'Ambev', 'logos/ABEV3.svg'], ['B3SA3', 'B3', 'logos/B3SA3.svg'], ['MGLU3', 'Magazine Luiza', 'logos/MGLU3.svg'], ['TAEE11', 'Taesa', 'logos/TAEE11.svg'], ['PRIO3', 'PRIO', 'logos/PRIO3.svg']] },
+    fiis: { label: 'FIIs', free: [
+      ['HGLG11', 'CSHG Logística', 'logos/HGLG11.svg', 93, 'P/VP abaixo da média histórica com fluxo vendedor exaurido.'],
+      ['KNRI11', 'Kinea Renda Imobiliária', 'logos/KNRI11.svg', 74, 'Cotação em equilíbrio com o valor patrimonial; ciclo neutro.'],
+      ['XPML11', 'XP Malls', 'logos/XPML11.svg', 32, 'Cotação esticada acima da média com sinais de exaustão compradora.']],
+      locked: [['MXRF11', 'Maxi Renda', 'logos/MXRF11.svg'], ['VISC11', 'Vinci Shopping Centers', 'logos/VISC11.svg'], ['BTLG11', 'BTG Logística', 'logos/BTLG11.svg'], ['HGRE11', 'CSHG Real Estate', 'logos/HGRE11.svg']] },
+    stocks: { label: 'Stocks', free: [
+      ['AMZN', 'Amazon', 'logos/AMZN.svg', 88, 'Teste de suporte de longo prazo com volume vendedor decrescente.'],
+      ['MSFT', 'Microsoft', 'logos/MSFT.svg', 52, 'Consolidação lateral após correção; momentum neutro.'],
+      ['NVDA', 'NVIDIA', 'logos/NVDA.svg', 9, 'Sobrecompra extrema em múltiplos tempos gráficos; risco de realização.']],
+      locked: [['AAPL', 'Apple', 'logos/AAPL.svg'], ['TSLA', 'Tesla', 'logos/TSLA.svg'], ['GOOGL', 'Alphabet', 'logos/GOOGL.svg'], ['META', 'Meta', 'logos/META.svg'], ['NFLX', 'Netflix', 'logos/NFLX.svg'], ['AMD', 'AMD', 'logos/AMD.svg']] },
+    commod: { label: 'Commodities', free: [
+      ['SOJA', 'Soja FOB Santos', 'logos/SOJA.svg', 95, 'Índice diário de 94,9: preço muito abaixo do comportamento usual. Desconto raro na janela diária.'],
+      ['OURO', 'Ouro (micro futuro)', 'logos/OURO.svg', 76, 'Índice diário de 76: preço abaixo da média, sem atingir o nível mais raro.'],
+      ['BRENT', 'Petróleo Brent', 'logos/BRENT.svg', 26, 'Índice diário de 25,8: preço acima do comportamento usual. Zona de atenção.']],
+      locked: [['TRIGO', 'Trigo KC HRW', 'logos/TRIGO.svg'], ['MILHO', 'Milho', 'logos/MILHO.svg'], ['CAFE', 'Café arábica', 'logos/CAFE.svg'], ['MINERIO', 'Minério de ferro', 'logos/MINERIO.svg'], ['WTI', 'Petróleo WTI', 'logos/WTI.svg'], ['COBRE', 'Cobre', 'logos/COBRE.svg'], ['LITIO', 'Lítio', 'logos/LITIO.svg']] },
+    crypto: { label: 'Cripto', free: [
+      ['ETH', 'Ethereum', 'logos/ETH.svg', 75, 'Índice diário de 75: preço abaixo do comportamento usual. Em cripto, confirme no semanal antes de agir.'],
+      ['BTC', 'Bitcoin', 'logos/BTC.svg', 60, 'Índice diário de 60: preço perto do comportamento usual. Sem desconto nem excesso relevantes.'],
+      ['PEPE', 'Pepe', 'logos/PEPE.svg', 31, 'Índice diário de 31: preço acima do comportamento usual. Zona de atenção.']],
+      locked: [['SOL', 'Solana', 'logos/SOL.svg'], ['XRP', 'XRP', 'logos/XRP.svg'], ['BNB', 'BNB', 'logos/BNB.svg'], ['ZEC', 'Zcash', 'logos/ZEC.svg'], ['DOGE', 'Dogecoin', 'logos/DOGE.svg']] },
+    fx: { label: 'Câmbio', free: [
+      ['USD/BRL', 'Dólar americano', '/offer/flags/USD.svg', 92, 'Prévia ilustrativa · Importador · 1x ao dia. Cenário Excepcional: confiança Muito Alta para quem compra moeda.'],
+      ['EUR/BRL', 'Euro', '/offer/flags/EUR.svg', 58, 'Prévia ilustrativa · Importador · 1x ao dia. Cenário OK: confiança Moderada-Alta para quem compra moeda.'],
+      ['GBP/BRL', 'Libra esterlina', '/offer/flags/GBP.svg', 28, 'Prévia ilustrativa · Importador · 1x ao dia. Cautela: confiança Atenção para quem compra moeda.']],
+      locked: [['CNY/BRL', 'Yuan chinês', '/offer/flags/CNY.svg'], ['USDT/BRL', 'Tether', '/offer/flags/USDT.svg']] }
+  };
+  const ALL = [];
+  for (const [m, d] of Object.entries(MK)) {
+    d.free.forEach(([t, n, l, sc, r]) => ALL.push({ t, n, logo: l.startsWith('/') ? l : A + l, s: sc, r, m, cat: d.label }));
+    d.locked.forEach(([t, n, l]) => ALL.push({ t, n, logo: l.startsWith('/') ? l : A + l, m, cat: d.label, locked: true }));
+  }
+  function pz(a) {
+    if (a.m !== 'fx') return zone(a.s);
+    const bands = [[90, 'MUITO ALTA', '#10B981', '#e7f8f1'], [80, 'ALTA', '#10B981', '#e7f8f1'], [50, 'MODERADA-ALTA', '#86a829', '#f0f6e5'], [45, 'MODERADA', '#d4a017', '#fbf4e2'], [36, 'CAUTELA', '#f08a24', '#fdf0e3'], [20, 'ATENÇÃO', '#f08a24', '#fdf0e3'], [0, 'CRÍTICA', '#EF4444', '#fdecec']];
+    const [, label, c, bg] = bands.find(b => a.s >= b[0]);
+    return { label, c, fg: c, bg };
+  }
+  // a frase de venda que acompanha cada faixa do índice
+  function say(a) {
+    if (a.s >= 90) return `“${a.t} está em ${a.s} de 100: é das poucas vezes em que o preço fica tão descontado contra o próprio histórico. Se você já ia comprar, essa é a janela.”`;
+    if (a.s >= 70) return `“${a.t} marca ${a.s}: o preço está abaixo do comportamento usual, sem ser o extremo. Dá para montar posição em partes.”`;
+    if (a.s >= 45) return `“${a.t} está em ${a.s}, ou seja, no meio do caminho. Nem desconto, nem excesso — se não há pressa, vale esperar o índice abrir.”`;
+    if (a.s >= 21) return `“${a.t} em ${a.s} é zona de atenção: o preço já subiu além do usual. Comprar aqui é pagar caro por um ativo que você poderia ter por menos.”`;
+    return `“${a.t} em ${a.s} de 100: esticado. Esse é exatamente o ponto em que a maioria compra — e passa meses no vermelho mesmo tendo escolhido um bom ativo.”`;
+  }
+  const picks = $('#picks'), q = $('#q'), sugg = $('#sugg');
+  let market = 'acoes', cur = null, raf = 0;
+  function count(el, to) {
+    cancelAnimationFrame(raf);
+    const from = parseInt(el.textContent, 10) || 0, t0 = performance.now();
+    const f = t => { const k = Math.min((t - t0) / 700, 1); el.textContent = Math.round(from + (to - from) * (1 - (1 - k) ** 3)); if (k < 1) raf = requestAnimationFrame(f); };
+    raf = requestAnimationFrame(f);
+  }
+  function show(a) {
+    cur = a;
+    $('#rLogo').src = a.logo; $('#rTk').textContent = a.t; $('#rNm').textContent = `${a.n} · ${a.cat}`;
+    res.classList.toggle('locked', !!a.locked);
+    const sc = $('#rSc');
+    if (a.locked) { cancelAnimationFrame(raf); sc.textContent = '??'; $('#lTk').textContent = a.t; }
+    else {
+      const z = pz(a);
+      sc.style.color = z.c; count(sc, a.s);
+      $('#rMark').style.left = a.s + '%';
+      const rz = $('#rZ'); rz.textContent = z.label; rz.style.background = z.bg; rz.style.color = z.fg;
+      $('#rT').textContent = a.r;
+      $('#rSay').textContent = say(a);
+    }
+    picks.replaceChildren(...ALL.filter(x => x.m === market && !x.locked).map(x => {
+      const b = document.createElement('button'); b.type = 'button';
+      b.className = 'pick' + (x === cur ? ' on' : '');
+      b.innerHTML = `<img src="${x.logo}" alt=""><div><b>${x.t}</b><span>${x.n}</span></div><em style="color:${pz(x).c}">${x.s}</em>`;
+      b.onclick = () => show(x);
+      return b;
+    }));
+  }
+  $$('.seg2 button').forEach(b => b.onclick = () => {
+    market = b.dataset.m;
+    $$('.seg2 button').forEach(x => x.classList.toggle('on', x === b));
+    show(ALL.find(a => a.m === market && !a.locked));
+  });
+  function suggest(v) {
+    v = v.trim().toUpperCase();
+    const list = (v ? ALL.filter(a => a.t.includes(v) || a.n.toUpperCase().includes(v)) : ALL).slice().sort((x, y) => !!x.locked - !!y.locked);
+    sugg.replaceChildren();
+    if (!list.length) { const li = document.createElement('li'); li.textContent = v.length >= 3 ? `Enter para ver ${v}` : 'Nenhum ativo encontrado'; sugg.append(li); }
+    list.slice(0, 40).forEach(a => {
+      const li = document.createElement('li');
+      li.innerHTML = `<span style="display:flex;align-items:center;gap:9px"><img src="${a.logo}" alt="" style="width:22px;height:22px;border-radius:50%"><span><b>${a.t}</b> <i>· ${a.cat}</i></span></span>`
+        + (a.locked ? '<i>🔒 Pro</i>' : `<b class="mono" style="color:${pz(a).c}">${a.s}</b>`);
+      li.onmousedown = e => { e.preventDefault(); pick(a); };
+      sugg.append(li);
+    });
+    sugg.hidden = false;
+  }
+  function pick(a) { show(a); q.value = ''; sugg.hidden = true; q.blur(); }
+  q.addEventListener('input', () => suggest(q.value));
+  q.addEventListener('focus', () => suggest(q.value));
+  q.addEventListener('blur', () => setTimeout(() => { sugg.hidden = true; }, 120));
+  q.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const v = q.value.trim().toUpperCase();
+    if (!v) return;
+    const hit = ALL.find(a => a.t === v) || ALL.find(a => a.t.includes(v) || a.n.toUpperCase().includes(v));
+    const a = hit || (v.length >= 2 && { t: v, n: 'Ativo monitorado pela Treend', cat: 'Treend Pro', logo: '../lp/favicon.svg', locked: true });
+    if (a) pick(a);
+  });
+  show(ALL.find(a => a.m === 'acoes' && !a.locked));
+
+  // roda sozinho enquanto a seção está na tela e ninguém mexeu
+  let auto = null, touched = false;
+  ['pointerdown', 'keydown'].forEach(ev => res.closest('.sim').addEventListener(ev, () => { touched = true; clearInterval(auto); }));
+  if (!reduce) new IntersectionObserver(es => {
+    clearInterval(auto);
+    if (!es[0].isIntersecting || touched) return;
+    const list = ALL.filter(a => a.m === market && !a.locked);
+    let i = 0;
+    auto = setInterval(() => { if (touched) return clearInterval(auto); i = (i + 1) % list.length; show(list[i]); }, 3400);
+  }, { threshold: .35 }).observe(res);
+})();
 
 /* ── cadastro → lista Partner Program no admin da Treend ── */
 const SB_URL = 'https://mztkmlufajogxjltllhs.supabase.co';
