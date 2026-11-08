@@ -83,7 +83,7 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button{fon
 .mesh:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(251,252,255,0) 40%,var(--bg) 92%)}
 .grain{position:absolute;inset:0;z-index:-1;opacity:.35;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 .hero-top{text-align:center}
-.pill{display:inline-flex;align-items:center;gap:10px;height:34px;padding:0 6px 0 14px;border-radius:999px;background:rgba(255,255,255,.7);box-shadow:0 0 0 1px rgba(11,26,51,.07);font-size:13px;color:var(--ink-2);backdrop-filter:blur(8px)}
+.pill{display:inline-flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;min-height:34px;padding:4px 6px 4px 14px;line-height:1.3;max-width:100%;border-radius:999px;background:rgba(255,255,255,.7);box-shadow:0 0 0 1px rgba(11,26,51,.07);font-size:13px;color:var(--ink-2);backdrop-filter:blur(8px)}
 .pill b{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:999px;background:var(--ink);color:#fff;font-size:11px;font-weight:500}
 .hero h1{margin:26px auto 0;font-size:min(80px,7vw);font-weight:500;letter-spacing:-.055em;line-height:1}
 .hero h1>span{display:block}
@@ -387,6 +387,22 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
   .thread li{max-width:92%}
 }
 
+@media(max-width:760px){
+  .cmp{overflow:visible;box-shadow:none;background:none}
+  .cmp table,.cmp tbody,.cmp tr,.cmp td{display:block;width:auto;min-width:0}
+  .cmp table{min-width:0}
+  .cmp thead{display:none}
+  .cmp tr{margin-bottom:10px;border-radius:16px;background:var(--paper);box-shadow:0 0 0 1px var(--rule);overflow:hidden}
+  .cmp td{padding:14px 18px;border-bottom:0}
+  .cmp td.lab{padding:13px 18px;background:#fcfdff;border-bottom:1px solid var(--rule);font:500 12px 'Geist Mono';letter-spacing:.04em;text-transform:uppercase;color:var(--mute)}
+  .cmp td.was,.cmp td.us{position:relative;padding-left:18px;font-size:15px}
+  .cmp td.was{color:var(--mute)}
+  .cmp td.was:before,.cmp td.us:before{content:attr(data-l);display:block;margin-bottom:5px;font:600 10px 'Geist Mono';letter-spacing:.06em;text-transform:uppercase}
+  .cmp td.was:before{color:var(--faint)}
+  .cmp td.us{box-shadow:none;background:linear-gradient(180deg,#f3f6ff,#f8faff);border-top:1px solid var(--rule)}
+  .cmp td.us:before{color:var(--blue-d)}
+}
+
 /* ── RESPONSIVE ── */
 @media(max-width:1060px){
   .nav nav{position:absolute;top:72px;left:0;right:0;display:none;flex-direction:column;gap:0;padding:8px;border-radius:20px;background:var(--paper);box-shadow:0 0 0 1px var(--rule-2),0 28px 60px -22px rgba(11,26,51,.45)}
@@ -400,7 +416,10 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
   .board-grid{grid-template-columns:1fr}.board-side{border-left:0;border-top:1px solid var(--rule)}
 }
 @media(max-width:900px){
-  .pains,.pitch,.calc,.sim{grid-template-columns:1fr}
+  .pains,.pitch,.sim{grid-template-columns:1fr}
+  .calc{grid-template-columns:minmax(0,1fr)}
+  .calc>*,.calc-rows div{min-width:0}
+  .calc-rows div{flex-wrap:wrap;gap:2px 16px}
   .sim-l{border-right:0;border-bottom:1px solid var(--rule)}
   .bento{grid-template-columns:1fr}.c4,.c5,.c6,.c7,.c8{grid-column:auto}
   .steps{grid-template-columns:1fr 1fr}.steps>div:nth-child(2n){border-right:0}
@@ -411,9 +430,20 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
   .wrap{width:calc(100% - 32px)}
   .nav{inset:10px 0 auto}.nav .bar{height:54px;gap:8px;padding:0 6px 0 12px}.nav .logo img{height:24px}
   .nav .btn{height:38px;padding:0 13px;font-size:13px}.nav .act .btn-line{display:none}
-  .hero{padding-top:120px}.hero h1{font-size:min(44px,10vw)}
+  .hero{padding-top:116px}
+  .hero h1{font-size:min(37px,8.6vw);letter-spacing:-.04em;line-height:1.08}
+  .hero h1>span+span{margin-top:.34em}
+  .hero .p{font-size:16px;text-align:left}
+  .hero .ctas .btn{width:100%;justify-content:center}
+  .hero .meta{gap:10px;flex-direction:column;align-items:center}
+  .pill{font-size:12.5px;gap:7px;padding:4px 5px 4px 12px}
+  .pill b{font-size:10.5px;padding:0 8px}
+  .nav .act .btn-pri{padding:0 12px;font-size:13px}
   .kpis{grid-template-columns:1fr}
-  .plead{grid-template-columns:1fr 74px}.plead .hide-sm{display:none}
+  .plead{grid-template-columns:1fr auto auto;gap:10px;height:auto;min-height:48px;padding:8px 0}
+  .plead .hide-sm{display:none}
+  .plead .st{display:block}
+  .plead .tag{font-size:9.5px;padding:3px 6px}
   .pain{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr}.steps>div{border-right:0}
   .formbox{padding:24px}
@@ -454,8 +484,8 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
   <div class="mesh" aria-hidden="true"><i></i><i></i><i></i></div>
   <div class="grain" aria-hidden="true"></div>
   <div class="wrap hero-top">
-    <span class="pill rv">Programa oficial de parceiros · Câmbio <b>Treend Partner Program</b></span>
-    <h1 class="rv"><span>Seus clientes fecham</span><span>câmbio toda semana.</span><span>Ganhe <em style="font-style:normal" class="b">toda vez</em> que eles fecham bem.</span></h1>
+    <span class="pill rv">Treend Partner Program <b>Câmbio</b></span>
+    <h1 class="rv"><span>Seus clientes são impactados pelo câmbio.</span><span>Ganhe <em style="font-style:normal" class="b">toda vez</em> que eles fecham bem.</span></h1>
     <p class="p rv">Se a sua carteira tem importador, exportador, agência de turismo, remessa ou aporte no exterior, você já convive com a pergunta. Leve a leitura de moeda da Treend para esses clientes e passe a ter <strong>receita recorrente</strong> por cada assinatura que nasce do seu nome.</p>
     <div class="ctas rv">
       <a class="btn btn-blue" href="#cadastro">Entrar no programa <svg><use href="#arr"/></svg></a>
@@ -608,13 +638,13 @@ footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
     <table>
       <thead><tr><th></th><th>Antes</th><th class="us"><img src="../lp/assets/treend-blue.svg" alt="Parceiro Treend"></th></tr></thead>
       <tbody>
-        <tr><td>Sua receita</td><td>Por operação fechada, sem base entre um mês e outro</td><td class="us"><b>Recorrente em dólar</b>, por assinatura ativa</td></tr>
-        <tr><td>Sua entrega</td><td>Taxa negociada no dia em que o cliente pediu</td><td class="us">Taxa <b>mais a janela</b> em que fechar sai melhor</td></tr>
-        <tr><td>A conversa</td><td>Disputa de centésimos no spread</td><td class="us">Custo anual do spread <b>e</b> custo do dia escolhido</td></tr>
-        <tr><td>Sua autoridade</td><td>Opinião sobre para onde o dólar vai</td><td class="us">Leitura <b>quantitativa</b> de quão caro ou barato ele está hoje</td></tr>
-        <tr><td>Seu produto</td><td>Nenhum, ou um que você teria que construir</td><td class="us"><b>Plataforma pronta</b> com as moedas do seu cliente</td></tr>
-        <tr><td>Seu funil</td><td>Clique que você não consegue rastrear</td><td class="us"><b>Página de parceiro</b> com leads e conversão medidos</td></tr>
-        <tr><td>Risco do cliente</td><td>Fechar no pior dia do mês e descobrir depois</td><td class="us"><b>Alerta na janela</b> definida, antes de fechar</td></tr>
+        <tr><td class="lab">Sua receita</td><td class="was" data-l="Antes">Por operação fechada, sem base entre um mês e outro</td><td class="us" data-l="Com a Treend"><b>Recorrente em dólar</b>, por assinatura ativa</td></tr>
+        <tr><td class="lab">Sua entrega</td><td class="was" data-l="Antes">Taxa negociada no dia em que o cliente pediu</td><td class="us" data-l="Com a Treend">Taxa <b>mais a janela</b> em que fechar sai melhor</td></tr>
+        <tr><td class="lab">A conversa</td><td class="was" data-l="Antes">Disputa de centésimos no spread</td><td class="us" data-l="Com a Treend">Custo anual do spread <b>e</b> custo do dia escolhido</td></tr>
+        <tr><td class="lab">Sua autoridade</td><td class="was" data-l="Antes">Opinião sobre para onde o dólar vai</td><td class="us" data-l="Com a Treend">Leitura <b>quantitativa</b> de quão caro ou barato ele está hoje</td></tr>
+        <tr><td class="lab">Seu produto</td><td class="was" data-l="Antes">Nenhum, ou um que você teria que construir</td><td class="us" data-l="Com a Treend"><b>Plataforma pronta</b> com as moedas do seu cliente</td></tr>
+        <tr><td class="lab">Seu funil</td><td class="was" data-l="Antes">Clique que você não consegue rastrear</td><td class="us" data-l="Com a Treend"><b>Página de parceiro</b> com leads e conversão medidos</td></tr>
+        <tr><td class="lab">Risco do cliente</td><td class="was" data-l="Antes">Fechar no pior dia do mês e descobrir depois</td><td class="us" data-l="Com a Treend"><b>Alerta na janela</b> definida, antes de fechar</td></tr>
       </tbody>
     </table>
   </div>
@@ -1046,7 +1076,7 @@ fetch('https://economia.awesomeapi.com.br/json/last/USD-BRL')
     d.className = 'plead' + (first ? '' : ' new');
     d.innerHTML = `<div><b>${p[0]}</b><span>${p[1]}@•••••.com · ${p[2]}</span></div>`
       + `<div class="hide-sm mono t" style="font-size:12px;color:var(--mute)">${when}</div>`
-      + `<div class="hide-sm"><span class="tag ${signed ? 'ok' : 'wait'}">${signed ? 'Assinou' : 'Em conversa'}</span></div>`
+      + `<div class="st"><span class="tag ${signed ? 'ok' : 'wait'}">${signed ? 'Assinou' : 'Em conversa'}</span></div>`
       + `<div class="mono" style="text-align:right;${signed ? 'font-weight:600' : 'color:var(--mute)'}">${signed ? 'US$ 199' : '—'}</div>`;
     return d;
   }
