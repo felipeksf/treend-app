@@ -1,0 +1,830 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fbfcff">
+<title>Treend Partner Program — ganhe receita recorrente indicando a Treend</title>
+<meta name="description" content="Programa oficial de parceiros da Treend: receita recorrente por indicação, página de parceiro própria, dashboard de leads e material de vendas pronto. Para assessores, consultores, creators, casas de análise e comunidades.">
+<link rel="canonical" href="https://novo.treend.com.br/partners/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Treend">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:title" content="Treend Partner Program">
+<meta property="og:description" content="Receita recorrente por indicação, página de parceiro própria, dashboard de leads e material de vendas pronto.">
+<meta property="og:url" content="https://novo.treend.com.br/partners/">
+<meta property="og:image" content="https://novo.treend.com.br/lp/assets/treend-blue.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Treend Partner Program">
+<meta name="twitter:description" content="Receita recorrente por indicação, página de parceiro própria, dashboard de leads e material de vendas pronto.">
+<meta name="twitter:image" content="https://novo.treend.com.br/lp/assets/treend-blue.svg">
+<link rel="icon" href="../lp/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbfcff; --paper:#fff; --tint:#f3f6fd; --tint-2:#eaf0fc;
+  --ink:#0b1a33; --ink-2:#33415c; --mute:#6b7891; --faint:#a3adc0;
+  --rule:#e4e9f3; --rule-2:#d5ddec;
+  --blue:#385fe1; --blue-d:#2449ba; --blue-l:#8cacff; --mint:#9cddc3;
+  --up:#10B981; --mid:#64748B; --down:#EF4444; --amber:#d4a017;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --r:14px;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.55 Geist,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip;font-feature-settings:"ss01","cv11"}
+a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
+.mono{font-family:'Geist Mono',monospace;font-feature-settings:"tnum"}
+.wrap{width:min(1200px,calc(100% - 48px));margin-inline:auto}
+::selection{background:#dfe7ff}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* type */
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font:500 12px 'Geist Mono',monospace;letter-spacing:.04em;color:var(--mute);text-transform:uppercase}
+.eyebrow:before{content:'';width:6px;height:6px;border-radius:1px;background:var(--blue)}
+.h2{font-size:clamp(34px,4.4vw,58px);font-weight:500;letter-spacing:-.045em;line-height:1.02}
+.h2 .soft{color:var(--faint)}
+.p{color:var(--ink-2);font-size:17px;line-height:1.6}
+.lbl{font:500 11px 'Geist Mono',monospace;letter-spacing:.04em;text-transform:uppercase;color:var(--faint)}
+.note{margin-top:14px;font-size:12px;color:var(--faint)}
+
+/* buttons */
+.btn{position:relative;display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 18px;border-radius:999px;font-size:15px;font-weight:500;white-space:nowrap;transition:transform .5s var(--ease),box-shadow .5s var(--ease),background .3s}
+.btn svg{width:15px;height:15px;transition:transform .5s var(--ease)}
+.btn:hover svg{transform:translateX(3px)}
+.btn-pri{color:#fff;background:var(--ink);box-shadow:0 1px 0 rgba(255,255,255,.15) inset,0 8px 20px -8px rgba(11,26,51,.6)}
+.btn-pri:hover{background:#13274b;transform:translateY(-1px)}
+.btn-blue{color:#fff;background:linear-gradient(180deg,#4b70f0,#2f56dc);box-shadow:0 1px 0 rgba(255,255,255,.3) inset,0 10px 24px -10px rgba(56,95,225,.9)}
+.btn-blue:hover{transform:translateY(-1px)}
+.btn-line{color:var(--ink);background:var(--paper);box-shadow:0 0 0 1px var(--rule-2),0 1px 2px rgba(11,26,51,.05)}
+.btn-line:hover{box-shadow:0 0 0 1px var(--ink-2)}
+.btn:disabled{opacity:.6;cursor:progress}
+
+/* ── NAV ── */
+.nav{position:fixed;inset:14px 0 auto;z-index:60;pointer-events:none}
+.nav .bar{pointer-events:auto;display:flex;align-items:center;justify-content:space-between;gap:20px;height:60px;padding:0 10px 0 18px;border-radius:999px;background:rgba(255,255,255,.72);backdrop-filter:saturate(1.6) blur(18px);box-shadow:0 0 0 1px rgba(11,26,51,.06),0 10px 30px -18px rgba(11,26,51,.35)}
+.nav .logo img{height:30px;width:auto}
+.nav nav{display:flex;gap:4px;font-size:14px;color:var(--ink-2)}
+.nav nav a{padding:7px 12px;border-radius:999px;transition:background .2s}
+.nav nav a:hover{background:var(--tint)}
+.nav .act{display:flex;gap:6px}
+.nav .btn{height:40px;padding:0 16px;font-size:14px}
+.menu-toggle{display:none;width:40px;height:40px;border-radius:999px;place-items:center;color:var(--ink-2)}
+.menu-toggle:hover{background:var(--tint)}
+
+/* ── HERO ── */
+.hero{position:relative;padding:150px 0 0;overflow:hidden;isolation:isolate}
+.mesh{position:absolute;inset:0 0 auto;height:980px;z-index:-2;overflow:hidden}
+.mesh i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.75;animation:drift 18s var(--ease) infinite alternate}
+.mesh i:nth-child(1){width:620px;height:420px;left:-6%;top:120px;background:#c9d7ff}
+.mesh i:nth-child(2){width:520px;height:460px;right:-4%;top:40px;background:#cfeee1;animation-delay:-6s}
+.mesh i:nth-child(3){width:560px;height:360px;left:34%;top:360px;background:#b3c6ff;animation-delay:-11s}
+@keyframes drift{to{transform:translate(60px,-40px) scale(1.12)}}
+.mesh:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(251,252,255,0) 40%,var(--bg) 92%)}
+.grain{position:absolute;inset:0;z-index:-1;opacity:.35;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.hero-top{text-align:center}
+.pill{display:inline-flex;align-items:center;gap:10px;height:34px;padding:0 6px 0 14px;border-radius:999px;background:rgba(255,255,255,.7);box-shadow:0 0 0 1px rgba(11,26,51,.07);font-size:13px;color:var(--ink-2);backdrop-filter:blur(8px)}
+.pill b{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:999px;background:var(--ink);color:#fff;font-size:11px;font-weight:500}
+.hero h1{margin:26px auto 0;font-size:min(80px,7vw);font-weight:500;letter-spacing:-.055em;line-height:1}
+.hero h1>span{display:block}
+.hero h1 .b{background:linear-gradient(95deg,#1f3ea8 0%,#385fe1 45%,#6f8ff5 75%,#5fc4a2 105%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .p{max-width:620px;margin:24px auto 0}
+.hero .ctas{display:flex;justify-content:center;gap:10px;margin-top:32px;flex-wrap:wrap}
+.hero .meta{display:flex;justify-content:center;gap:18px;margin-top:18px;font-size:13px;color:var(--mute);flex-wrap:wrap}
+.hero .meta span{display:inline-flex;align-items:center;gap:6px}
+.hero .meta svg{width:14px;height:14px;color:var(--up)}
+
+/* hero board */
+.board{position:relative;margin:70px auto 0;max-width:1080px;border-radius:18px;background:var(--paper);box-shadow:0 0 0 1px rgba(11,26,51,.08),0 2px 4px rgba(11,26,51,.04),0 40px 80px -30px rgba(36,73,186,.35),0 80px 140px -60px rgba(11,26,51,.25);overflow:hidden}
+.win-bar{display:flex;align-items:center;gap:14px;height:44px;padding:0 16px;border-bottom:1px solid var(--rule);background:#fcfdff}
+.dots{display:flex;gap:7px}.dots i{width:11px;height:11px;border-radius:50%;background:#e3e8f2}
+.url{flex:1;max-width:360px;margin:0 auto;height:26px;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:7px;background:var(--tint);font:12px 'Geist Mono';color:var(--mute)}
+.board-grid{display:grid;grid-template-columns:1fr 320px;min-height:380px}
+.board-main{padding:20px 22px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.kpi{padding:14px;border-radius:12px;background:#fcfdff;box-shadow:0 0 0 1px var(--rule)}
+.kpi b{display:block;margin-top:6px;font:500 28px 'Geist Mono';letter-spacing:-.04em}
+.kpi small{color:var(--up);font:12px 'Geist Mono'}
+.plead{display:grid;grid-template-columns:1fr 92px 110px 74px;gap:12px;align-items:center;height:48px;border-top:1px solid var(--rule);font-size:13px}
+.plead:first-of-type{margin-top:18px}
+.plead b{font-weight:600}
+.plead span{color:var(--mute);font-size:11px;display:block}
+.tag{display:inline-flex;align-items:center;padding:3px 8px;border-radius:6px;font:600 10px 'Geist Mono';letter-spacing:.03em}
+.tag.ok{background:#e7f8f1;color:#0e9f6e}.tag.wait{background:#fdf6e3;color:#9a7311}
+.board-side{border-left:1px solid var(--rule);padding:20px;background:linear-gradient(180deg,#fcfdff,#fff)}
+.board-side .big{display:flex;align-items:baseline;gap:8px;margin-top:12px}
+.board-side .big b{font:500 52px 'Geist Mono';letter-spacing:-.06em;line-height:1}
+.mini{display:flex;align-items:flex-end;gap:5px;height:90px;margin-top:22px}
+.mini i{flex:1;border-radius:4px 4px 2px 2px;background:linear-gradient(180deg,#8cacff,#385fe1)}
+.board-side p{margin-top:16px;font-size:13px;color:var(--ink-2)}
+
+/* ── TAPE ── */
+.tape{margin-top:80px;border-block:1px solid var(--rule);background:var(--paper);overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.tape div{display:flex;gap:44px;width:max-content;padding:14px 0;font:13px 'Geist Mono';animation:tape 45s linear infinite}
+.tape span{display:inline-flex;gap:10px;align-items:center;color:var(--ink-2)}
+.tape em{font-style:normal;font-weight:600}
+@keyframes tape{to{transform:translateX(-50%)}}
+
+/* ── SECTIONS ── */
+.sec{padding:140px 0 0}
+.sec-head{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin-bottom:56px}
+.sec-head .p{max-width:480px;justify-self:end}
+
+/* ── STATEMENT ── */
+.statement{padding:150px 0 0}
+.statement p{font-size:clamp(28px,3.6vw,48px);font-weight:500;letter-spacing:-.04em;line-height:1.18;max-width:1040px}
+.statement .w{color:#cdd5e3;transition:color .3s}
+.statement .w.lit{color:var(--ink)}
+.statement .w.hl.lit{color:var(--blue)}
+
+/* ── BENTO ── */
+.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+.card{position:relative;overflow:hidden;padding:28px;border-radius:20px;background:var(--paper);box-shadow:0 0 0 1px var(--rule);isolation:isolate;display:flex;flex-direction:column}
+.card:before{content:'';position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .4s;background:radial-gradient(400px circle at var(--mx,50%) var(--my,50%),rgba(56,95,225,.09),transparent 60%)}
+.card:hover:before{opacity:1}
+.card:after{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;opacity:0;transition:opacity .4s;background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),rgba(56,95,225,.55),transparent 60%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.card:hover:after{opacity:1}
+.c4{grid-column:span 4}.c5{grid-column:span 5}.c6{grid-column:span 6}.c7{grid-column:span 7}.c8{grid-column:span 8}
+.card h3{font-size:22px;font-weight:500;letter-spacing:-.03em}
+.card p{margin-top:8px;color:var(--ink-2);font-size:15px}
+.card .num{font:500 13px 'Geist Mono';color:var(--faint)}
+.card ul{margin-top:16px;padding:0;list-style:none;display:grid;gap:8px;font-size:14px;color:var(--ink-2)}
+.card ul li{display:flex;gap:9px;align-items:flex-start}
+.card ul svg{flex:none;width:14px;height:14px;margin-top:4px;color:var(--blue)}
+.card .viz{flex:1;display:flex;align-items:flex-end;margin-top:24px}
+.card img.shot-img{width:100%;border-radius:12px;box-shadow:0 0 0 1px var(--rule);object-fit:cover;object-position:top left;aspect-ratio:16/10}
+
+/* persona cards */
+.who{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.who article{position:relative;padding:26px;border-radius:18px;background:var(--paper);box-shadow:0 0 0 1px var(--rule);transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
+.who article:hover{transform:translateY(-3px);box-shadow:0 0 0 1px var(--rule-2),0 20px 40px -24px rgba(11,26,51,.35)}
+.who .ic{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;background:var(--tint-2);color:var(--blue-d)}
+.who .ic svg{width:20px;height:20px}
+.who h3{margin-top:18px;font-size:19px;font-weight:500;letter-spacing:-.025em}
+.who p{margin-top:8px;font-size:14px;color:var(--ink-2)}
+.who .fit{margin-top:16px;padding-top:14px;border-top:1px solid var(--rule);font-size:13px;color:var(--mute)}
+.who .fit b{color:var(--ink);font-weight:600}
+
+/* pains */
+.pains{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pain{display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:18px;overflow:hidden;background:var(--rule)}
+.pain>div{padding:24px;background:var(--paper)}
+.pain .before{background:#fdfafa}
+.pain .lbl.bad{color:var(--down)}
+.pain .lbl.good{color:var(--up)}
+.pain h4{margin-top:12px;font-size:16px;font-weight:600;letter-spacing:-.015em}
+.pain p{margin-top:8px;font-size:14px;color:var(--ink-2)}
+
+/* transformation table */
+.cmp{overflow-x:auto;border-radius:18px;box-shadow:0 0 0 1px var(--rule);background:var(--paper)}
+.cmp table{width:100%;min-width:720px;border-collapse:collapse;font-size:14px}
+.cmp th,.cmp td{padding:18px 22px;text-align:left;border-bottom:1px solid var(--rule)}
+.cmp tbody tr:last-child td{border-bottom:0}
+.cmp th{font-weight:500;color:var(--mute);font-size:13px}
+.cmp td:first-child{color:var(--ink-2)}
+.cmp .us{background:linear-gradient(180deg,#f3f6ff,#f8faff);box-shadow:inset 1px 0 0 #dbe4fb,inset -1px 0 0 #dbe4fb;color:var(--ink)}
+.cmp th.us img{height:22px;width:auto}
+.cmp td b{font-weight:600}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--rule)}
+.steps>div{padding:26px 24px 30px;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule)}
+.steps>div:last-child{border-right:0}
+.steps span{font:500 12px 'Geist Mono';color:var(--faint)}
+.steps h4{margin-top:14px;font-size:18px;font-weight:500;letter-spacing:-.025em}
+.steps p{margin-top:8px;font-size:14px;color:var(--ink-2)}
+
+/* pitch */
+.pitch{display:grid;grid-template-columns:1fr 1.1fr;gap:48px;align-items:start}
+.hooks{display:grid;gap:10px}
+.hook{position:relative;padding:20px 22px;border-radius:16px;background:var(--paper);box-shadow:0 0 0 1px var(--rule)}
+.hook .lbl{display:block}
+.hook p{margin-top:10px;font-size:16px;color:var(--ink);letter-spacing:-.01em;line-height:1.45}
+.hook p:before{content:'“'}.hook p:after{content:'”'}
+.obj{margin-top:0;border-top:1px solid var(--rule)}
+.obj details{border-bottom:1px solid var(--rule)}
+.obj summary{display:flex;justify-content:space-between;gap:18px;align-items:center;padding:18px 0;font-size:16px;font-weight:500;letter-spacing:-.015em;cursor:pointer;list-style:none}
+.obj summary::-webkit-details-marker{display:none}
+.obj summary i{flex:none;position:relative;width:16px;height:16px}
+.obj summary i:before,.obj summary i:after{content:'';position:absolute;background:var(--mute);transition:transform .35s var(--ease)}
+.obj summary i:before{inset:7px 0 auto;height:2px}
+.obj summary i:after{inset:0 7px auto;width:2px;height:16px}
+.obj details[open] summary i:after{transform:scaleY(0)}
+.obj p{padding:0 0 20px;font-size:15px;color:var(--ink-2);max-width:62ch}
+
+/* calculator */
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:20px;overflow:hidden;background:var(--rule);box-shadow:0 0 0 1px var(--rule)}
+.calc-in,.calc-out{padding:32px;background:var(--paper)}
+.calc-out{background:linear-gradient(180deg,#f7f9ff,#fff)}
+.calc-in label{display:block;margin-top:24px}
+.calc-in label:first-of-type{margin-top:18px}
+.calc-in .top{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;color:var(--ink-2)}
+.calc-in .top b{font:600 16px 'Geist Mono'}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;margin-top:12px;border-radius:9px;background:linear-gradient(90deg,var(--blue) var(--v,30%),var(--tint-2) var(--v,30%));outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px var(--rule-2),0 3px 8px rgba(11,26,51,.25);cursor:grab}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border:0;border-radius:50%;background:#fff;box-shadow:0 0 0 1px var(--rule-2),0 3px 8px rgba(11,26,51,.25);cursor:grab}
+.calc-out .res{margin-top:16px}
+.calc-out .res b{font:500 clamp(46px,6vw,72px) 'Geist Mono';letter-spacing:-.05em;line-height:1}
+.calc-out .res span{font-size:15px;color:var(--mute)}
+.calc-rows{margin-top:26px;border-top:1px solid var(--rule)}
+.calc-rows div{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid var(--rule);font-size:14px}
+.calc-rows b{font-family:'Geist Mono';font-weight:600}
+
+/* final + form */
+.final{position:relative;margin-top:150px;padding:140px 0 0;text-align:center;overflow:hidden;isolation:isolate;border-top:1px solid var(--rule)}
+.final .mesh{top:auto;bottom:-260px;height:760px}
+.final .mesh:after{background:linear-gradient(0deg,rgba(251,252,255,0) 40%,var(--bg) 95%)}
+.final h2{font-size:min(72px,6.4vw);font-weight:500;letter-spacing:-.055em;line-height:1}
+.final h2 span{display:block}
+.final .p{max-width:560px;margin:22px auto 0}
+.formbox{max-width:720px;margin:48px auto 0;padding:34px;border-radius:24px;background:var(--paper);box-shadow:0 0 0 1px var(--rule),0 40px 90px -40px rgba(36,73,186,.4);text-align:left}
+.formbox h3{font-size:22px;font-weight:500;letter-spacing:-.03em}
+.formbox .sub{margin-top:6px;font-size:14px;color:var(--mute)}
+.formbox form{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
+.formbox label{display:block}
+.formbox label.full{grid-column:1 / -1}
+.formbox label>span{font-size:13px;font-weight:500;color:var(--ink-2)}
+.formbox input,.formbox select,.formbox textarea{width:100%;height:48px;margin-top:6px;padding:0 14px;border:0;border-radius:11px;background:var(--paper);box-shadow:0 0 0 1px var(--rule-2);font:15px Geist;color:var(--ink);outline:none;appearance:none}
+.formbox textarea{height:96px;padding:12px 14px;line-height:1.5;resize:vertical}
+.formbox select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%236b7891' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
+.formbox input:focus,.formbox select:focus,.formbox textarea:focus{box-shadow:0 0 0 1px var(--blue),0 0 0 4px rgba(56,95,225,.15)}
+.formbox .btn{grid-column:1 / -1;width:100%;justify-content:center;height:52px;margin-top:4px}
+.err{grid-column:1 / -1;min-height:18px;font-size:13px;color:var(--down)}
+.safe{grid-column:1 / -1;text-align:center;font-size:12px;color:var(--faint)}
+.done{display:none;padding:12px 0 4px;text-align:center}
+.done .ic{display:inline-grid;place-items:center;width:52px;height:52px;border-radius:50%;background:#e7f8f1;color:#0e9f6e}
+.done h3{margin-top:18px}
+.done p{margin-top:8px;font-size:15px;color:var(--ink-2)}
+.sent .formbox form{display:none}
+.sent .formbox .done{display:block}
+
+footer.site{margin-top:120px;padding:36px 0 110px;border-top:1px solid var(--rule);font-size:13px;color:var(--mute);background:var(--paper)}
+footer.site .wrap{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+footer.site img{height:28px;width:auto}
+footer.site nav{display:flex;gap:22px;flex-wrap:wrap}
+footer.site nav a:hover{color:var(--ink)}
+footer.site .disc{flex-basis:100%;font-size:12px;color:var(--faint)}
+
+.sticky{position:fixed;left:50%;bottom:16px;z-index:90;display:flex;align-items:center;gap:16px;padding:8px 8px 8px 20px;border-radius:999px;background:rgba(11,26,51,.92);color:#fff;backdrop-filter:blur(14px);box-shadow:0 20px 40px -14px rgba(11,26,51,.6);transform:translate(-50%,140%);transition:transform .6s var(--ease)}
+.sticky.show{transform:translate(-50%,0)}
+.sticky p{font-size:14px;white-space:nowrap}.sticky p span{color:#9fb0d0}
+.sticky .btn{height:40px}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(24px);filter:blur(6px);transition:opacity 1s var(--ease),transform 1s var(--ease),filter 1s var(--ease)}
+.rv.in{opacity:1;transform:none;filter:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none;filter:none}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1060px){
+  .nav nav{position:absolute;top:70px;left:0;right:0;display:none;flex-direction:column;gap:2px;padding:10px;border-radius:18px;background:rgba(255,255,255,.95);backdrop-filter:blur(18px);box-shadow:0 0 0 1px rgba(11,26,51,.07),0 20px 40px -20px rgba(11,26,51,.4)}
+  .nav nav.open{display:flex}
+  .menu-toggle{display:grid}
+  .board-grid{grid-template-columns:1fr}.board-side{border-left:0;border-top:1px solid var(--rule)}
+}
+@media(max-width:900px){
+  .sec-head,.pains,.pitch,.calc,.who{grid-template-columns:1fr}
+  .sec-head .p{justify-self:start}
+  .bento{grid-template-columns:1fr}.c4,.c5,.c6,.c7,.c8{grid-column:auto}
+  .steps{grid-template-columns:1fr 1fr}.steps>div:nth-child(2n){border-right:0}
+  .sec{padding-top:100px}.statement{padding-top:110px}
+  .formbox form{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .wrap{width:calc(100% - 32px)}
+  .nav{inset:10px 0 auto}.nav .bar{height:54px;gap:8px;padding:0 6px 0 12px}.nav .logo img{height:24px}
+  .nav .btn{height:38px;padding:0 13px;font-size:13px}.nav .act .btn-line{display:none}
+  .hero{padding-top:120px}.hero h1{font-size:min(44px,10vw)}
+  .kpis{grid-template-columns:1fr}
+  .plead{grid-template-columns:1fr 74px}.plead .hide-sm{display:none}
+  .pain{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}.steps>div{border-right:0}
+  .formbox{padding:24px}
+  .calc-in,.calc-out{padding:24px}
+  .sticky{left:16px;right:16px;transform:translateY(140%);justify-content:space-between}.sticky.show{transform:none}.sticky p span{display:none}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="arr" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="chk" viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="ic-advisor" viewBox="0 0 24 24"><path d="M3 20v-1a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="9" cy="8" r="3.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 11h5M16 15h5M16 7h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="ic-creator" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m10 9 5 3-5 3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 21h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="ic-house" viewBox="0 0 24 24"><path d="M4 21V8l8-5 8 5v13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 21v-6h6v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="ic-group" viewBox="0 0 24 24"><circle cx="8" cy="9" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17" cy="10" r="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M2 19a6 6 0 0 1 12 0M15 19a5 5 0 0 1 7-4.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="ic-fx" viewBox="0 0 24 24"><path d="M3 8h13l-3-3M21 16H8l3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="ic-agency" viewBox="0 0 24 24"><path d="M3 21V6l6-3v18M9 21h12V11h-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M13 15h2M13 18h2M5 9h1M5 13h1M5 17h1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+</svg>
+
+<header class="nav"><div class="wrap bar">
+  <a class="logo" href="https://treend.com.br" aria-label="Treend — início"><img src="../lp/assets/treend-blue.svg" alt="Treend" width="145" height="40"></a>
+  <nav id="section-menu" aria-label="Seções">
+    <a href="#para-quem">Pra quem é</a><a href="#dores">As dores</a><a href="#valor">O valor</a><a href="#transformacao">A transformação</a><a href="#pitch">Pitch</a><a href="#potencial">Potencial</a><a href="#faq">FAQ</a>
+  </nav>
+  <div class="act">
+    <a class="btn btn-line" href="https://novo.treend.com.br/login">Entrar</a>
+    <a class="btn btn-pri" href="#cadastro">Quero ser parceiro</a>
+  </div>
+  <button class="menu-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="section-menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+</div></header>
+
+<main>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="mesh" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="wrap hero-top">
+    <span class="pill rv">Programa oficial de parceiros <b>Treend Partner Program</b></span>
+    <h1 class="rv"><span>Seus clientes já sabem</span><span><em style="font-style:normal" class="b">o que</em> comprar.</span><span>Entregue o <em style="font-style:normal" class="b">quando</em>.</span></h1>
+    <p class="p rv">O Treend Partner Program transforma a sua audiência, a sua carteira ou a sua comunidade em uma fonte de <strong>receita recorrente</strong>. Você indica o Index Score Quantitativo da Treend — 6 mercados, mais de 5.000 ativos — e passa a ser remunerado por cada assinatura ativa que nasce do seu nome.</p>
+    <div class="ctas rv">
+      <a class="btn btn-blue" href="#cadastro">Entrar no programa <svg><use href="#arr"/></svg></a>
+      <a class="btn btn-line" href="#valor">Ver o que você recebe</a>
+    </div>
+    <div class="meta rv">
+      <span><svg><use href="#chk"/></svg>Sem custo de entrada</span>
+      <span><svg><use href="#chk"/></svg>Receita recorrente enquanto o cliente ficar</span>
+      <span><svg><use href="#chk"/></svg>Página de parceiro e material prontos</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="board rv" aria-label="Prévia do painel do parceiro Treend">
+      <div class="win-bar"><div class="dots"><i></i><i></i><i></i></div><div class="url"><svg width="11" height="11"><use href="#lock"/></svg>novo.treend.com.br/parceiro</div><div style="width:47px"></div></div>
+      <div class="board-grid">
+        <div class="board-main">
+          <div class="kpis">
+            <div class="kpi"><span class="lbl">Leads no mês</span><b class="mono">38</b><small>+12 esta semana</small></div>
+            <div class="kpi"><span class="lbl">Assinaturas ativas</span><b class="mono">11</b><small>+3 este mês</small></div>
+            <div class="kpi"><span class="lbl">Conversão</span><b class="mono">29%</b><small>lead → assinante</small></div>
+          </div>
+          <div class="plead"><div><b>Rafael A.</b><span>rafael@•••••.com · Instagram</span></div><div class="hide-sm mono" style="font-size:12px;color:var(--mute)">há 2 h</div><div class="hide-sm"><span class="tag ok">Assinou</span></div><div class="mono" style="text-align:right;font-weight:600">US$ 199</div></div>
+          <div class="plead"><div><b>Marina C.</b><span>marina@•••••.com · Lista de e-mail</span></div><div class="hide-sm mono" style="font-size:12px;color:var(--mute)">há 6 h</div><div class="hide-sm"><span class="tag ok">Assinou</span></div><div class="mono" style="text-align:right;font-weight:600">US$ 199</div></div>
+          <div class="plead"><div><b>Escritório Vértice</b><span>contato@•••••.com · Indicação direta</span></div><div class="hide-sm mono" style="font-size:12px;color:var(--mute)">ontem</div><div class="hide-sm"><span class="tag wait">Em conversa</span></div><div class="mono" style="text-align:right;color:var(--mute)">—</div></div>
+          <div class="plead"><div><b>Diego P.</b><span>diego@•••••.com · Página de parceiro</span></div><div class="hide-sm mono" style="font-size:12px;color:var(--mute)">ontem</div><div class="hide-sm"><span class="tag ok">Assinou</span></div><div class="mono" style="text-align:right;font-weight:600">US$ 199</div></div>
+          <p class="note">Painel ilustrativo. Os dados que aparecem no seu painel são os seus leads e as suas assinaturas.</p>
+        </div>
+        <div class="board-side">
+          <span class="lbl">Receita recorrente do parceiro</span>
+          <div class="big"><b class="mono" id="boardMrr">—</b><span class="lbl">/ mês</span></div>
+          <div class="mini" aria-hidden="true"><i style="height:22%"></i><i style="height:34%"></i><i style="height:30%"></i><i style="height:48%"></i><i style="height:57%"></i><i style="height:52%"></i><i style="height:71%"></i><i style="height:84%"></i><i style="height:100%"></i></div>
+          <p>Enquanto o cliente continua assinante, a sua comissão continua entrando. Indicação feita uma vez, receita que se repete todo mês.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tape" aria-hidden="true"><div id="tape"></div></div>
+</section>
+
+<!-- STATEMENT -->
+<section class="statement"><div class="wrap">
+  <p id="stmt" class="rv">Você já tem o mais difícil: a confiança de pessoas que investem. O que falta não é mais audiência. É um produto que resolva a pergunta que elas fazem todo dia — é hora de comprar? — e que te pague todo mês por isso.</p>
+</div></section>
+
+<!-- PRA QUEM É -->
+<section class="sec" id="para-quem"><div class="wrap">
+  <div class="sec-head">
+    <div><span class="eyebrow rv">Pra quem é</span><h2 class="h2 rv" style="margin-top:18px">Feito para quem já tem<br><span class="soft">a atenção do investidor.</span></h2></div>
+    <p class="p rv">O programa não é um link de afiliado solto. É uma parceria comercial com página própria, acompanhamento de leads e material de vendas. Funciona melhor para estes perfis:</p>
+  </div>
+  <div class="who">
+    <article class="rv"><div class="ic"><svg><use href="#ic-advisor"/></svg></div><h3>Assessores e consultores</h3><p>Você já recomenda ativos. A Treend entra como a camada de timing que justifica a entrada e a saída na conversa com o cliente.</p><p class="fit"><b>Melhor caso:</b> carteira ativa de clientes que perguntam “compro agora?”.</p></article>
+    <article class="rv"><div class="ic"><svg><use href="#ic-creator"/></svg></div><h3>Creators e educadores</h3><p>Conteúdo de investimento gera audiência, mas raramente gera receita recorrente. Aqui cada assinatura indicada vira comissão que se repete.</p><p class="fit"><b>Melhor caso:</b> YouTube, Instagram, newsletter ou podcast de finanças.</p></article>
+    <article class="rv"><div class="ic"><svg><use href="#ic-house"/></svg></div><h3>Casas de análise</h3><p>Sua análise diz qual ativo. O Index Score diz em que ponto do ciclo ele está. Um complementa o outro sem competir pela mesma assinatura.</p><p class="fit"><b>Melhor caso:</b> carteiras recomendadas e relatórios periódicos.</p></article>
+    <article class="rv"><div class="ic"><svg><use href="#ic-group"/></svg></div><h3>Comunidades e grupos</h3><p>Grupos de WhatsApp, Telegram e Discord com gente decidindo preço em tempo real — o lugar natural para um índice de 0 a 100.</p><p class="fit"><b>Melhor caso:</b> comunidade paga ou gratuita engajada em mercado.</p></article>
+    <article class="rv"><div class="ic"><svg><use href="#ic-fx"/></svg></div><h3>Câmbio e remessas</h3><p>Correspondentes, mesas e consultorias de câmbio usam a leitura de moeda da Treend para defender a taxa e o momento da remessa.</p><p class="fit"><b>Melhor caso:</b> clientes com remessa ou investimento recorrente no exterior.</p></article>
+    <article class="rv"><div class="ic"><svg><use href="#ic-agency"/></svg></div><h3>Agências e afiliados</h3><p>Se você já vende assinaturas digitais, aqui o produto tem ticket alto em dólar e churn baixo, porque a decisão de compra se repete todo mês.</p><p class="fit"><b>Melhor caso:</b> estrutura de tráfego e funil já rodando.</p></article>
+  </div>
+</div></section>
+
+<!-- AS DORES -->
+<section class="sec" id="dores"><div class="wrap">
+  <div class="sec-head">
+    <div><span class="eyebrow rv">As dores</span><h2 class="h2 rv" style="margin-top:18px">O que trava o seu negócio<br><span class="soft">hoje.</span></h2></div>
+    <p class="p rv">Antes de falar de comissão, vale olhar o que o programa resolve do seu lado — e do lado de quem te acompanha.</p>
+  </div>
+  <div class="pains">
+    <div class="pain rv">
+      <div class="before"><span class="lbl bad">Hoje</span><h4>Sua receita depende de você publicar</h4><p>Parou o conteúdo, parou a entrada. Todo mês começa do zero, sem base recorrente.</p></div>
+      <div><span class="lbl good">Com o programa</span><h4>Base recorrente que não depende do post de hoje</h4><p>Cada assinatura indicada continua pagando comissão enquanto o cliente permanece ativo.</p></div>
+    </div>
+    <div class="pain rv">
+      <div class="before"><span class="lbl bad">Hoje</span><h4>“Compro agora?” sem resposta objetiva</h4><p>Você explica fundamento, mas a pergunta de timing volta toda semana — e a resposta depende de opinião.</p></div>
+      <div><span class="lbl good">Com o programa</span><h4>Um número de 0 a 100 para responder</h4><p>O Index Score mostra se o ativo está esticado ou abaixo da média no próprio histórico, em 5 tempos gráficos.</p></div>
+    </div>
+    <div class="pain rv">
+      <div class="before"><span class="lbl bad">Hoje</span><h4>Cliente que entra no topo e culpa a indicação</h4><p>O ativo era bom, a hora era ruim. O desgaste da relação sobra para você.</p></div>
+      <div><span class="lbl good">Com o programa</span><h4>Timing documentado antes da entrada</h4><p>A decisão passa a ter critério visível, e o cliente entende em que ponto do ciclo entrou.</p></div>
+    </div>
+    <div class="pain rv">
+      <div class="before"><span class="lbl bad">Hoje</span><h4>Produto próprio é caro de construir</h4><p>Criar plataforma, dados e manutenção custa time, tecnologia e anos de estrada.</p></div>
+      <div><span class="lbl good">Com o programa</span><h4>Produto pronto, com a sua marca na frente</h4><p>Você entra com a relação e a distribuição. A Treend entra com dados, plataforma, suporte e cobrança.</p></div>
+    </div>
+    <div class="pain rv">
+      <div class="before"><span class="lbl bad">Hoje</span><h4>Indicação que você não consegue medir</h4><p>Sem saber quem clicou, quem virou lead e quem assinou, não há como melhorar a oferta.</p></div>
+      <div><span class="lbl good">Com o programa</span><h4>Leads e assinaturas no painel</h4><p>Página de parceiro com link próprio, leads identificados e acompanhamento de conversão.</p></div>
+    </div>
+    <div class="pain rv">
+      <div class="before"><span class="lbl bad">Hoje</span><h4>Várias assinaturas para cobrir cada mercado</h4><p>Uma ferramenta para ações, outra para cripto, outra para câmbio. Custo alto e discurso fragmentado.</p></div>
+      <div><span class="lbl good">Com o programa</span><h4>6 mercados em uma assinatura só</h4><p>Ações B3, FIIs, Stocks, Commodities, Câmbio e Cripto na mesma leitura e no mesmo pitch.</p></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- O VALOR GERADO -->
+<section class="sec" id="valor"><div class="wrap">
+  <div class="sec-head">
+    <div><span class="eyebrow rv">O valor gerado</span><h2 class="h2 rv" style="margin-top:18px">O que você recebe<br><span class="soft">ao entrar no programa.</span></h2></div>
+    <p class="p rv">Não é só uma comissão. É uma estrutura comercial inteira para você vender sem montar nada.</p>
+  </div>
+  <div class="bento">
+    <article class="card c7 rv">
+      <span class="num">01</span>
+      <h3>Receita recorrente por assinatura ativa</h3>
+      <p>Você é remunerado por cada assinante que nasce da sua indicação, mês após mês, enquanto ele continuar ativo. O ticket do Treend Pro é de US$ 199/mês — receita em dólar, cliente que renova sozinho.</p>
+      <ul>
+        <li><svg><use href="#chk"/></svg>Comissão recorrente, não só na primeira venda</li>
+        <li><svg><use href="#chk"/></svg>Cobrança, nota e suporte por conta da Treend</li>
+        <li><svg><use href="#chk"/></svg>Percentual e condições definidos na sua proposta de parceria</li>
+      </ul>
+      <div class="viz"><img class="shot-img" src="../lp/assets/platform/feat-visao-geral.jpg" alt="Visão geral da plataforma Treend" loading="lazy"></div>
+    </article>
+    <article class="card c5 rv">
+      <span class="num">02</span>
+      <h3>Sua página de parceiro</h3>
+      <p>Um endereço próprio com o seu nome, a sua chamada e o seu link de cadastro. Quem entra por ali fica marcado como seu lead no painel da Treend — nada de planilha paralela.</p>
+      <div class="viz"><img class="shot-img" src="../lp/assets/platform/mercados.jpg" alt="Tela de mercados da plataforma Treend" loading="lazy"></div>
+    </article>
+    <article class="card c5 rv">
+      <span class="num">03</span>
+      <h3>Dashboard de leads e conversão</h3>
+      <p>Leads identificados, status de assinatura e conversão por origem. Você vê o que a sua audiência faz depois do clique e ajusta a oferta com dado, não com achismo.</p>
+      <div class="viz"><img class="shot-img" src="../lp/assets/platform/radar.jpg" alt="Tela de radar da plataforma Treend" loading="lazy"></div>
+    </article>
+    <article class="card c7 rv">
+      <span class="num">04</span>
+      <h3>Material de vendas pronto e acesso para demonstrar</h3>
+      <p>Você recebe acesso à plataforma para usar e mostrar ao vivo, além de roteiros, argumentos e peças que já foram testados em conversão. Entre hoje, venda esta semana.</p>
+      <ul>
+        <li><svg><use href="#chk"/></svg>Acesso de parceiro para demonstração em call e em tela</li>
+        <li><svg><use href="#chk"/></svg>Roteiro de pitch, quebra de objeções e peças para redes e e-mail</li>
+        <li><svg><use href="#chk"/></svg>Playbook Treend para falar do índice com autoridade</li>
+        <li><svg><use href="#chk"/></svg>Canal direto com o time comercial para casos maiores</li>
+      </ul>
+      <div class="viz"><img class="shot-img" src="../lp/assets/platform/feat-playbook.jpg" alt="Playbook da Treend" loading="lazy"></div>
+    </article>
+  </div>
+  <p class="note">Imagens: telas reais da plataforma Treend. O percentual de comissão, a janela de atribuição e a forma de pagamento são formalizados na proposta de parceria enviada após a aprovação do cadastro.</p>
+</div></section>
+
+<!-- A TRANSFORMAÇÃO -->
+<section class="sec" id="transformacao"><div class="wrap">
+  <div class="sec-head">
+    <div><span class="eyebrow rv">A transformação</span><h2 class="h2 rv" style="margin-top:18px">Antes e depois<br><span class="soft">de ser parceiro Treend.</span></h2></div>
+    <p class="p rv">A mudança não é só financeira. Muda o que você entrega, como o cliente percebe o seu trabalho e de onde vem a sua receita.</p>
+  </div>
+  <div class="cmp rv">
+    <table>
+      <thead><tr><th></th><th>Antes</th><th class="us"><img src="../lp/assets/treend-blue.svg" alt="Parceiro Treend"></th></tr></thead>
+      <tbody>
+        <tr><td>Sua receita</td><td>Pontual, depende de cada campanha ou venda</td><td class="us"><b>Recorrente em dólar</b>, por assinatura ativa</td></tr>
+        <tr><td>Sua entrega</td><td>Opinião sobre o que comprar</td><td class="us"><b>Critério de timing</b> em um número de 0 a 100</td></tr>
+        <tr><td>Sua autoridade</td><td>Discurso sustentado por narrativa</td><td class="us">Discurso sustentado por <b>dado quantitativo</b></td></tr>
+        <tr><td>Seu produto</td><td>Nenhum, ou um que você teria que construir</td><td class="us"><b>Plataforma pronta</b> com 6 mercados e mais de 5.000 ativos</td></tr>
+        <tr><td>Seu funil</td><td>Clique que você não consegue rastrear</td><td class="us"><b>Página de parceiro</b> com leads e conversão medidos</td></tr>
+        <tr><td>Seu tempo</td><td>Responder “compro agora?” um por um</td><td class="us">A plataforma responde; você <b>escala o atendimento</b></td></tr>
+        <tr><td>Risco do cliente</td><td>Entrar no topo do ciclo e culpar a indicação</td><td class="us">Entrada com <b>momento documentado</b> antes da compra</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div></section>
+
+<!-- COMO FUNCIONA -->
+<section class="sec" id="como-funciona"><div class="wrap">
+  <div class="sec-head">
+    <div><span class="eyebrow rv">Como funciona</span><h2 class="h2 rv" style="margin-top:18px">Quatro passos<br><span class="soft">até a primeira comissão.</span></h2></div>
+    <p class="p rv">Do cadastro à primeira assinatura indicada, sem contrato de adesão e sem custo de entrada.</p>
+  </div>
+  <div class="steps rv">
+    <div><span>01</span><h4>Cadastro</h4><p>Preencha o formulário desta página. Seu cadastro entra na lista <strong>Partner Program</strong> no painel da Treend.</p></div>
+    <div><span>02</span><h4>Aprovação e proposta</h4><p>O time comercial avalia o perfil, alinha expectativas e envia a proposta de parceria com as condições de comissão.</p></div>
+    <div><span>03</span><h4>Ativação</h4><p>Você recebe acesso de parceiro, a sua página com link próprio e o kit de vendas para começar a oferecer.</p></div>
+    <div><span>04</span><h4>Indicação e receita</h4><p>Cada assinatura que nasce do seu link gera comissão recorrente enquanto o cliente continuar ativo.</p></div>
+  </div>
+</div></section>
+
+<!-- PITCH -->
+<section class="sec" id="pitch"><div class="wrap">
+  <div class="sec-head">
+    <div><span class="eyebrow rv">Gatilhos de pitch</span><h2 class="h2 rv" style="margin-top:18px">O que dizer<br><span class="soft">para vender.</span></h2></div>
+    <p class="p rv">Ganchos prontos para abrir a conversa e respostas para as objeções que aparecem sempre. Use como está ou adapte à sua voz.</p>
+  </div>
+  <div class="pitch">
+    <div class="hooks">
+      <div class="hook rv"><span class="lbl">Gancho · dor de timing</span><p>Você acertou a empresa e errou a hora. Quantas vezes isso já aconteceu com você este ano?</p></div>
+      <div class="hook rv"><span class="lbl">Gancho · custo do erro</span><p>Comprar um ótimo ativo no topo do ciclo custa meses de paciência. Existe um número que mostra em que ponto do ciclo você está entrando.</p></div>
+      <div class="hook rv"><span class="lbl">Gancho · simplicidade</span><p>De 0 a 100: perto de 100, o preço está descontado contra o próprio histórico. Perto de 0, está esticado. É essa a leitura.</p></div>
+      <div class="hook rv"><span class="lbl">Gancho · amplitude</span><p>Ações, FIIs, Stocks, Commodities, Câmbio e Cripto na mesma tela. Em vez de quatro assinaturas, uma.</p></div>
+      <div class="hook rv"><span class="lbl">Gancho · fechamento</span><p>Faz sentido você testar com dois ativos da sua carteira e ver o que o índice diz antes da sua próxima compra?</p></div>
+    </div>
+    <div>
+      <span class="eyebrow rv">Quebra de objeções</span>
+      <div class="obj rv" style="margin-top:20px">
+        <details open><summary>“Já tenho análise fundamentalista.”<i></i></summary><p>Perfeito — e ela continua necessária. Fundamento diz se o ativo é bom; o Index Score diz se o preço está no começo, no meio ou no fim do movimento. São perguntas diferentes, e uma não substitui a outra.</p></details>
+        <details><summary>“É mais uma assinatura para pagar.”<i></i></summary><p>É uma assinatura que substitui várias: seis mercados na mesma leitura. E o custo se compara ao valor de uma única entrada feita na hora errada.</p></details>
+        <details><summary>“Isso é recomendação de compra?”<i></i></summary><p>Não. A Treend é plataforma de dados e inteligência quantitativa. Ela entrega indicadores para decisão autônoma, sem recomendar ativo.</p></details>
+        <details><summary>“Não sei usar ferramenta nova.”<i></i></summary><p>A leitura é um número de 0 a 100 e cinco zonas. Além disso, há o Playbook Treend em seis capítulos e o Radar, que avisa quando o ativo entra na zona escolhida — sem precisar vigiar a tela.</p></details>
+        <details><summary>“Preciso ver funcionando antes.”<i></i></summary><p>Como parceiro você tem acesso para demonstrar ao vivo: abra a tela, coloque os ativos do cliente e mostre o índice de cada um na hora.</p></details>
+        <details><summary>“E se o cliente cancelar?”<i></i></summary><p>A assinatura é sem fidelidade, com 7 dias de garantia — isso reduz o atrito na venda. Sua comissão acompanha o tempo em que o cliente permanece ativo.</p></details>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- POTENCIAL -->
+<section class="sec" id="potencial"><div class="wrap">
+  <div class="sec-head">
+    <div><span class="eyebrow rv">O potencial</span><h2 class="h2 rv" style="margin-top:18px">Quanto a sua base<br><span class="soft">pode gerar por mês.</span></h2></div>
+    <p class="p rv">Mexa nos controles com os números da sua realidade. O cálculo usa o ticket de US$ 199/mês do Treend Pro e a comissão recorrente que você quiser simular.</p>
+  </div>
+  <div class="calc rv">
+    <div class="calc-in">
+      <span class="lbl">Simule a sua operação</span>
+      <label>
+        <span class="top">Assinaturas ativas indicadas <b class="mono" id="vSubs">15</b></span>
+        <input type="range" id="subs" min="1" max="250" step="1" value="15" aria-label="Assinaturas ativas indicadas">
+      </label>
+      <label>
+        <span class="top">Comissão recorrente simulada <b class="mono" id="vRate">25%</b></span>
+        <input type="range" id="rate" min="5" max="40" step="1" value="25" aria-label="Comissão recorrente simulada em porcentagem">
+      </label>
+      <label>
+        <span class="top">Meses de permanência média <b class="mono" id="vMonths">12</b></span>
+        <input type="range" id="months" min="1" max="36" step="1" value="12" aria-label="Meses de permanência média">
+      </label>
+      <p class="note">O percentual de comissão é um controle de simulação, não uma oferta. A condição real da sua parceria vem na proposta enviada após a aprovação do cadastro.</p>
+    </div>
+    <div class="calc-out">
+      <span class="lbl">Receita recorrente simulada</span>
+      <div class="res"><b class="mono" id="oMonth">—</b> <span>/ mês</span></div>
+      <div class="calc-rows">
+        <div><span>Equivalente em reais</span><b id="oMonthBrl">—</b></div>
+        <div><span>Em 12 meses</span><b id="oYear">—</b></div>
+        <div><span>Ao longo da permanência média</span><b id="oLtv">—</b></div>
+        <div><span>Receita gerada para a Treend</span><b id="oGross">—</b></div>
+      </div>
+      <p class="note" id="fxNote">Conversão em reais pela cotação de referência do dia.</p>
+      <a class="btn btn-blue" style="margin-top:24px" href="#cadastro">Começar com esse potencial <svg><use href="#arr"/></svg></a>
+    </div>
+  </div>
+</div></section>
+
+<!-- FAQ -->
+<section class="sec" id="faq"><div class="wrap">
+  <div class="sec-head">
+    <div><span class="eyebrow rv">FAQ</span><h2 class="h2 rv" style="margin-top:18px">Perguntas<br><span class="soft">antes de entrar.</span></h2></div>
+    <p class="p rv">O que normalmente é perguntado por quem está avaliando a parceria.</p>
+  </div>
+  <div class="obj rv">
+    <details open><summary>Tem custo para entrar no programa?<i></i></summary><p>Não. O cadastro e a ativação como parceiro não têm custo. Você investe o seu canal de distribuição; a Treend investe produto, plataforma e suporte.</p></details>
+    <details><summary>Qual é o percentual de comissão?<i></i></summary><p>O percentual, a janela de atribuição e a forma de pagamento são definidos por perfil de parceiro e formalizados na proposta enviada após a aprovação do cadastro. Use o simulador desta página para projetar cenários.</p></details>
+    <details><summary>A comissão é só na primeira venda?<i></i></summary><p>Não. O modelo é de receita recorrente: a comissão acompanha a assinatura enquanto ela permanecer ativa, nas condições da sua proposta.</p></details>
+    <details><summary>Preciso ter uma audiência grande?<i></i></summary><p>Não necessariamente. Uma carteira pequena de clientes qualificados costuma converter mais do que uma audiência grande e dispersa. O que avaliamos é a aderência do seu público a decisões de compra e venda.</p></details>
+    <details><summary>Preciso dar recomendação de investimento para vender?<i></i></summary><p>Não, e não deve. A Treend é plataforma de dados: você apresenta uma ferramenta de leitura quantitativa, sem recomendar ativo ou prometer retorno.</p></details>
+    <details><summary>Quanto tempo leva para começar?<i></i></summary><p>Depois do cadastro, o time comercial faz contato para alinhar perfil e condições. Com a proposta aceita, a ativação da página de parceiro e do acesso é feita em seguida.</p></details>
+    <details><summary>Posso usar a plataforma com os meus clientes em call?<i></i></summary><p>Sim. O acesso de parceiro existe justamente para demonstração ao vivo, com os ativos do seu cliente na tela.</p></details>
+    <details><summary>Atende parceiro fora do Brasil?<i></i></summary><p>Sim. O ticket é em dólar e a plataforma cobre Stocks, Commodities, Câmbio e Cripto além dos mercados brasileiros. Informe o seu país no campo de mensagem do formulário.</p></details>
+  </div>
+</div></section>
+
+<!-- FINAL + FORM -->
+<section class="final" id="cadastro">
+  <div class="mesh" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="wrap">
+    <h2 class="rv"><span>A sua audiência já confia em você.</span><span style="color:var(--faint)">Falta ser remunerado por isso.</span></h2>
+    <p class="p rv">Preencha o cadastro abaixo. Seu nome entra na lista <strong>Partner Program</strong> da Treend e o time comercial faz contato para enviar a proposta de parceria.</p>
+
+    <div class="formbox rv" id="formbox">
+      <h3>Cadastro no Treend Partner Program</h3>
+      <p class="sub">Leva menos de um minuto. Sem custo e sem compromisso de adesão.</p>
+      <form id="partnerForm" novalidate>
+        <label class="full"><span>Nome completo</span><input name="nome" autocomplete="name" placeholder="Seu nome completo"></label>
+        <label><span>E-mail</span><input name="email" type="email" autocomplete="email" placeholder="voce@email.com"></label>
+        <label><span>WhatsApp</span><input name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" placeholder="+55 11 99999-9999" maxlength="25"></label>
+        <label><span>Perfil de parceiro</span>
+          <select name="perfil">
+            <option value="">Selecione</option>
+            <option>Assessor ou consultor de investimentos</option>
+            <option>Creator ou educador financeiro</option>
+            <option>Casa de análise</option>
+            <option>Comunidade ou grupo</option>
+            <option>Câmbio, remessas ou consultoria</option>
+            <option>Agência ou afiliado</option>
+            <option>Outro</option>
+          </select>
+        </label>
+        <label><span>Tamanho da base ou audiência</span>
+          <select name="audiencia">
+            <option value="">Selecione</option>
+            <option>Até 500 pessoas</option>
+            <option>500 a 5.000 pessoas</option>
+            <option>5.000 a 50.000 pessoas</option>
+            <option>Mais de 50.000 pessoas</option>
+          </select>
+        </label>
+        <label><span>Empresa (opcional)</span><input name="empresa" autocomplete="organization" placeholder="Nome da empresa ou escritório"></label>
+        <label><span>Site, Instagram ou canal (opcional)</span><input name="canal" placeholder="@seuperfil ou site.com.br"></label>
+        <label class="full"><span>Como pretende indicar a Treend? (opcional)</span><textarea name="mensagem" placeholder="Conte em uma linha como você chega no seu público e o seu país, se for fora do Brasil."></textarea></label>
+        <p class="err" id="err" role="alert"></p>
+        <button class="btn btn-blue" type="submit"><span>Enviar cadastro</span> <svg><use href="#arr"/></svg></button>
+        <p class="safe">Seus dados vão direto para o time comercial da Treend · Nada de disparo em massa</p>
+      </form>
+      <div class="done" id="done">
+        <div class="ic"><svg width="24" height="24"><use href="#chk"/></svg></div>
+        <h3>Cadastro recebido</h3>
+        <p>Você está na lista <strong>Partner Program</strong> da Treend. O time comercial entra em contato pelo WhatsApp ou e-mail informado para alinhar o perfil e enviar a proposta de parceria.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site"><div class="wrap">
+  <img src="../lp/assets/treend-blue.svg" alt="Treend" width="145" height="40">
+  <nav>
+    <a href="../offer/">Treend Pro</a><a href="https://treend.com.br/acoes/">Ações</a><a href="https://treend.com.br/fiis/">FIIs</a><a href="https://treend.com.br/stocks/">Stocks</a><a href="https://treend.com.br/commodities/">Commodities</a><a href="https://treend.com.br/politicas-de-privacidade/">Privacidade</a>
+  </nav>
+  <p class="disc">© <span id="yr"></span> Treend. A Treend não faz recomendação de investimento. Os indicadores são informativos e não garantem rentabilidade futura. Os valores do simulador desta página são ilustrativos e não constituem oferta de remuneração; as condições da parceria são formalizadas em proposta.</p>
+</div></footer>
+
+<div class="sticky" id="sticky"><p>Treend Partner Program <span>· receita recorrente</span></p><a class="btn btn-blue" href="#cadastro">Quero ser parceiro <svg><use href="#arr"/></svg></a></div>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+$('#yr').textContent = new Date().getFullYear();
+
+/* reveal */
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: .08 });
+$$('.rv').forEach((el, i) => { el.style.transitionDelay = (Math.min(i % 4, 3) * 70) + 'ms'; io.observe(el); });
+
+/* statement word-by-word */
+const stmt = $('#stmt');
+if (stmt && !reduce) {
+  const HL = ['confiança', 'audiência.', 'hora', 'comprar?', 'pague'];
+  stmt.innerHTML = stmt.textContent.trim().split(/\s+/)
+    .map(w => `<span class="w${HL.includes(w.replace(/[—,.]$/, '')) || HL.includes(w) ? ' hl' : ''}">${w}</span>`).join(' ');
+  const words = $$('#stmt .w');
+  addEventListener('scroll', () => {
+    const r = stmt.getBoundingClientRect(), vh = innerHeight;
+    const prog = Math.min(1, Math.max(0, (vh * .82 - r.top) / (r.height + vh * .2)));
+    const n = Math.round(prog * words.length);
+    words.forEach((w, i) => w.classList.toggle('lit', i < n));
+  }, { passive: true });
+}
+
+/* nav menu (mobile) */
+const toggle = $('.menu-toggle'), menu = $('#section-menu');
+toggle.addEventListener('click', () => {
+  const open = menu.classList.toggle('open');
+  toggle.setAttribute('aria-expanded', String(open));
+});
+menu.addEventListener('click', e => { if (e.target.tagName === 'A') { menu.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); } });
+
+/* sticky cta */
+const sticky = $('#sticky'), formbox = $('#formbox');
+addEventListener('scroll', () => {
+  const past = scrollY > innerHeight * .9;
+  const atForm = formbox.getBoundingClientRect().top < innerHeight;
+  sticky.classList.toggle('show', past && !atForm);
+}, { passive: true });
+
+/* tape */
+const items = ['Ações B3', 'FIIs', 'Stocks', 'Commodities', 'Câmbio', 'Cripto', 'Index Score 0–100', '5 tempos gráficos', 'Mais de 5.000 ativos', 'Radar de alertas', 'Playbook Treend', 'Treend MCP para IA'];
+$('#tape').innerHTML = [...items, ...items].map(t => `<span><em>${t}</em></span>`).join('');
+
+/* calculator */
+const TICKET = 199;
+const subs = $('#subs'), rate = $('#rate'), months = $('#months');
+let usdBrl = null, fxFailed = false;
+const fmtUsd = n => 'US$ ' + n.toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+const fmtBrl = n => 'R$ ' + n.toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+function track(el) { el.style.setProperty('--v', ((el.value - el.min) / (el.max - el.min) * 100) + '%'); }
+function calc() {
+  [subs, rate, months].forEach(track);
+  const n = +subs.value, r = +rate.value / 100, m = +months.value;
+  const month = n * TICKET * r;
+  $('#vSubs').textContent = n;
+  $('#vRate').textContent = rate.value + '%';
+  $('#vMonths').textContent = m;
+  $('#oMonth').textContent = fmtUsd(month);
+  $('#boardMrr').textContent = fmtUsd(month);
+  $('#oYear').textContent = fmtUsd(month * 12);
+  $('#oLtv').textContent = fmtUsd(month * m);
+  $('#oGross').textContent = fmtUsd(n * TICKET) + ' / mês';
+  $('#oMonthBrl').textContent = usdBrl ? fmtBrl(month * usdBrl) : '—';
+  $('#fxNote').textContent = usdBrl
+    ? 'Conversão pela cotação de referência de hoje: US$ 1 = ' + fmtBrl(usdBrl).replace('R$ ', 'R$ ') + '.'
+    : fxFailed ? 'Cotação indisponível agora para converter em reais.' : 'Buscando a cotação do dia para converter em reais…';
+}
+[subs, rate, months].forEach(el => el.addEventListener('input', calc));
+calc();
+fetch('https://economia.awesomeapi.com.br/json/last/USD-BRL')
+  .then(r => { if (!r.ok) throw new Error('fx'); return r.json(); })
+  .then(j => { const v = Number(j.USDBRL && j.USDBRL.bid); if (!(v > 0)) throw new Error('fx'); usdBrl = v; })
+  .catch(() => { fxFailed = true; })
+  .finally(calc);
+
+/* ── cadastro → lista Partner Program no admin da Treend ── */
+const SB_URL = 'https://mztkmlufajogxjltllhs.supabase.co';
+const SB_KEY = 'sb_publishable_JBn3pZt9SpNfBHBpI57BIg_5TOjFfjZ';
+const form = $('#partnerForm'), err = $('#err');
+const post = (table, body) => fetch(`${SB_URL}/rest/v1/${table}`, {
+  method: 'POST', keepalive: true,
+  headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+  body: JSON.stringify(body)
+});
+async function save(row) {
+  // 1) tabela dedicada da lista Partner Program
+  try {
+    const r = await post('partner_program_leads', row);
+    if (r.ok) return true;
+  } catch {}
+  // 2) fallback: lista de leads existente, marcada como Partner Program
+  const notes = [
+    'Lista: Partner Program',
+    row.profile && `Perfil: ${row.profile}`,
+    row.audience && `Audiência: ${row.audience}`,
+    row.company && `Empresa: ${row.company}`,
+    row.channel && `Canal: ${row.channel}`,
+    row.message && `Mensagem: ${row.message}`
+  ].filter(Boolean).join(' | ');
+  try {
+    const r = await post('stripe_leads', { name: row.name, email: row.email, whatsapp: row.whatsapp, plan: `partner-program — ${notes}` });
+    if (r.ok) return true;
+    const e = await r.json().catch(() => ({}));
+    if (e.code === 'PGRST204' || e.code === '42703') {
+      const r2 = await post('stripe_leads', { name: row.name, email: row.email, plan: `partner-program — WhatsApp: ${row.whatsapp} | ${notes}` });
+      return r2.ok;
+    }
+  } catch {}
+  return false;
+}
+const fail = (m, f) => { err.textContent = m; f.focus(); };
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const f = form;
+  const nome = f.nome.value.trim(), email = f.email.value.trim().toLowerCase();
+  const raw = f.whatsapp.value.trim(), dg = raw.replace(/\D/g, '');
+  err.textContent = '';
+  if (nome.length < 2) return fail('Informe seu nome.', f.nome);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail('Informe um e-mail válido.', f.email);
+  const intl = raw.startsWith('+');
+  if (intl ? (dg.length < 7 || dg.length > 15) : ![10, 11].includes(dg.length)) return fail('Informe um WhatsApp válido, com código do país se for fora do Brasil (ex.: +1 212 555 0123).', f.whatsapp);
+  if (!f.perfil.value) return fail('Selecione o seu perfil de parceiro.', f.perfil);
+
+  const btn = f.querySelector('button[type=submit]');
+  btn.disabled = true; btn.querySelector('span').textContent = 'Enviando…';
+  const row = {
+    name: nome, email,
+    whatsapp: intl ? '+' + dg : '+55' + dg,
+    profile: f.perfil.value,
+    audience: f.audiencia.value || null,
+    company: f.empresa.value.trim() || null,
+    channel: f.canal.value.trim() || null,
+    message: f.mensagem.value.trim() || null,
+    list: 'Partner Program',
+    source: location.pathname,
+    utm: location.search.slice(1) || null
+  };
+  let ok = false;
+  try { ok = await save(row); } catch {}
+  if (!ok) {
+    btn.disabled = false; btn.querySelector('span').textContent = 'Enviar cadastro';
+    err.innerHTML = 'Não conseguimos registrar agora. Tente novamente ou fale com o time em <a style="text-decoration:underline" href="mailto:contato@treend.com.br?subject=Treend%20Partner%20Program">contato@treend.com.br</a>.';
+    return;
+  }
+  document.body.classList.add('sent');
+  $('#done').scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' });
+});
+
+/* bento spotlight */
+$$('.card').forEach(c => c.addEventListener('pointermove', e => {
+  const r = c.getBoundingClientRect();
+  c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+  c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+}));
+})();
+</script>
+</body>
+</html>
