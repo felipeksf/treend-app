@@ -663,7 +663,10 @@ img[src*="/logos/"]{border-radius:50%!important;object-fit:cover;background:#fff
 .calc-currencies button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 .calc-currency-field{margin-bottom:34px}
 /* ---- complementos da página de parceiros, no mesmo sistema visual ---- */
-.hero h1 span{white-space:normal;text-wrap:balance}  /* as linhas da LP de câmbio eram nowrap; as daqui são mais longas */
+/* As frases daqui são mais longas que as da LP de câmbio, que usa min(84px,6.9vw).
+   5.8vw mantém as duas linhas inteiras de 320px até desktop, preservando o
+   gradiente do título completo em vez de cortá-lo no meio. */
+.hero h1{font-size:min(78px,5.8vw)}
 .skip{position:absolute;left:-9999px;top:0;background:#fff;color:#0b1220;padding:10px 14px;border-radius:8px;z-index:99}
 .skip:focus{left:12px;top:12px}
 .nav-in{display:flex;align-items:center;gap:24px;justify-content:space-between;padding:14px 0}
