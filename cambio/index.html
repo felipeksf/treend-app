@@ -644,11 +644,11 @@ img[src*="/logos/"]{border-radius:50%!important;object-fit:cover;background:#fff
 
 
 /* FX operation frequencies need room for their full names. */
-#qChart .ch-foot{grid-template-columns:1fr}
-#qTf{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
-#qTf div{width:auto;padding:8px 4px}
-#qTf span{white-space:normal;line-height:1.4;min-height:28px;display:flex;align-items:center;justify-content:center}
-@media(max-width:640px){#qTf{grid-template-columns:repeat(2,minmax(0,1fr))}#qTf span{min-height:16px}#qTf div:first-child{grid-column:1/-1}}
+#qChart .ch-foot,#cChart .ch-foot{grid-template-columns:1fr}
+#qTf,#cTf{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+#qTf div,#cTf div{width:auto;padding:8px 4px}
+#qTf span,#cTf span{white-space:normal;line-height:1.4;min-height:28px;display:flex;align-items:center;justify-content:center}
+@media(max-width:640px){#qTf,#cTf{grid-template-columns:repeat(2,minmax(0,1fr))}#qTf span,#cTf span{min-height:16px}#qTf div:first-child,#cTf div:first-child{grid-column:1/-1}}
 
 .calc-in input[type=number]{display:block;width:100%;min-width:0;margin-top:14px;padding:14px 16px;border:1px solid var(--rule-2);border-radius:12px;background:var(--paper);color:var(--ink);font:500 20px Geist,system-ui,sans-serif}
 .calc-value{display:block;margin-top:8px;color:var(--mute);font-size:13px}
@@ -677,7 +677,7 @@ img[src*="/logos/"]{border-radius:50%!important;object-fit:cover;background:#fff
 <meta name="twitter:title" content="Treend Pro Câmbio · a hora certa de fechar a sua moeda">
 <meta name="twitter:description" content="Dólar, euro, libra, yuan e mais: a Treend mostra se a moeda está cara ou barata contra o próprio histórico, com leitura por perfil de operação. US$ 199/mês.">
 <meta name="twitter:image" content="https://novo.treend.com.br/lp/assets/treend-blue.svg">
-<script type="application/ld+json">[{"@context": "https://schema.org", "@type": "Organization", "name": "Treend", "url": "https://novo.treend.com.br"}, {"@context": "https://schema.org", "@type": "Product", "name": "Treend Pro · Câmbio", "description": "Índice de 0 a 100 por tempo gráfico que diz se a cotação de uma moeda está incomum para ela, com leitura calibrada por perfil de operação de câmbio.", "brand": {"@type": "Brand", "name": "Treend"}, "offers": {"@type": "Offer", "price": "199", "priceCurrency": "USD", "url": "https://novo.treend.com.br/cambio/", "availability": "https://schema.org/InStock"}}, {"@context": "https://schema.org", "@type": "WebPage", "name": "Treend Pro · Câmbio", "url": "https://novo.treend.com.br/cambio/", "dateModified": "2026-11-04", "inLanguage": "pt-BR"}]</script>
+<script type="application/ld+json">[{"@context": "https://schema.org", "@type": "Organization", "name": "Treend", "url": "https://novo.treend.com.br"}, {"@context": "https://schema.org", "@type": "Product", "name": "Treend Pro · Câmbio", "description": "Índice de 0 a 100 por frequência de operação que diz se a cotação de uma moeda está incomum para ela, com leitura calibrada por perfil de operação de câmbio.", "brand": {"@type": "Brand", "name": "Treend"}, "offers": {"@type": "Offer", "price": "199", "priceCurrency": "USD", "url": "https://novo.treend.com.br/cambio/", "availability": "https://schema.org/InStock"}}, {"@context": "https://schema.org", "@type": "WebPage", "name": "Treend Pro · Câmbio", "url": "https://novo.treend.com.br/cambio/", "dateModified": "2026-11-04", "inLanguage": "pt-BR"}]</script>
 </head>
 <body>
 
@@ -762,7 +762,7 @@ img[src*="/logos/"]{border-radius:50%!important;object-fit:cover;background:#fff
     </div>
     <div class="chart" id="cChart">
       <div class="ch-head">
-        <div class="ch-asset"><img src="/offer/flags/USD.svg" alt=""><div><b>USD/BRL</b><span>Dólar americano · Diário</span></div></div>
+        <div class="ch-asset"><img src="/offer/flags/USD.svg" alt=""><div><b>USD/BRL</b><span>Dólar americano · 1x ao dia</span></div></div>
         <div class="ch-price"><span class="lbl">Cotação</span><b class="mono" id="cPx">R$ 5,4000</b></div>
         <div class="ch-idx"><span class="lbl">Índice Treend</span><div><b class="mono" id="cSc" style="color:#10B981">93</b><em id="cZ">MUITO ABAIXO DA MÉDIA</em></div></div>
       </div>
@@ -810,16 +810,16 @@ img[src*="/logos/"]{border-radius:50%!important;object-fit:cover;background:#fff
       <tr><td>Leitura por perfil de operação</td><td class="us"><span class="y"><svg><use href="#chk"/></svg></span></td><td><span class="n"><svg><use href="#x"/></svg></span><small>a mesma tela para todos</small></td><td><span class="n"><svg><use href="#x"/></svg></span></td><td><span class="y"><svg><use href="#chk"/></svg></span><small>se você montar</small></td></tr>
       <tr><td>Alerta quando a moeda entra na sua zona</td><td class="us"><span class="y"><svg><use href="#chk"/></svg></span></td><td><span class="n"><svg><use href="#x"/></svg></span></td><td><span class="n"><svg><use href="#x"/></svg></span></td><td><span class="n"><svg><use href="#x"/></svg></span></td></tr>
       <tr><td>A decisão continua sua</td><td class="us"><span class="y"><svg><use href="#chk"/></svg></span></td><td><span class="y"><svg><use href="#chk"/></svg></span></td><td><span class="n"><svg><use href="#x"/></svg></span></td><td><span class="y"><svg><use href="#chk"/></svg></span></td></tr>
-      <tr><td>Preço por mês</td><td class="us"><b class="mono">US$ 199</b></td><td class="mono">incluso na conta</td><td class="mono">grátis</td><td>Suas horas</td></tr>
+      
     </tbody></table></div>
-  <p class="note">Comparação qualitativa com as fontes que o operador de câmbio já usa no dia a dia. O portal do banco e os apps de cotação mostram preço; nenhum deles diz se o preço de hoje está caro ou barato contra o próprio histórico.</p>
+  <p class="note">Comparação qualitativa com as fontes que o operador de câmbio já usa no dia a dia. O portal do banco e os apps de cotação mostram a cotação; nenhum deles diz se a cotação de hoje está cara ou barata contra o próprio histórico.</p>
 </div></section>
 
 <!-- BENTO -->
 <section class="sec" id="recursos"><div class="wrap">
   <div class="sec-head"><div><h2 class="h2 rv">Tudo o que importa.<br><span class="soft">Nada do que distrai.</span></h2></div><p class="p rv">Toda a série histórica de cada moeda, resumida no que muda a sua decisão de fechar hoje ou esperar.</p></div>
   <div class="bento">
-    <article class="card c7 rv"><h3>Índice de 0 a 100 por moeda</h3><p>Um número por moeda e por tempo gráfico. Para quem compra, quanto maior, mais descontada a moeda está naquela janela. Cinco zonas, de esticado a muito abaixo da média.</p><div class="viz"><div class="scalebar"><div class="track"><i id="bMark" style="left:91%"></i></div><div class="ticks mono"><span style="left:0">0</span><span style="left:20%">20</span><span style="left:45%">45</span><span style="left:70%">70</span><span style="left:90%">90</span><span style="left:100%">100</span></div><div class="names"><span style="color:#dc2626">Esticado</span><span style="color:#b7791f">Neutro</span><span style="color:#0e9f6e">Muito abaixo da média</span></div></div></div></article>
+    <article class="card c7 rv"><h3>Índice de 0 a 100 por moeda</h3><p>Um número por moeda e por frequência de operação, da última hora ao mês. Para quem compra, quanto maior, mais descontada a moeda está naquela janela. Cinco zonas, de esticado a muito abaixo da média.</p><div class="viz"><div class="scalebar"><div class="track"><i id="bMark" style="left:91%"></i></div><div class="ticks mono"><span style="left:0">0</span><span style="left:20%">20</span><span style="left:45%">45</span><span style="left:70%">70</span><span style="left:90%">90</span><span style="left:100%">100</span></div><div class="names"><span style="color:#dc2626">Esticado</span><span style="color:#b7791f">Neutro</span><span style="color:#0e9f6e">Muito abaixo da média</span></div></div></div></article>
     <article class="card c5 rv"><h3>Alertas de janela</h3><p>Aviso quando uma moeda da sua lista chega à zona que você definiu: desconto raro para comprar, ou cotação esticada para quem recebe de fora.</p><div class="viz"><div class="stack"><div class="n3"><img src="/offer/flags/GBP.svg" alt=""><div><b>Libra abaixo da média</b><small>Índice 88 · 2h</small></div></div><div class="n2"><img src="/offer/flags/EUR.svg" alt=""><div><b>Euro muito abaixo da média</b><small>Índice 91 · 14m</small></div></div><div class="n1"><img src="/offer/flags/USD.svg" alt=""><div><b>Dólar muito abaixo da média</b><small>Índice 93 · agora</small></div></div></div></div></article>
     <article class="card c5 rv"><h3>Quatro perfis, a mesma moeda</h3><p>Quem compra e quem vende querem leituras opostas. O índice é calibrado para o seu lado da operação.</p><div class="viz"><div class="mk"><a href="#cambio">Importador <small>01</small></a><a href="#cambio">Exportador <small>02</small></a><a href="#cambio">Turismo <small>03</small></a><a href="#cambio">Renda global <small>04</small></a><a href="#cambio">Remessas <small>05</small></a><a href="#cambio">Tesouraria <small>06</small></a></div></div></article>
     <article class="card c7 rv"><h3>Suas moedas de relance</h3><p>Filtre por zona, moeda e frequência de operação. Toda a sua exposição em uma tela, sem abrir um único gráfico.</p><div class="viz"><div class="flt"><div class="chips"><span class="on">Boa janela</span><span>Importador</span><span>1x ao dia</span><span>Minhas moedas</span><span>+ filtro</span></div>
@@ -899,7 +899,7 @@ img[src*="/logos/"]{border-radius:50%!important;object-fit:cover;background:#fff
   <div class="mcp">
     <div>
       <h2 class="h2 rv">A Treend dentro<br><span class="soft">da sua IA.</span></h2>
-      <p class="p rv" style="margin-top:22px;max-width:480px">Com o <b style="color:var(--ink)">Treend MCP</b>, ChatGPT, Claude, Gemini, Grok e agentes de IA consultam o Índice Treend de qualquer moeda, em qualquer tempo gráfico, direto na conversa. Você descreve a operação em português; a IA busca os dados na Treend, faz a leitura e simula. Na sua conta, ela também gerencia suas moedas, radares, alertas e histórico.</p>
+      <p class="p rv" style="margin-top:22px;max-width:480px">Com o <b style="color:var(--ink)">Treend MCP</b>, ChatGPT, Claude, Gemini, Grok e agentes de IA consultam o Índice Treend de qualquer moeda, em qualquer frequência de operação, direto na conversa. Você descreve a operação em português; a IA busca os dados na Treend, faz a leitura e simula. Na sua conta, ela também gerencia suas moedas, radares, alertas e histórico.</p>
       <div class="ais rv"><span class="ai"><img src="../lp/assets/ai/openai.svg" alt="">ChatGPT</span><span class="ai"><img src="../lp/assets/ai/claude-color.svg" alt="">Claude</span><span class="ai"><img src="../lp/assets/ai/gemini-color.svg" alt="">Gemini</span><span class="ai"><img src="../lp/assets/ai/grok.svg" alt="">Grok</span><span class="ai more">+ agentes compatíveis com MCP</span></div>
       <div class="mcp-steps rv">
         <div><span>01</span><div><b>Solicite o acesso</b><p>Na plataforma, em <b>MCP</b>. O acesso é liberado por conta.</p></div></div>
@@ -915,7 +915,7 @@ img[src*="/logos/"]{border-radius:50%!important;object-fit:cover;background:#fff
     </div>
   </div>
   <div class="tools">
-    <div class="rv"><code>analisar_ativo</code><p>Cotação, variação e índice da moeda em 5 tempos gráficos.</p></div>
+    <div class="rv"><code>analisar_ativo</code><p>Cotação, variação e índice da moeda em cada frequência de operação.</p></div>
     <div class="rv"><code>projecoes_cambio</code><p>Zonas de compra e de venda por perfil de operação.</p></div>
     <div class="rv"><code>concierge_cambio</code><p>Descreva a operação (moeda, valor, prazo) e receba a leitura e a simulação.</p></div>
     <div class="rv"><code>visao_geral_mercado</code><p>O retrato do momento do câmbio no dia.</p></div>
@@ -969,7 +969,7 @@ img[src*="/logos/"]{border-radius:50%!important;object-fit:cover;background:#fff
   <div class="price-wrap">
     <div class="inc rv">
       <div><span>01</span><div><b>As moedas que você opera</b><p>Dólar, euro, libra, yuan e as demais moedas contra o real.</p></div></div>
-      <div><span>02</span><div><b>Índice Treend por moeda</b><p>Leitura de 0 a 100 em cinco tempos gráficos, atualizada diariamente.</p></div></div>
+      <div><span>02</span><div><b>Índice Treend por moeda</b><p>Leitura de 0 a 100 da última hora ao mês, atualizada diariamente.</p></div></div>
       <div><span>03</span><div><b>Leitura por perfil de operação</b><p>Importador, exportador, turismo ou renda global, com zonas de preço.</p></div></div>
       <div><span>04</span><div><b>Radar de janela</b><p>Aviso quando a moeda entrar na zona que você definiu.</p></div></div>
       <div><span>05</span><div><b>Calculadora de spread</b><p>Quanto a taxa que você paga hoje custa por mês e por ano.</p></div></div>
@@ -1199,7 +1199,7 @@ for (let i = 0; i < N; i++) {
   candles.push([g, v, x]);
 }
 const pinLow = $('#pinLow'), pinHigh = $('#pinHigh'), cTagEl = $('#cTag'), plot = $('.ch-plot');
-const tfEl = $('#cTf'), TF = ['1h', '4h', 'D', 'S', 'M'], TFoff = [-9, -4, 0, 5, 9];
+const tfEl = $('#cTf'), TF = ['Última hora', '1x ao dia', '1x na semana', '2x ao mês', '1x ao mês'], TFoff = [-9, -4, 0, 5, 9];
 tfEl.innerHTML = TF.map(t => `<div><span>${t}</span><b class="mono">—</b></div>`).join('');
 const tfB = [...tfEl.querySelectorAll('b')];
 function place(el, x, y) { el.style.left = (x / 600 * 100) + '%'; el.style.top = (y / 300 * 100) + '%'; }
