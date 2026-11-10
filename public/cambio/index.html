@@ -1424,7 +1424,7 @@ fetch('https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL')
 
 /* lead → Admin (Leads Stripe) → Stripe */
 const STRIPE = 'https://buy.stripe.com/28E14n1yV96HdXD9U30Ny0e';
-const SB_URL = 'https://mztkmlufajogxjltllhs.supabase.co', SB_KEY = 'sb_publishable_JBn3pZt9SpNfBHBpI57BIg_5TOjFfjZ';
+const SB_URL = 'https://khbkfcdpgrksrrpocdvb.supabase.co', SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtoYmtmY2RwZ3Jrc3JycG9jZHZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3NDE5OTIsImV4cCI6MjA4NjMxNzk5Mn0.AGdT0FZ0febeowddHGmL_u14CXBX7hQ2G_rVe775CxA';
 const modal = $('#modal'), form = $('#lead'), err = $('#err');
 const open = () => { modal.classList.add('open'); document.body.style.overflow = 'hidden'; setTimeout(() => form.nome.focus(), 60); };
 const close = () => { modal.classList.remove('open'); document.body.style.overflow = ''; };
@@ -1466,8 +1466,8 @@ form.addEventListener('submit', async e => {
 (() => {
   try {
     if (navigator.doNotTrack === '1' || /bot|crawl|spider|headless|lighthouse/i.test(navigator.userAgent)) return;
-    const URL_ = 'https://mztkmlufajogxjltllhs.supabase.co/rest/v1/page_views';
-    const KEY = 'sb_publishable_JBn3pZt9SpNfBHBpI57BIg_5TOjFfjZ';
+    const URL_ = 'https://khbkfcdpgrksrrpocdvb.supabase.co/rest/v1/page_views';
+    const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtoYmtmY2RwZ3Jrc3JycG9jZHZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3NDE5OTIsImV4cCI6MjA4NjMxNzk5Mn0.AGdT0FZ0febeowddHGmL_u14CXBX7hQ2G_rVe775CxA';
     const id = (store, k) => { try { let v = store.getItem(k); if (!v) { v = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2)); store.setItem(k, v); } return v; } catch { return null; } };
     const q = new URLSearchParams(location.search);
     const ref = document.referrer && new URL(document.referrer).host !== location.host ? document.referrer : null;
