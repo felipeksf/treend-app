@@ -28,7 +28,7 @@ export const CLASSES: Record<ClassKey, {
   crypto: { key: 'crypto', label: 'Cripto', short: 'Cripto', currency: 'US$', question: 'Qual criptomoeda deseja analisar?', placeholder: 'Ex.: Bitcoin, ETH, Solana', desc: 'Todas as criptomoedas negociadas em USDT', heatmapRoute: '/cripto', news: ['CRYPTO'], emoji: '₿' },
   fii: { key: 'fii', label: 'FIIs', short: 'FIIs', currency: 'R$', question: 'Qual FII deseja analisar?', placeholder: 'Ex.: MXRF11, HGLG11, KNRI11', desc: 'Fundos imobiliários e Fiagros com P/VP', heatmapRoute: '/fiis', news: ['FII'], emoji: '🏢' },
   commod: { key: 'commod', label: 'Commodities', short: 'Commodities', currency: 'US$', question: 'Qual commodity deseja analisar?', placeholder: 'Ex.: Petróleo, Ouro, Soja, Café', desc: '232 commodities: energia, metais e agrícolas', heatmapRoute: '/commodities', news: ['COMMOD'], emoji: '🛢️' },
-  fx: { key: 'fx', label: 'Câmbio', short: 'Câmbio', currency: 'R$', question: 'Qual moeda deseja analisar?', placeholder: 'Ex.: Dólar, Euro, Libra', desc: '11 moedas contra o real', heatmapRoute: '/cambio', news: ['USD', 'EUR', 'GBP', 'CNY', 'JPY'], emoji: 'R$' },
+  fx: { key: 'fx', label: 'Câmbio', short: 'Câmbio', currency: 'R$', question: 'Qual moeda deseja analisar?', placeholder: 'Ex.: Dólar, Euro, Libra', desc: 'Scores de câmbio por perfil e frequência', heatmapRoute: '/mapa-cambio', news: ['USD', 'EUR', 'GBP', 'CNY', 'JPY'], emoji: 'R$' },
 }
 export const CLASS_LIST = Object.values(CLASSES).sort((a, b) => a.label.localeCompare(b.label, 'pt'))
 
@@ -36,6 +36,7 @@ const logoUrl = (id: unknown) => (id ? `https://s3-symbol-logo.tradingview.com/$
 
 export async function scanClass(key: ClassKey, opts: { limit?: number; search?: string; signal?: AbortSignal } = {}): Promise<Row[]> {
   const { limit = 6000, search, signal } = opts
+  if (['fx'].includes(key)) throw new Error('Câmbio utiliza os scores por perfil de live-heatmaps, não o scanner de ativos.')
   if (key === 'fii') return scanFii(signal, search)
   const market = key === 'b3' ? 'brazil' : key === 'us' ? 'america' : key === 'crypto' ? 'crypto' : key === 'commod' ? 'futures' : 'forex'
   const valueCol = key === 'crypto' ? '24h_vol|5' : key === 'commod' ? 'volume' : 'Value.Traded'

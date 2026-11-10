@@ -1,4 +1,5 @@
 import { PlaybookButton } from './Playbook'
+import { VideoTourButton } from './VideoTour'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { ArrowDownRight, ArrowUpRight, Minus } from 'lucide-react'
@@ -26,7 +27,7 @@ export function Delta({ v, digits = 2 }: { v: number; digits?: number }) {
   )
 }
 
-const PLAYBOOK_ROUTES = ['/mapa', '/acoes-b3', '/stocks-invest', '/cripto', '/fiis', '/commodities', '/cambio', '/mercado', '/mercados']
+const PLAYBOOK_ROUTES = ['/mapa', '/acoes-b3', '/stocks-invest', '/cripto', '/fiis', '/commodities', '/mapa-cambio', '/mercado', '/mercados']
 
 export function PageHeader({ eyebrow, title, accent, sub, actions, help }: { eyebrow?: ReactNode; title: string; accent?: string; sub?: ReactNode; actions?: ReactNode; help?: string }) {
   const { pathname } = useLocation()
@@ -40,10 +41,11 @@ export function PageHeader({ eyebrow, title, accent, sub, actions, help }: { eye
           {tip && <Hint text={tip} side="bottom" />}
         </h1>
         {sub && <p>{sub}</p>}
-        {(HOWTO_TERMS[pathname] || PLAYBOOK_ROUTES.includes(pathname)) && (
+        {(HOWTO_TERMS[pathname] || PLAYBOOK_ROUTES.includes(pathname) || pathname === '/') && (
           <div className="row gap-8 wrap" style={{ marginTop: 14 }}>
             {HOWTO_TERMS[pathname] && <HowTo term={HOWTO_TERMS[pathname]} />}
             {PLAYBOOK_ROUTES.includes(pathname) && <PlaybookButton auto />}
+            {(PLAYBOOK_ROUTES.includes(pathname) || pathname === '/') && <VideoTourButton />}
           </div>
         )}
       </div>
