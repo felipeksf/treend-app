@@ -1520,6 +1520,7 @@ body.reading-mode .tn-side:hover{filter:none;opacity:1}
 /* ===== Modo Blue: sidebar com degradê azul ===== */
 :root[data-theme='blue'] .sidebar { background: linear-gradient(180deg, #2446b8 0%, #1b3694 22%, #13266d 48%, #0d1a4d 72%, #080f2e 100%) !important; border-right: 1px solid rgba(255,255,255,.08); color: #eaf0ff; }
 :root[data-theme='blue'] .sidebar .brand-name, :root[data-theme='blue'] .sidebar .brand, :root[data-theme='blue'] .sidebar .side-foot-text { color: #fff; }
+:root[data-theme='blue'] .sidebar .wordmark { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: #fff; }
 :root[data-theme='blue'] .sidebar .nav-label { color: rgba(226,235,255,.6); }
 :root[data-theme='blue'] .sidebar .nav-item { color: rgba(226,235,255,.82); }
 :root[data-theme='blue'] .sidebar .nav-item svg { color: rgba(226,235,255,.7); }
