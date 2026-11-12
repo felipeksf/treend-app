@@ -56,6 +56,7 @@ export default function Cmp() {
   const { session } = useAuth()
   const qc = useQueryClient()
   const { data: heat, isLoading } = useHeatmap()
+  const heatCount = heat?.length ?? 0
   const { data: quotes } = useQuotes()
   const [ccy, setCcy] = useState<string>('USD')
   const [inp, setInp] = useState<Inputs>(load)
@@ -74,7 +75,9 @@ export default function Cmp() {
 
   const calc = useMemo(() => {
     const r = rate(inp.unitCostCurrency)
-    const unitBrl = Math.max(0, parse(inp.unitCost) * (r ?? 0))
+    const typedUnit = Math.max(0, parse(inp.unitCost))
+    const noRate = typedUnit > 0 && r == null
+    const unitBrl = Math.max(0, typedUnit * (r ?? 0))
     const extra = (c: Cost) => {
       const v = parse(c.value)
       return Math.max(0, c.type === 'pct' ? (unitBrl * v) / 100 : v)
@@ -88,21 +91,24 @@ export default function Cmp() {
     const pa = Math.max(0, parse(inp.purchaseAmount))
     const pr = rate(inp.purchaseCurrency)
     const inv = Math.max(0, parse(inp.initialInventory)) + pu - sales
-    return { unitBrl, parts, additional, finalUnit, sales, cmvTotal, purchaseBrl: pa > 0 && pr ? pa * pr : null, inventory: inv, inventoryValue: inv * finalUnit }
+    return { unitBrl, parts, additional, finalUnit, sales, cmvTotal, noRate, purchaseBrl: pa > 0 && pr ? pa * pr : null, inventory: inv, inventoryValue: inv * finalUnit }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inp, quotes])
 
-  const ready = calc.cmvTotal != null && calc.finalUnit > 0
+  // O custo por unidade já basta para projetar o CMP de cada janela; as unidades
+  // vendidas só são necessárias para os totais (CMP do período e economia).
+  const ready = calc.finalUnit > 0
+  const hasSales = calc.cmvTotal != null
 
   const windows = FREQUENCIES.map((f) => {
     const s = pick(heat, 'importador', ccy, f.key)
     const score = s?.heat_x ?? 50
     const projUnit = calc.finalUnit * (1 - adjust(score, f.key))
     const projTotal = calc.sales * projUnit
-    const saving = (calc.cmvTotal ?? 0) - projTotal
+    const saving = calc.cmvTotal != null ? calc.cmvTotal - projTotal : 0
     return { f, s, score, projUnit, projTotal, saving, pct: calc.cmvTotal ? (saving / calc.cmvTotal) * 100 : 0, monthly: saving * FACTOR[f.key].f }
   })
-  const best = ready && heat?.length ? windows.reduce((a, b) => (b.saving > a.saving ? b : a)) : null
+  const best = hasSales && heat?.length ? windows.reduce((a, b) => (b.saving > a.saving ? b : a)) : null
 
   const ops = useQuery({
     queryKey: ['cmv-operations', session?.user.id],
@@ -143,7 +149,7 @@ export default function Cmp() {
         eyebrow={<><BarChart3 size={13} /> CMP</>}
         title="Custo médio,"
         accent="sob controle."
-        sub="Informe vendas e custo por unidade. Projetamos o seu custo médio ponderado em cada janela do mapa de calor."
+        sub="Informe o custo por unidade (e as unidades vendidas, para os totais). Projetamos o seu custo médio ponderado em cada janela do mapa de calor."
         actions={<Seg value={ccy} onChange={setCcy} options={CCY.map((c) => ({ value: c, label: <><span>{quotes?.[c]?.flag}</span>{c}</> }))} />}
       />
 
@@ -173,12 +179,12 @@ export default function Cmp() {
             </div>
           </div>
 
-          {isLoading ? (
+          {isLoading && heatCount === 0 ? (
             <Skel h={320} />
           ) : (
             <div className="cmp-windows">
               {windows.map((w) => (
-                <WindowCard key={w.f.key} w={w} ready={ready} flag={quotes?.[ccy]?.flag} onSave={() => (session ? save.mutate(w) : toast('Entre na sua conta para salvar'))} saving={save.isPending} best={best?.f.key === w.f.key} />
+                <WindowCard key={w.f.key} w={w} ready={ready} hasSales={hasSales} flag={quotes?.[ccy]?.flag} onSave={() => (session ? save.mutate(w) : toast('Entre na sua conta para salvar'))} saving={save.isPending} best={best?.f.key === w.f.key} />
               ))}
             </div>
           )}
@@ -233,6 +239,7 @@ export default function Cmp() {
                 <Select style={{ width: 100, flex: 'none' }} value={inp.unitCostCurrency} onChange={(v) => set('unitCostCurrency', v)} options={COST_CCY.map((c) => ({ value: c, label: c }))} />
               </div>
               {inp.unitCostCurrency !== 'BRL' && calc.unitBrl > 0 && <div className="tiny faint">Equivalente em BRL: <span className="mono">{money(calc.unitBrl)}</span></div>}
+              {calc.noRate && <div className="tiny" style={{ color: 'var(--amber)' }}>Cotação de {inp.unitCostCurrency} indisponível agora — informe o custo em BRL ou tente novamente em instantes.</div>}
             </div>
 
             <div className="divider" />
@@ -288,9 +295,9 @@ export default function Cmp() {
   )
 }
 
-function WindowCard({ w, ready, flag, onSave, saving, best }: {
+function WindowCard({ w, ready, hasSales, flag, onSave, saving, best }: {
   w: { f: (typeof FREQUENCIES)[number]; s?: HeatScore; score: number; projUnit: number; saving: number; pct: number; monthly: number }
-  ready: boolean; flag?: string; onSave: () => void; saving: boolean; best: boolean
+  ready: boolean; hasSales: boolean; flag?: string; onSave: () => void; saving: boolean; best: boolean
 }) {
   const sg = signal(w.score)
   const Up = w.saving >= 0 ? TrendingDown : TrendingUp
@@ -306,12 +313,18 @@ function WindowCard({ w, ready, flag, onSave, saving, best }: {
       {ready ? (
         <div className="stack gap-4">
           <div className="kv"><span>CMP projetado / un.</span><b className="mono">{money(w.projUnit)}</b></div>
-          <div className="kv"><span>Economia no CMP</span><b className={`mono ${w.saving >= 0 ? 'up' : 'down'}`}><Up size={12} style={{ verticalAlign: -1 }} /> {brl0(Math.abs(w.saving))}</b></div>
-          <div className="kv"><span>Projeção {FACTOR[w.f.key].label}</span><b className={`mono ${w.monthly >= 0 ? 'up' : 'down'}`}>{brl0(w.monthly)}</b></div>
-          <button className="btn sm" style={{ marginTop: 8 }} disabled={saving} onClick={onSave}><Save /> Salvar resultado</button>
+          {hasSales ? (
+            <>
+              <div className="kv"><span>Economia no CMP</span><b className={`mono ${w.saving >= 0 ? 'up' : 'down'}`}><Up size={12} style={{ verticalAlign: -1 }} /> {brl0(Math.abs(w.saving))}</b></div>
+              <div className="kv"><span>Projeção {FACTOR[w.f.key].label}</span><b className={`mono ${w.monthly >= 0 ? 'up' : 'down'}`}>{brl0(w.monthly)}</b></div>
+            </>
+          ) : (
+            <div className="tiny faint">Informe as unidades vendidas para ver a economia do período.</div>
+          )}
+          <button className="btn sm" style={{ marginTop: 8 }} disabled={saving || !hasSales} onClick={onSave}><Save /> Salvar resultado</button>
         </div>
       ) : (
-        <div className="tiny faint" style={{ textAlign: 'center', padding: '8px 0 4px' }}>Preencha vendas e custo para ver o CMP</div>
+        <div className="tiny faint" style={{ textAlign: 'center', padding: '8px 0 4px' }}>Informe o custo por unidade para ver o CMP</div>
       )}
     </div>
   )
