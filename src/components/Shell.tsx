@@ -10,6 +10,7 @@ import Ticker from './Ticker'
 import { useAuth } from '../lib/auth'
 import { CLASSIC_URL } from '../lib/supabase'
 import { useQuotes } from '../lib/rates'
+import { searchAssets, clsOf, type Asset } from '../lib/market'
 import { navKey, useSidebarVisibility } from '../lib/sidebar'
 import { useRoles } from '../lib/roles'
 
@@ -92,7 +93,7 @@ export default function Shell() {
         const typing = !!t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))
         if (!typing) {
           e.preventDefault()
-          setTheme((th) => (th === 'light' ? 'dark' : th === 'dark' ? 'white' : 'light'))
+          setTheme((th) => (th === 'light' ? 'dark' : th === 'dark' ? 'white' : th === 'white' ? 'blue' : 'light'))
           return
         }
       }
@@ -139,9 +140,9 @@ export default function Shell() {
           ))}
         </div>
         <div className="side-foot">
-          <button className="nav-item" style={{ border: 0, background: 'none', width: '100%' }} onClick={() => setTheme(theme === 'light' ? 'dark' : theme === 'dark' ? 'white' : 'light')} title="Alternar entre claro, escuro e branco">
-            {theme === 'dark' ? <Square /> : theme === 'white' ? <Sun /> : <Moon />}
-            <span className="nav-text">{theme === 'light' ? 'Modo escuro' : theme === 'dark' ? 'Modo branco' : 'Modo claro'}</span>
+          <button className="nav-item" style={{ border: 0, background: 'none', width: '100%' }} onClick={() => setTheme(theme === 'light' ? 'dark' : theme === 'dark' ? 'white' : theme === 'white' ? 'blue' : 'light')} title="Alternar entre claro, escuro, branco e azul">
+            {theme === 'dark' ? <Square /> : theme === 'white' ? <Sun /> : theme === 'blue' ? <Sun /> : <Moon />}
+            <span className="nav-text">{theme === 'light' ? 'Modo escuro' : theme === 'dark' ? 'Modo branco' : theme === 'white' ? 'Modo blue' : 'Modo claro'}</span>
             <span className="kbd hide-m" style={{ display: 'inline-block', marginLeft: 'auto' }}>⌘A</span>
           </button>
           <div className="user-chip">
@@ -199,13 +200,41 @@ export default function Shell() {
   )
 }
 
+/** Asset logo in the global search dropdown, with the ticker initials as fallback. */
+function PaletteLogo({ logo, ticker }: { logo: string | null; ticker: string }) {
+  const [err, setErr] = useState(false)
+  return (
+    <span className="asset-logo" style={{ width: 22, height: 22, flex: 'none' }}>
+      {logo && !err ? <img src={logo} alt="" onError={() => setErr(true)} /> : <b style={{ fontSize: 8 }}>{ticker.slice(0, 2)}</b>}
+    </span>
+  )
+}
+
 function Palette({ onClose, isAdmin }: { onClose: () => void; isAdmin: boolean }) {
   const [q, setQ] = useState('')
   const [idx, setIdx] = useState(0)
   const nav = useNavigate()
   const { data: quotes } = useQuotes()
   const ref = useRef<HTMLInputElement>(null)
+  const [assets, setAssets] = useState<Asset[]>([])
   useEffect(() => ref.current?.focus(), [])
+
+  // Assets (with their logos) just like the main "analisar ativo" search bar.
+  useEffect(() => {
+    const s = q.trim()
+    if (s.length < 2) { setAssets([]); return }
+    const ctrl = new AbortController()
+    const t = setTimeout(() => {
+      searchAssets(s, ctrl.signal).then((r) => setAssets(r.slice(0, 6))).catch(() => { /* ignore */ })
+    }, 180)
+    return () => { clearTimeout(t); ctrl.abort() }
+  }, [q])
+
+  const openAssetFromPalette = (a: Asset) => {
+    const k = clsOf(a)
+    try { sessionStorage.setItem('treend-v2-asset', JSON.stringify(a)) } catch { /* ignore */ }
+    nav(`/mercado?c=${k}&s=${encodeURIComponent(a.symbol)}`)
+  }
 
   const results = useMemo(() => {
     const s = q.trim().toLowerCase()
@@ -218,8 +247,13 @@ function Palette({ onClose, isAdmin }: { onClose: () => void; isAdmin: boolean }
     const classic = CLASSIC.filter((i) => !s || i.label.toLowerCase().includes(s)).map((i) => ({
       group: 'App clássico', key: i.to, label: i.label, sub: i.desc, icon: i.icon, run: () => window.open(CLASSIC_URL + i.classic, '_blank'), hint: '↗',
     }))
-    return [...ccy, ...screens, ...classic]
-  }, [q, quotes, nav, isAdmin])
+    const ativos = assets.map((a) => ({
+      group: 'Ativos', key: a.symbol, label: a.ticker, sub: a.name, icon: Coins, logo: a.logo ?? null, ticker: a.ticker,
+      run: () => openAssetFromPalette(a), hint: '',
+    }))
+    return [...ativos, ...ccy, ...screens, ...classic]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [q, quotes, nav, isAdmin, assets])
 
   useEffect(() => setIdx(0), [q])
 
@@ -245,7 +279,9 @@ function Palette({ onClose, isAdmin }: { onClose: () => void; isAdmin: boolean }
               <div key={r.group + r.key}>
                 {head}
                 <div className={`opt ${i === idx ? 'on' : ''}`} onMouseEnter={() => setIdx(i)} onClick={() => { r.run(); onClose() }}>
-                  <r.icon />
+                  {(r as unknown as { ticker?: string }).ticker
+                    ? <PaletteLogo logo={(r as unknown as { logo?: string | null }).logo ?? null} ticker={(r as unknown as { ticker: string }).ticker!} />
+                    : <r.icon />}
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontWeight: 520 }}>{r.label}</div>
                     <div className="tiny faint">{r.sub}</div>

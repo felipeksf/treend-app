@@ -48,7 +48,7 @@ const CHAPTERS: Ch[] = [
           <div className="pb-vs-h">Treend · timing quantitativo</div>
           <ul>
             <li><b>Pergunta:</b> quando agir?</li>
-            <li><b>Olha para:</b> o comportamento estatístico do preço em cada tempo gráfico</li>
+            <li><b>Olha para:</b> o comportamento estatístico de cada oportunidade</li>
             <li><b>Horizonte:</b> de horas a meses, você escolhe a janela</li>
             <li><b>Ritmo:</b> contínuo, atualizado em minutos</li>
             <li><b>Resposta:</b> “agora o preço está descontado (ou esticado) nesta janela”</li>
