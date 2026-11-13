@@ -39,3 +39,9 @@ img,svg,canvas,video{max-width:100%}
   .page h1{font-size:clamp(28px,8vw,40px)!important;line-height:1.08;word-break:break-word}
   .page{padding-left:16px!important;padding-right:16px!important}
 }
+
+/* medidores: centralização */
+.frame-card{align-items:center;text-align:center}
+.frame-card>*{width:100%;text-align:center}
+.frame-card svg{display:block;margin-left:auto;margin-right:auto;align-self:center}
+@media(max-width:640px){.frame-grid>:last-child:nth-child(odd) svg{width:min(240px,100%)!important;margin:0 auto!important}}
