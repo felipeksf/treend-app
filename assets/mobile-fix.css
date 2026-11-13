@@ -45,3 +45,21 @@ img,svg,canvas,video{max-width:100%}
 .frame-card>*{width:100%;text-align:center}
 .frame-card svg{display:block;margin-left:auto;margin-right:auto;align-self:center}
 @media(max-width:640px){.frame-grid>:last-child:nth-child(odd) svg{width:min(240px,100%)!important;margin:0 auto!important}}
+
+/* CMP formulário: 1 coluna no mobile */
+@media(max-width:1024px){
+  .cmp-form-b{grid-template-columns:minmax(0,1fr)!important;gap:12px!important}
+  .cmp-form-b>*{grid-column:1/-1!important;min-width:0;max-width:100%}
+  .cmp-form-b>.cmp-clear{justify-self:end}
+  .cmp-form-b>.cmp-more-t{justify-self:stretch}
+  .cmp-form-b .field,.cmp-form-b .field .row{min-width:0;max-width:100%}
+  .cmp-form-b .field .row>.input{flex:1 1 auto;min-width:0!important;width:auto}
+  .cmp-form-b .field .row>:last-child{width:72px!important;flex:none}
+  .cmp-form-b>.cost-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px}
+  .cmp-form-b>.cost-grid>*{min-width:0}
+  .cmp-form-b>.cost-grid input{width:100%;min-width:0}
+  .cmp-summary .kv{flex-direction:row!important;justify-content:space-between!important;align-items:baseline!important;text-align:left!important;gap:12px}
+  .cmp-summary .kv>span{white-space:normal!important;text-align:left}
+  .cmp-summary .kv>b{margin-left:auto;text-align:right}
+}
+@media(max-width:380px){.cmp-form-b>.cost-grid{grid-template-columns:minmax(0,1fr)!important}}
