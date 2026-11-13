@@ -1,7 +1,7 @@
 /* Treend — ajustes mobile (2026-11-13) */
 html,body{width:100%;max-width:100vw;overflow-x:hidden;overscroll-behavior-x:none;-webkit-text-size-adjust:100%;touch-action:pan-x pan-y}
 #root{max-width:100vw;overflow-x:clip}
-img,svg,canvas,video{max-width:100%}
+img,canvas,video{max-width:100%}
 @media(max-width:640px){
   input,select,textarea{font-size:16px!important}
   /* medidores: menos espaço, último ímpar ocupa a linha toda */
@@ -16,9 +16,9 @@ img,svg,canvas,video{max-width:100%}
   .seg>button:last-child:nth-child(odd){grid-column:1/-1}
   .seg{flex:1 1 100%;min-width:0;box-sizing:border-box}
   /* moedas (botões com bandeira): 5 colunas iguais numa linha */
-  .seg:has(>button>span){grid-template-columns:repeat(5,minmax(0,1fr))!important}
-  .seg:has(>button>span)>button{grid-column:auto!important;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:52px;padding:0 2px!important;font-size:11.5px;white-space:nowrap}
-  .seg:has(>button>span)>button>span{font-size:16px;line-height:1}
+  .seg:has(>button:nth-child(5):last-child):has(>button>span):not(:has(svg)){grid-template-columns:repeat(5,minmax(0,1fr))!important}
+  .seg:has(>button:nth-child(5):last-child):has(>button>span):not(:has(svg))>button{grid-column:auto!important;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:52px;padding:0 2px!important;font-size:11.5px;white-space:nowrap}
+  .seg:has(>button:nth-child(5):last-child):has(>button>span):not(:has(svg))>button>span{font-size:16px;line-height:1}
 }
 
 /* CMP: coluna única no tablet/mobile */
@@ -63,3 +63,13 @@ img,svg,canvas,video{max-width:100%}
   .cmp-summary .kv>b{margin-left:auto;text-align:right}
 }
 @media(max-width:380px){.cmp-form-b>.cost-grid{grid-template-columns:minmax(0,1fr)!important}}
+
+/* seletores com ícone (Edição/Revista/Feed, Blue/Escuro…): compactos e alinhados */
+@media(max-width:640px){
+  .seg{border-radius:14px;padding:3px!important}
+  .seg button{height:36px!important;font-size:13px!important;border-radius:11px!important}
+  .seg:has(svg){grid-template-columns:repeat(auto-fit,minmax(0,1fr))!important}
+  .seg:has(svg)>button{grid-column:auto!important}
+  .seg button svg{width:14px!important;height:14px!important;flex:none}
+  .seg button>span{display:inline-flex!important;align-items:center;justify-content:center;gap:5px!important;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+}
