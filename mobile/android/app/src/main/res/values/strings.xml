@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Treend</string>
+    <string name="title_activity_main">Treend</string>
+    <string name="package_name">br.com.treend.app</string>
+    <string name="custom_url_scheme">br.com.treend.app</string>
+</resources>

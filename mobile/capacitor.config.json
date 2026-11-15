@@ -1,0 +1,14 @@
+{
+  "appId": "br.com.treend.app",
+  "appName": "Treend",
+  "webDir": "www",
+  "server": {
+    "url": "https://novo.treend.com.br/login",
+    "allowNavigation": ["novo.treend.com.br", "*.treend.com.br"],
+    "errorPath": "index.html"
+  },
+  "ios": { "contentInset": "always" },
+  "plugins": {
+    "SplashScreen": { "launchShowDuration": 1500, "backgroundColor": "#0b0f17" }
+  }
+}
