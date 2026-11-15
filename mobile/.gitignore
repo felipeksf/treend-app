@@ -2,3 +2,8 @@ node_modules/
 android/app/build/
 android/.gradle/
 ios/App/Pods/
+ios_dist.p12
+play_service_account.json
+*.jks
+*.p8
+vendor/
