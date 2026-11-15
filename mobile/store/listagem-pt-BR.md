@@ -44,5 +44,6 @@ Conta de teste: [e-mail] / [senha]   ← criar uma conta com plano ativo
 Fluxo sugerido: login → Ranking de oportunidades → abrir um ativo → criar um alerta.
 
 ## URLs obrigatórias
-- Política de privacidade: https://novo.treend.com.br/[preencher]
-- Suporte: https://novo.treend.com.br/[preencher]
+- Política de privacidade: https://treend.com.br/politicas-de-privacidade/
+- Suporte: https://novo.treend.com.br/app/suporte/
+- Exclusão de conta (Google Play): https://novo.treend.com.br/app/suporte/#excluir-conta
