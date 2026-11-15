@@ -7,6 +7,7 @@
 <title>Treend Pro Câmbio · saiba a hora certa de fechar a sua moeda</title>
 <meta name="description" content="O Índice Treend de câmbio diz se a moeda está cara ou barata contra o próprio histórico, por perfil de operação. Dólar, euro, libra, yuan e mais, com calculadora de spread e alertas de janela. US$ 9/mês.">
 <link rel="icon" href="../lp/favicon.svg">
+<link rel="preload" as="image" href="vsl/poster.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -84,6 +85,23 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button{fon
 .hero .meta{display:flex;justify-content:center;gap:18px;margin-top:18px;font-size:13px;color:var(--mute);flex-wrap:wrap}
 .hero .meta span{display:inline-flex;align-items:center;gap:6px}
 .hero .meta svg{width:14px;height:14px;color:var(--up)}
+/* VSL no topo */
+.vsl{position:relative;max-width:min(920px,max(600px,calc((100svh - 500px)*1.7778)));margin:38px auto 0}
+.vsl-frame{position:relative;aspect-ratio:16/9;border-radius:20px;overflow:hidden;background:#0b1a33;box-shadow:0 0 0 1px rgba(11,26,51,.08),0 2px 4px rgba(11,26,51,.04),0 40px 80px -30px rgba(36,73,186,.45),0 80px 140px -60px rgba(11,26,51,.3)}
+.vsl video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#0b1a33}
+.vsl-play{position:absolute;inset:0;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:#fff;background:linear-gradient(180deg,rgba(11,26,51,.2) 0%,rgba(11,26,51,.4) 55%,rgba(11,26,51,.8) 100%);transition:opacity .4s var(--ease)}
+.vsl-ico{position:relative;display:grid;place-items:center;width:92px;height:92px;border-radius:50%;background:linear-gradient(180deg,#4b70f0,#2f56dc);box-shadow:0 1px 0 rgba(255,255,255,.35) inset,0 18px 40px -10px rgba(36,73,186,.9);transition:transform .5s var(--ease)}
+.vsl-ico:before{content:'';position:absolute;inset:-12px;border-radius:50%;border:2px solid rgba(255,255,255,.55);animation:vslPulse 2s ease-out infinite}
+.vsl-ico svg{width:34px;height:34px;margin-left:5px}
+.vsl-play:hover .vsl-ico{transform:scale(1.06)}
+.vsl-play:focus-visible{outline:3px solid var(--blue-l);outline-offset:-6px}
+.vsl-txt{display:grid;gap:4px;text-align:center;padding:0 16px}
+.vsl-txt b{font-size:20px;font-weight:600;letter-spacing:-.02em}
+.vsl-txt small{font-size:13px;color:rgba(255,255,255,.82)}
+.vsl.playing .vsl-play{opacity:0;pointer-events:none}
+.hero .vsl+.p{margin-top:30px}
+@keyframes vslPulse{0%{transform:scale(.9);opacity:.9}100%{transform:scale(1.35);opacity:0}}
+@media(max-width:640px){.vsl{margin-top:24px}.vsl-frame{border-radius:14px}.vsl-ico{width:64px;height:64px}.vsl-ico svg{width:24px;height:24px;margin-left:4px}.vsl-ico:before{inset:-8px}.vsl-play{gap:10px}.vsl-txt b{font-size:15px}.vsl-txt small{font-size:12px}.hero .vsl+.p{margin-top:24px}}
 
 /* product window */
 .window{position:relative;margin:70px auto 0;max-width:1080px;border-radius:18px;background:var(--paper);box-shadow:0 0 0 1px rgba(11,26,51,.08),0 2px 4px rgba(11,26,51,.04),0 40px 80px -30px rgba(36,73,186,.35),0 80px 140px -60px rgba(11,26,51,.25);overflow:hidden;transform-origin:50% 0;transition:transform 1.2s var(--ease)}
@@ -731,6 +749,17 @@ html.translated-ltr .hero h1>span{white-space:normal}
       <button type="button" data-tl="es" aria-label="Español" title="Español"><svg viewBox="0 0 28 20" preserveAspectRatio="xMidYMid slice"><rect width="28" height="20" fill="#aa151b"/><rect y="5" width="28" height="10" fill="#f1bf00"/></svg></button>
     </div>
     <h1 class="rv"><span>Você depende do câmbio.</span><span class="tw"><span class="tw-reserve" aria-hidden="true">A Treend te diz quando decidir.</span><span class="sr">A Treend te diz quando decidir.</span><span class="tw-run b notranslate" translate="no" aria-hidden="true"><span id="twText">A Treend te diz quando decidir.</span><i class="tw-caret"></i></span></span></h1>
+    <div class="vsl rv" id="vsl">
+      <div class="vsl-frame">
+        <video id="vslVideo" playsinline preload="none" poster="vsl/poster.jpg" controlslist="nodownload" aria-label="Vídeo de apresentação da Treend, 2 minutos e 54 segundos">
+          <source src="vsl/treend-filme-v4.mp4" type="video/mp4">
+        </video>
+        <button class="vsl-play" id="vslPlay" type="button" aria-label="Assistir ao vídeo de apresentação da Treend (2 min 54 s, com som)">
+          <span class="vsl-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z" fill="#fff"/></svg></span>
+          <span class="vsl-txt"><b>Assista ao vídeo</b><small>2:54 · ligue o som</small></span>
+        </button>
+      </div>
+    </div>
     <p class="p rv">O Índice Treend de câmbio diz se a moeda está cara ou barata contra o próprio histórico, calibrado para o seu lado da operação. Pare de fechar remessa, importação ou aporte no exterior no pior dia do mês.</p>
     <div class="ctas rv"><a class="btn btn-blue" href="#planos" data-checkout>Desbloquear por US$ 9/mês <svg><use href="#arr"/></svg></a><a class="btn btn-line" href="#ciclo">Ver como funciona</a></div>
     <div class="meta rv"><span><svg><use href="#chk"/></svg>Sem fidelidade, cancele quando quiser</span><span><svg><use href="#chk"/></svg>Acesso imediato via Stripe</span><span><svg><use href="#chk"/></svg>7 dias de garantia</span></div>
@@ -1558,6 +1587,13 @@ form.addEventListener('submit', async e => {
     var sr=document.querySelector('.hero h1 .tw .sr'); if(sr){sr.classList.add('notranslate');sr.textContent=TW;}
     (function seed(){ if(window.__twSet) window.__twSet(TW); else setTimeout(seed,100); })();
   }
+})();
+</script>
+<script>
+/* VSL: toca com som ao clicar; a capa volta quando o vídeo termina */
+(function(){var box=document.getElementById('vsl'),v=document.getElementById('vslVideo'),btn=document.getElementById('vslPlay');if(!box||!v||!btn)return;
+  btn.addEventListener('click',function(){box.classList.add('playing');v.controls=true;var p=v.play();if(p&&p.catch)p.catch(function(){box.classList.remove('playing');v.controls=false;});});
+  v.addEventListener('ended',function(){v.controls=false;box.classList.remove('playing');var b=btn.querySelector('b');if(b)b.textContent='Assistir de novo';});
 })();
 </script>
 </body>
