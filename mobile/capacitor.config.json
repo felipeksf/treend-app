@@ -9,6 +9,6 @@
   },
   "ios": { "contentInset": "always" },
   "plugins": {
-    "SplashScreen": { "launchShowDuration": 1500, "backgroundColor": "#0b0f17" }
+    "SplashScreen": { "launchShowDuration": 1500, "backgroundColor": "#eff4ff" }
   }
 }

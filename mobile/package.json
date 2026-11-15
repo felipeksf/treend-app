@@ -15,6 +15,7 @@
     "@capacitor/status-bar": "^7.0.6"
   },
   "devDependencies": {
+    "@capacitor/assets": "^4.0.0",
     "@capacitor/cli": "^7.6.10"
   }
 }
