@@ -1590,10 +1590,14 @@ form.addEventListener('submit', async e => {
 })();
 </script>
 <script>
-/* VSL: toca com som ao clicar; a capa volta quando o vídeo termina */
+/* VSL: toca com som ao clicar; a capa volta quando o vídeo termina.
+   O idioma vem do mesmo cookie do tradutor (trocar de idioma recarrega a página): EN e ES têm vídeo próprio. */
 (function(){var box=document.getElementById('vsl'),v=document.getElementById('vslVideo'),btn=document.getElementById('vslPlay');if(!box||!v||!btn)return;
+  var m=document.cookie.match(/googtrans=\/pt\/(en|es)/),lang=m?m[1]:'pt';
+  if(lang!=='pt'){var src=v.querySelector('source');if(src){src.setAttribute('src','vsl/treend-filme-v5-'+lang+'.mp4');v.load();}}
+  var again={pt:'Assistir de novo',en:'Watch again',es:'Ver de nuevo'}[lang];
   btn.addEventListener('click',function(){box.classList.add('playing');v.controls=true;var p=v.play();if(p&&p.catch)p.catch(function(){box.classList.remove('playing');v.controls=false;});});
-  v.addEventListener('ended',function(){v.controls=false;box.classList.remove('playing');var b=btn.querySelector('b');if(b)b.textContent='Assistir de novo';});
+  v.addEventListener('ended',function(){v.controls=false;box.classList.remove('playing');var b=btn.querySelector('b');if(b){b.classList.add('notranslate');b.textContent=again;}});
 })();
 </script>
 </body>

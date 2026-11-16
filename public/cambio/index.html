@@ -678,6 +678,42 @@ img[src*="/logos/"]{border-radius:50%!important;object-fit:cover;background:#fff
 <meta name="twitter:description" content="Dólar, euro, libra, yuan e mais: a Treend mostra se a moeda está cara ou barata contra o próprio histórico, com leitura por perfil de operação. US$ 199/mês.">
 <meta name="twitter:image" content="https://novo.treend.com.br/lp/assets/treend-blue.svg">
 <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "Organization", "name": "Treend", "url": "https://novo.treend.com.br"}, {"@context": "https://schema.org", "@type": "Product", "name": "Treend Pro · Câmbio", "description": "Índice de 0 a 100 por tempo gráfico que diz se a cotação de uma moeda está incomum para ela, com leitura calibrada por perfil de operação de câmbio.", "brand": {"@type": "Brand", "name": "Treend"}, "offers": {"@type": "Offer", "price": "199", "priceCurrency": "USD", "url": "https://novo.treend.com.br/cambio/", "availability": "https://schema.org/InStock"}}, {"@context": "https://schema.org", "@type": "WebPage", "name": "Treend Pro · Câmbio", "url": "https://novo.treend.com.br/cambio/", "dateModified": "2026-11-04", "inLanguage": "pt-BR"}]</script>
+<style>
+.tl-flags{display:flex;justify-content:center;gap:10px;margin:22px 0 4px}
+.tl-flags button{all:unset;cursor:pointer;width:28px;height:28px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 1px rgba(11,26,51,.18);opacity:.55;transition:opacity .2s,transform .2s}
+.tl-flags button svg{display:block;width:100%;height:100%}
+.tl-flags button:hover,.tl-flags button:focus-visible{opacity:1;transform:translateY(-1px)}
+.tl-flags button[aria-pressed="true"]{opacity:1;box-shadow:0 0 0 2px #1d4ed8}
+body{top:0!important}.goog-te-banner-frame,.skiptranslate>iframe,#goog-gt-tt,.goog-te-balloon-frame{display:none!important}
+font[style]{background:none!important;box-shadow:none!important}
+#google_translate_element{display:none}
+html.translated-ltr .hero h1>span{white-space:normal}
+.ch-foot:has(#cTf){grid-template-columns:1fr;gap:16px}
+#cTf{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+#cTf div{width:auto;padding:8px 4px}
+#cTf span{white-space:normal;line-height:1.4;min-height:28px;display:flex;align-items:center;justify-content:center}
+@media(max-width:640px){#cTf{grid-template-columns:repeat(2,minmax(0,1fr))}#cTf span{min-height:16px}#cTf div:first-child{grid-column:1/-1}}
+</style>
+<style>
+/* VSL no topo */
+.vsl{position:relative;max-width:min(920px,max(600px,calc((100svh - 500px)*1.7778)));margin:38px auto 0}
+.vsl-frame{position:relative;aspect-ratio:16/9;border-radius:20px;overflow:hidden;background:#0b1a33;box-shadow:0 0 0 1px rgba(11,26,51,.08),0 2px 4px rgba(11,26,51,.04),0 40px 80px -30px rgba(36,73,186,.45),0 80px 140px -60px rgba(11,26,51,.3)}
+.vsl video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#0b1a33}
+.vsl-play{position:absolute;inset:0;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:#fff;background:linear-gradient(180deg,rgba(11,26,51,.2) 0%,rgba(11,26,51,.4) 55%,rgba(11,26,51,.8) 100%);transition:opacity .4s var(--ease)}
+.vsl-ico{position:relative;display:grid;place-items:center;width:92px;height:92px;border-radius:50%;background:linear-gradient(180deg,#4b70f0,#2f56dc);box-shadow:0 1px 0 rgba(255,255,255,.35) inset,0 18px 40px -10px rgba(36,73,186,.9);transition:transform .5s var(--ease)}
+.vsl-ico:before{content:'';position:absolute;inset:-12px;border-radius:50%;border:2px solid rgba(255,255,255,.55);animation:vslPulse 2s ease-out infinite}
+.vsl-ico svg{width:34px;height:34px;margin-left:5px}
+.vsl-play:hover .vsl-ico{transform:scale(1.06)}
+.vsl-play:focus-visible{outline:3px solid var(--blue-l);outline-offset:-6px}
+.vsl-txt{display:grid;gap:4px;text-align:center;padding:0 16px}
+.vsl-txt b{font-size:20px;font-weight:600;letter-spacing:-.02em}
+.vsl-txt small{font-size:13px;color:rgba(255,255,255,.82)}
+.vsl.playing .vsl-play{opacity:0;pointer-events:none}
+.hero .vsl+.p{margin-top:30px}
+@keyframes vslPulse{0%{transform:scale(.9);opacity:.9}100%{transform:scale(1.35);opacity:0}}
+@media(max-width:640px){.vsl{margin-top:24px}.vsl-frame{border-radius:14px}.vsl-ico{width:64px;height:64px}.vsl-ico svg{width:24px;height:24px;margin-left:4px}.vsl-ico:before{inset:-8px}.vsl-play{gap:10px}.vsl-txt b{font-size:15px}.vsl-txt small{font-size:12px}.hero .vsl+.p{margin-top:24px}}
+</style>
+<link rel="preload" as="image" href="../cambio-especial/vsl/poster.jpg">
 </head>
 <body>
 
@@ -709,7 +745,23 @@ img[src*="/logos/"]{border-radius:50%!important;object-fit:cover;background:#fff
   <div class="wrap hero-top">
     
     <span class="pill rv">Dólar · Euro · Libra · Yuan e mais <b>Índice de câmbio</b></span>
-    <h1 class="rv"><span>Você depende do câmbio.</span><span class="tw"><span class="tw-reserve" aria-hidden="true">A Treend te diz quando decidir.</span><span class="sr">A Treend te diz quando decidir.</span><span class="tw-run b" aria-hidden="true"><span id="twText">A Treend te diz quando decidir.</span><i class="tw-caret"></i></span></span></h1>
+    <div class="tl-flags notranslate" translate="no" role="group" aria-label="Idioma / Language / Idioma">
+      <button type="button" data-tl="pt" aria-label="Português" title="Português"><svg viewBox="0 0 28 20" preserveAspectRatio="xMidYMid slice"><rect width="28" height="20" fill="#009c3b"/><path d="M14 2.5 25.5 10 14 17.5 2.5 10z" fill="#ffdf00"/><circle cx="14" cy="10" r="4.3" fill="#002776"/></svg></button>
+      <button type="button" data-tl="en" aria-label="English" title="English"><svg viewBox="0 0 28 20" preserveAspectRatio="xMidYMid slice"><rect width="28" height="20" fill="#fff"/><g fill="#b22234"><rect width="28" height="1.54"/><rect y="3.08" width="28" height="1.54"/><rect y="6.15" width="28" height="1.54"/><rect y="9.23" width="28" height="1.54"/><rect y="12.3" width="28" height="1.54"/><rect y="15.38" width="28" height="1.54"/><rect y="18.46" width="28" height="1.54"/></g><rect width="12" height="10.77" fill="#3c3b6e"/></svg></button>
+      <button type="button" data-tl="es" aria-label="Español" title="Español"><svg viewBox="0 0 28 20" preserveAspectRatio="xMidYMid slice"><rect width="28" height="20" fill="#aa151b"/><rect y="5" width="28" height="10" fill="#f1bf00"/></svg></button>
+    </div>
+    <h1 class="rv"><span>Você depende do câmbio.</span><span class="tw"><span class="tw-reserve" aria-hidden="true">A Treend te diz quando decidir.</span><span class="sr">A Treend te diz quando decidir.</span><span class="tw-run b notranslate" translate="no" aria-hidden="true"><span id="twText">A Treend te diz quando decidir.</span><i class="tw-caret"></i></span></span></h1>
+    <div class="vsl rv" id="vsl">
+      <div class="vsl-frame">
+        <video id="vslVideo" playsinline preload="none" poster="../cambio-especial/vsl/poster.jpg" controlslist="nodownload" aria-label="Vídeo de apresentação da Treend, 3 minutos e 21 segundos">
+          <source src="../cambio-especial/vsl/treend-filme-v5.mp4" type="video/mp4">
+        </video>
+        <button class="vsl-play" id="vslPlay" type="button" aria-label="Assistir ao vídeo de apresentação da Treend">
+          <span class="vsl-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z" fill="#fff"/></svg></span>
+          <span class="vsl-txt"><b>Assista ao vídeo</b></span>
+        </button>
+      </div>
+    </div>
     <p class="p rv">O Índice Treend de câmbio diz se a moeda está cara ou barata contra o próprio histórico, calibrado para o seu lado da operação. Pare de fechar remessa, importação ou aporte no exterior no pior dia do mês.</p>
     <div class="ctas rv"><a class="btn btn-blue" href="#planos" data-checkout>Desbloquear por US$ 199/mês <svg><use href="#arr"/></svg></a><a class="btn btn-line" href="#ciclo">Ver como funciona</a></div>
     <div class="meta rv"><span><svg><use href="#chk"/></svg>Sem fidelidade, cancele quando quiser</span><span><svg><use href="#chk"/></svg>Acesso imediato via Stripe</span><span><svg><use href="#chk"/></svg>7 dias de garantia</span></div>
@@ -995,7 +1047,8 @@ img[src*="/logos/"]{border-radius:50%!important;object-fit:cover;background:#fff
 <section class="sec" id="faq"><div class="wrap faq">
   <div><h2 class="h2 rv">Perguntas<br>frequentes</h2></div>
   <div>
-    <details open><summary>A Treend recomenda quando comprar ou vender moeda?<i></i></summary><p>Não. A Treend é uma plataforma de dados e inteligência quantitativa. Entregamos a leitura de quão cara ou barata a moeda está contra o próprio histórico, para que a decisão continue sendo sua.</p></details>
+    <details open><summary>Qual é a diferença da Treend para as outras empresas de remessa online?<i></i></summary><p>Nas outras plataformas, você consegue ver a cotação do dia e executar uma remessa. Com a Treend, você consegue obter uma projeção de timing e saber QUANDO tomar a decisão de fazer uma remessa. Com a Treend, você consegue se antecipar e se planejar melhor para garantir a melhor economia possível. Em muitos casos, a economia de timing gerada pela Treend é maior do que a própria taxa de spread praticada por essas empresas. Em resumo, é como se com a Treend você não pagasse spread.</p></details>
+    <details><summary>A Treend recomenda quando comprar ou vender moeda?<i></i></summary><p>Não. A Treend é uma plataforma de dados e inteligência quantitativa. Entregamos a leitura de quão cara ou barata a moeda está contra o próprio histórico, para que a decisão continue sendo sua.</p></details>
     <details><summary>A Treend substitui a minha mesa ou o meu banco?<i></i></summary><p>Não. Você continua fechando onde fecha hoje e negociando a sua taxa. A Treend entra antes disso, para dizer se a janela de hoje é boa para o seu lado da operação.</p></details>
     <details><summary>Como funciona o pagamento?<i></i></summary><p>Pagamento seguro via Stripe. A cobrança é mensal, de US$ 199, renovada automaticamente a cada 30 dias. Você pode cancelar a renovação quando quiser.</p></details>
     <details><summary>Tenho garantia?<i></i></summary><p>Sim, garantia incondicional de 7 dias. Se os indicadores não agregarem ao seu processo de investimento, devolvemos 100% do seu dinheiro.</p></details>
@@ -1198,7 +1251,7 @@ for (let i = 0; i < N; i++) {
   candles.push([g, v, x]);
 }
 const pinLow = $('#pinLow'), pinHigh = $('#pinHigh'), cTagEl = $('#cTag'), plot = $('.ch-plot');
-const tfEl = $('#cTf'), TF = ['1h', '4h', 'D', 'S', 'M'], TFoff = [-9, -4, 0, 5, 9];
+const tfEl = $('#cTf'), TF = ['Última hora', '1x ao dia', '1x na semana', '2x ao mês', '1x ao mês'], TFoff = [-9, -4, 0, 5, 9];
 tfEl.innerHTML = TF.map(t => `<div><span>${t}</span><b class="mono">—</b></div>`).join('');
 const tfB = [...tfEl.querySelectorAll('b')];
 function place(el, x, y) { el.style.left = (x / 600 * 100) + '%'; el.style.top = (y / 300 * 100) + '%'; }
@@ -1479,6 +1532,74 @@ form.addEventListener('submit', async e => {
     };
     fetch(URL_, { method: 'POST', keepalive: true, headers: { apikey: KEY, Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' }, body: JSON.stringify(row) }).catch(() => {});
   } catch { /* analytics must never break the page */ }
+})();
+</script>
+<div id="google_translate_element"></div>
+<script>
+(function(){
+  var KEY='treend_lang', LANGS=['pt','en','es'];
+  var ES=['ES','MX','AR','CO','CL','PE','VE','EC','GT','CU','BO','DO','HN','PY','SV','NI','CR','PA','UY','PR','GQ'];
+  function setCookie(v){
+    var h=location.hostname, parts=h.split('.'), doms=['',h,'.'+h];
+    if(parts.length>2) doms.push('.'+parts.slice(-3).join('.'),'.'+parts.slice(-2).join('.'));
+    doms.forEach(function(d){
+      var dom=d?';domain='+d:'';
+      document.cookie=v?'googtrans='+v+';path=/'+dom:'googtrans=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT'+dom;
+    });
+  }
+  function current(){var m=document.cookie.match(/googtrans=\/pt\/(en|es)/);return m?m[1]:'pt';}
+  function load(){
+    window.googleTranslateElementInit=function(){new google.translate.TranslateElement({pageLanguage:'pt',includedLanguages:'en,es',autoDisplay:false},'google_translate_element');};
+    var s=document.createElement('script');s.src='https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';document.body.appendChild(s);
+  }
+  function apply(l,reload){
+    setCookie(l==='pt'?'':'/pt/'+l);
+    document.documentElement.lang=l==='pt'?'pt-BR':l;
+    if(reload) location.reload();
+  }
+  function mark(){var c=current();document.querySelectorAll('.tl-flags [data-tl]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.tl===c?'true':'false');});}
+  document.querySelectorAll('.tl-flags [data-tl]').forEach(function(b){
+    b.addEventListener('click',function(){var l=b.dataset.tl;try{localStorage.setItem(KEY,l);}catch(e){}if(l!==current())apply(l,true);});
+  });
+  var saved=null;try{saved=localStorage.getItem(KEY);}catch(e){}
+  var q=(location.search.match(/[?&]lang=(pt|en|es)/)||[])[1];
+  if(q){saved=q;try{localStorage.setItem(KEY,q);}catch(e){}}
+  if(saved&&LANGS.indexOf(saved)>-1){ if(saved!==current()){apply(saved,true);return;} }
+  else {
+    // Sem escolha do usuário: detecta país pelo IP (fallback: idioma do navegador)
+    var nav=(navigator.language||'pt').slice(0,2).toLowerCase();
+    var byNav=nav==='pt'?'pt':nav==='es'?'es':'en';
+    var done=false;
+    function decide(l){if(done)return;done=true;try{localStorage.setItem(KEY+'_auto',l);}catch(e){}if(l!==current())apply(l,true);}
+    var auto=null;try{auto=localStorage.getItem(KEY+'_auto');}catch(e){}
+    if(auto){ if(auto!==current()){apply(auto,true);return;} }
+    else {
+      var t=setTimeout(function(){decide(byNav);},2500);
+      fetch('https://ipapi.co/country/').then(function(r){return r.ok?r.text():Promise.reject();}).then(function(cc){
+        clearTimeout(t);cc=(cc||'').trim().toUpperCase();
+        decide(cc==='BR'||cc==='PT'||cc==='AO'||cc==='MZ'?'pt':ES.indexOf(cc)>-1?'es':/^[A-Z]{2}$/.test(cc)?'en':byNav);
+      }).catch(function(){clearTimeout(t);decide(byNav);});
+    }
+  }
+  mark();
+  if(current()!=='pt'){
+    load();
+    var TW={en:'Treend tells you when to decide.',es:'Treend te dice cuándo decidir.'}[current()];
+    var r=document.querySelector('.hero h1 .tw-reserve'); if(r){r.classList.add('notranslate');r.textContent=TW;}
+    var sr=document.querySelector('.hero h1 .tw .sr'); if(sr){sr.classList.add('notranslate');sr.textContent=TW;}
+    (function seed(){ if(window.__twSet) window.__twSet(TW); else setTimeout(seed,100); })();
+  }
+})();
+</script>
+<script>
+/* VSL: toca com som ao clicar; a capa volta quando o vídeo termina.
+   O idioma vem do mesmo cookie do tradutor (trocar de idioma recarrega a página): EN e ES têm vídeo próprio. */
+(function(){var box=document.getElementById('vsl'),v=document.getElementById('vslVideo'),btn=document.getElementById('vslPlay');if(!box||!v||!btn)return;
+  var m=document.cookie.match(/googtrans=\/pt\/(en|es)/),lang=m?m[1]:'pt';
+  if(lang!=='pt'){var src=v.querySelector('source');if(src){src.setAttribute('src','../cambio-especial/vsl/treend-filme-v5-'+lang+'.mp4');v.load();}}
+  var again={pt:'Assistir de novo',en:'Watch again',es:'Ver de nuevo'}[lang];
+  btn.addEventListener('click',function(){box.classList.add('playing');v.controls=true;var p=v.play();if(p&&p.catch)p.catch(function(){box.classList.remove('playing');v.controls=false;});});
+  v.addEventListener('ended',function(){v.controls=false;box.classList.remove('playing');var b=btn.querySelector('b');if(b){b.classList.add('notranslate');b.textContent=again;}});
 })();
 </script>
 </body>
