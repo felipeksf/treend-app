@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://novo.treend.com.br/sitemap.xml

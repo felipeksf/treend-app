@@ -1,0 +1,110 @@
+# Treend
+
+> Treend tells you whether a currency or an asset is cheap or expensive compared with its own history, with a reading from 0 to 100 per timeframe. It covers the dollar, euro, pound and yuan, plus Brazilian stocks, US stocks, real estate funds and commodities.
+
+- Treend Pro: US$ 199 per month, billed monthly, with an unconditional 7-day guarantee.
+- More than 5,000 assets covered.
+- Treend informs and does not execute: conversions stay with your provider and asset purchases with your broker.
+- Treend does not forecast prices, does not say what to buy or sell and does not promise an outcome.
+- Available in Portuguese, English and Spanish.
+
+## Pages
+
+- [O que é a Treend e como ela avisa o momento da moeda](https://novo.treend.com.br/pt/treend-pro): A Treend diz quando uma moeda ou um ativo está barato ou caro em relação ao próprio histórico.
+- [What Treend is and how it reads currency timing](https://novo.treend.com.br/en/treend-pro): Treend tells you whether a currency or an asset is cheap or expensive compared with its own history.
+- [Qué es Treend y cómo avisa el momento de la moneda](https://novo.treend.com.br/es/treend-pro): Treend dice si una moneda o un activo está barato o caro comparado con su propio historial.
+- [Como saber se o dólar está caro ou barato hoje](https://novo.treend.com.br/pt/cambio/dolar-caro-ou-barato): O dólar só é caro ou barato comparado ao próprio histórico, nunca pela cotação isolada.
+- [How to know if the dollar is cheap or expensive](https://novo.treend.com.br/en/fx/is-the-dollar-cheap-or-expensive): The dollar is only cheap or expensive relative to its own history, never from the rate alone.
+- [Cómo saber si el dólar está caro o barato hoy](https://novo.treend.com.br/es/cambio/dolar-caro-o-barato): El dólar está caro o barato solo en relación con su propio historial, nunca por el tipo de cambio aislado.
+- [Melhor momento para converter dólares em real](https://novo.treend.com.br/pt/cambio/melhor-momento-converter-dolar-em-real): O melhor momento para converter dólares em real é quando a cotação está alta em relação ao histórico recente da moeda, porque você recebe mais reais pelo mesmo dólar.
+- [When is the best time to convert my dollars?](https://novo.treend.com.br/en/fx/best-time-to-convert-dollars): The best time to convert is when the rate is high relative to the currency's recent history, because you get more local currency for the same dollar.
+- [Mejor momento para convertir mis dólares](https://novo.treend.com.br/es/cambio/mejor-momento-para-convertir-dolares): El mejor momento para convertir es cuando el tipo de cambio está alto respecto al historial reciente de la moneda, porque recibís más moneda local por el mismo dólar.
+- [Quanto o spread do câmbio custa e como pagar menos](https://novo.treend.com.br/pt/cambio/spread-quanto-custa): O spread do câmbio custa entre 1% e 4% de cada operação e vem embutido na cotação, sem aparecer como tarifa.
+- [How much the FX spread costs and how to pay less](https://novo.treend.com.br/en/fx/spread-cost): The FX spread costs between 1% and 5% of every conversion and is built into the rate, never shown as a fee.
+- [Cuánto cuesta el spread del cambio y cómo pagar menos](https://novo.treend.com.br/es/cambio/coste-del-spread): El spread del cambio está dentro del tipo que te muestran y no aparece como cargo.
+- [Converter dólar tudo de uma vez ou aos poucos?](https://novo.treend.com.br/pt/cambio/converter-de-uma-vez-ou-aos-poucos): Converta de uma vez o que você precisa gastar em real nos próximos meses, e aos poucos o excedente.
+- [Convert dollars all at once or gradually?](https://novo.treend.com.br/en/fx/convert-all-at-once-or-gradually): Convert at once what you need to spend in local currency over the coming months, and gradually whatever is left over.
+- [¿Convertir dólares todo de una vez o poco a poco?](https://novo.treend.com.br/es/cambio/convertir-todo-de-una-vez-o-poco-a-poco): Convertí de una vez lo que necesitás gastar en moneda local los próximos meses, y poco a poco el excedente.
+- [Como saber se o euro está caro ou barato hoje](https://novo.treend.com.br/pt/cambio/euro-caro-ou-barato): O euro é caro ou barato em relação ao próprio histórico, nunca pela cotação isolada.
+- [How to know if the euro is cheap or expensive](https://novo.treend.com.br/en/fx/is-the-euro-cheap-or-expensive): The euro is cheap or expensive relative to its own history, never from the rate alone.
+- [Cómo saber si el euro está caro o barato hoy](https://novo.treend.com.br/es/cambio/euro-caro-o-barato): El euro está caro o barato en relación con su propio historial, nunca por el tipo de cambio aislado.
+- [Como a Treend decide que a moeda está barata ou cara](https://novo.treend.com.br/pt/treend-pro/como-funciona): A Treend compara o preço atual de cada ativo com o histórico dele mesmo e devolve um número de 0 a 100, em vários tempos gráficos.
+- [How Treend decides a currency is cheap or expensive](https://novo.treend.com.br/en/treend-pro/how-it-works): Treend compares each asset's current price with that asset's own history and returns a number from 0 to 100, across several timeframes.
+- [Cómo decide Treend que la moneda está barata o cara](https://novo.treend.com.br/es/treend-pro/como-funciona): Treend compara el precio actual de cada activo con el historial de ese mismo activo y devuelve un número de 0 a 100, en varias temporalidades.
+- [Treend ou acompanhar a cotação de graça?](https://novo.treend.com.br/pt/treend-pro/vs-acompanhar-a-cotacao): Acompanhar a cotação de graça responde quanto a moeda vale agora.
+- [Treend or just watching the rate for free?](https://novo.treend.com.br/en/treend-pro/vs-watching-the-rate): Watching the rate for free answers what the currency is worth right now.
+- [¿Treend o basta con mirar la cotización gratis?](https://novo.treend.com.br/es/treend-pro/vs-mirar-la-cotizacion): Mirar la cotización gratis responde cuánto vale la moneda ahora.
+- [Para quem a Treend serve e o que é preciso saber](https://novo.treend.com.br/pt/treend-pro/para-quem-e): A Treend serve para quem tem uma decisão de data para tomar com dinheiro: receber ou pagar em moeda estrangeira, fechar câmbio, viajar, ou comprar um ativo que já escolheu.
+- [Who Treend is for and what you need to know](https://novo.treend.com.br/en/treend-pro/who-its-for): Treend is for anyone with a date to choose involving money: being paid or paying in a foreign currency, converting a balance, travelling, or buying an asset already chosen.
+- [Para quién es Treend y qué hace falta saber](https://novo.treend.com.br/es/treend-pro/para-quien-es): Treend es para quien tiene una fecha que elegir con dinero: cobrar o pagar en moneda extranjera, convertir un saldo, viajar, o comprar un activo que ya eligió.
+- [Como começar a usar a Treend e quanto tempo leva](https://novo.treend.com.br/pt/treend-pro/como-comecar): São quatro passos: preencher o formulário na página de preço, pagar a assinatura no Stripe, receber por e-mail os dados de acesso com senha temporária e entrar em novo.treend.com.br/login.
+- [How to get started with Treend and how long it takes](https://novo.treend.com.br/en/treend-pro/get-started): There are four steps: fill in the form on the pricing page, pay the subscription through Stripe, receive your access details by email with a temporary password, and sign in at novo.treend.com.br/login.
+- [Cómo empezar con Treend y cuánto tiempo lleva](https://novo.treend.com.br/es/treend-pro/como-empezar): Son cuatro pasos: completar el formulario en la página de precio, pagar la suscripción en Stripe, recibir por correo los datos de acceso con una contraseña temporal e ingresar en novo.treend.com.br/login.
+- [O que a Treend não faz e o que pode dar errado](https://novo.treend.com.br/pt/treend-pro/limites): A Treend não prevê preço, não diz o que comprar ou vender, não promete resultado e não executa operações.
+- [What Treend does not do and what can go wrong](https://novo.treend.com.br/en/treend-pro/limits): Treend does not forecast prices, does not tell you what to buy or sell, does not promise an outcome and does not execute operations.
+- [Qué no hace Treend y qué puede salir mal](https://novo.treend.com.br/es/treend-pro/limites): Treend no pronostica precios, no dice qué comprar o vender, no promete resultados y no ejecuta operaciones.
+- [Perguntas frequentes sobre a Treend](https://novo.treend.com.br/pt/treend-pro/perguntas): O Treend Pro custa US$ 199 por mês, com garantia incondicional de 7 dias, e cobre câmbio (dólar, euro, libra, yuan), ações brasileiras, ações americanas, fundos imobiliários e commodities.
+- [Quick questions about Treend](https://novo.treend.com.br/en/treend-pro/faq): Treend Pro costs US$ 199 per month, with an unconditional 7-day guarantee, and covers currencies (dollar, euro, pound, yuan), Brazilian stocks, US stocks, real estate funds and commodities.
+- [Preguntas frecuentes sobre Treend](https://novo.treend.com.br/es/treend-pro/preguntas): Treend Pro cuesta US$ 199 al mes, con garantía incondicional de 7 días, y cubre divisas (dólar, euro, libra, yuan), acciones brasileñas, acciones estadounidenses, fondos inmobiliarios y materias primas.
+- [Quando fechar o câmbio de uma exportação](https://novo.treend.com.br/pt/cambio/quando-fechar-cambio-exportacao): O exportador tem até 180 dias antes ou depois do embarque para fechar o câmbio.
+- [When should an exporter convert the proceeds?](https://novo.treend.com.br/en/fx/when-to-close-export-fx): Between shipment and conversion there is usually a window of weeks or months.
+- [Cuándo cerrar el cambio de una exportación](https://novo.treend.com.br/es/cambio/cuando-cerrar-cambio-exportacion): Entre el embarque y el cobro suele haber una ventana de semanas o meses, según el país y la operación.
+- [Quando comprar dólar para pagar fornecedor](https://novo.treend.com.br/pt/cambio/quando-comprar-dolar-pagar-fornecedor): Comprar no dia do vencimento é decisão por omissão, não por escolha.
+- [When to buy currency to pay an overseas supplier](https://novo.treend.com.br/en/fx/when-to-buy-currency-supplier): Buying on the due date is a decision by default, not a choice.
+- [Cuándo comprar dólares para pagar al proveedor](https://novo.treend.com.br/es/cambio/cuando-comprar-dolares-proveedor): Comprar el día del vencimiento es una decisión por omisión, no una elección.
+- [Travar o câmbio agora ou esperar?](https://novo.treend.com.br/pt/cambio/travar-agora-ou-esperar): São duas perguntas diferentes, e misturá-las é o erro mais caro.
+- [Should we lock the FX rate now or wait?](https://novo.treend.com.br/en/fx/lock-now-or-wait): These are two questions, and merging them is the expensive mistake.
+- [¿Cerrar el cambio ahora o esperar?](https://novo.treend.com.br/es/cambio/cerrar-ahora-o-esperar): Son dos preguntas distintas y mezclarlas es el error más caro.
+- [Quanto custa fechar o câmbio no dia errado](https://novo.treend.com.br/pt/cambio/custo-de-fechar-no-dia-errado): Depende do seu volume e da faixa em que a moeda andou.
+- [What executing FX on the wrong day costs](https://novo.treend.com.br/en/fx/cost-of-the-wrong-day): It depends on volume and on how far the currency moved.
+- [Cuánto cuesta cerrar el cambio el día equivocado](https://novo.treend.com.br/es/cambio/coste-del-dia-equivocado): Depende de tu volumen y del rango en que se movió la moneda.
+- [Hedge cambial ou escolher o momento?](https://novo.treend.com.br/pt/cambio/hedge-ou-escolher-o-momento): Resolvem problemas diferentes e não competem.
+- [FX hedging or timing: which solves what](https://novo.treend.com.br/en/fx/hedging-or-timing): They solve different problems and do not compete.
+- [¿Cobertura cambiaria o elegir el momento?](https://novo.treend.com.br/es/cambio/cobertura-o-momento): Resuelven problemas distintos y no compiten.
+- [Como montar a política de câmbio da empresa](https://novo.treend.com.br/pt/cambio/politica-de-cambio-da-empresa): Uma política de câmbio responde quatro coisas por escrito: qual exposição existe, quem decide, até que limite, e com qual critério de execução.
+- [How to write a company FX policy](https://novo.treend.com.br/en/fx/company-fx-policy): An FX policy answers four things in writing: what the exposure is, who decides, within what limits, and on what execution trigger.
+- [Cómo armar la política cambiaria de la empresa](https://novo.treend.com.br/es/cambio/politica-cambiaria-empresa): Una política cambiaria responde cuatro cosas por escrito: qué exposición existe, quién decide, hasta qué límite y con qué criterio de ejecución.
+- [Os 180 dias do câmbio de exportação](https://novo.treend.com.br/pt/cambio/prazo-180-dias-exportacao): O exportador pode fechar o câmbio até 180 dias antes ou depois do embarque.
+- [The export FX window and how to use it](https://novo.treend.com.br/en/fx/export-fx-window): Between invoicing and conversion an exporter usually holds a window of weeks or months.
+- [El plazo para cerrar el cambio de exportación](https://novo.treend.com.br/es/cambio/plazo-cambio-exportacion): El exportador suele tener meses alrededor del embarque para cerrar el cambio.
+- [Antecipar pagamento ao fornecedor compensa?](https://novo.treend.com.br/pt/cambio/antecipar-pagamento-fornecedor): Depende de duas contas somadas.
+- [Is prepaying a supplier worth it?](https://novo.treend.com.br/en/fx/prepaying-a-supplier): It depends on two sums added together.
+- [¿Conviene anticipar el pago al proveedor?](https://novo.treend.com.br/es/cambio/anticipar-pago-proveedor): Depende de dos cuentas sumadas.
+- [Sua empresa converte moeda bem ou mal?](https://novo.treend.com.br/pt/cambio/como-medir-resultado-do-cambio): Compare cada operação que você fechou com a faixa de preços que estava disponível na sua janela de decisão.
+- [Does your company convert currency well?](https://novo.treend.com.br/en/fx/measure-conversion-quality): Compare each executed trade against the range of rates available inside your decision window.
+- [¿Tu empresa convierte moneda bien o mal?](https://novo.treend.com.br/es/cambio/medir-resultado-del-cambio): Compará cada operación que cerraste con el rango de precios disponible en tu ventana de decisión.
+- [Por que a empresa paga mais que a cotação](https://novo.treend.com.br/pt/cambio/taxa-efetiva-vs-cotacao-de-tela): Porque a cotação de tela é referência de mercado, não preço de venda.
+- [Why you pay more than the rate on screen](https://novo.treend.com.br/en/fx/effective-rate-vs-screen-rate): Because the screen rate is a market reference, not a sale price.
+- [Por qué pagás más que la cotización de pantalla](https://novo.treend.com.br/es/cambio/tasa-efectiva-vs-pantalla): Porque la cotización de pantalla es referencia de mercado, no precio de venta.
+- [PJ que fatura em dólar: quando converter](https://novo.treend.com.br/pt/cambio/pj-fatura-em-dolar-quando-converter): Separe o que você precisa gastar em real nos próximos meses do que é excedente.
+- [Invoicing abroad: when to convert the month](https://novo.treend.com.br/en/fx/invoicing-abroad-when-to-convert): Separate what you must spend in home currency over the coming months from what is surplus.
+- [Facturás en dólares: cuándo convertir el mes](https://novo.treend.com.br/es/cambio/facturar-en-dolares-cuando-convertir): Separá lo que necesitás gastar en moneda local los próximos meses de lo que es excedente.
+- [Dividir a conversão em partes funciona?](https://novo.treend.com.br/pt/cambio/conversao-em-partes): Funciona como proteção contra o próprio erro de timing, não como forma de ganhar mais.
+- [Does splitting conversions into tranches work?](https://novo.treend.com.br/en/fx/splitting-conversions): It works as protection against your own timing error, not as a way to gain more.
+- [¿Funciona dividir la conversión en partes?](https://novo.treend.com.br/es/cambio/conversion-en-partes): Funciona como protección contra el propio error de timing, no como forma de ganar más.
+- [Importador: no embarque ou no vencimento?](https://novo.treend.com.br/pt/cambio/importador-embarque-ou-vencimento): Nenhum dos dois por padrão.
+- [Importers: buy at shipment or at due date?](https://novo.treend.com.br/en/fx/importer-shipment-or-due-date): Neither by default.
+- [Importador: ¿al embarque o al vencimiento?](https://novo.treend.com.br/es/cambio/importador-embarque-o-vencimiento): Ninguno de los dos por defecto.
+- [Quanto a oscilação do dólar custa no ano](https://novo.treend.com.br/pt/cambio/quanto-a-volatilidade-custa): Multiplique o volume anual em moeda estrangeira pela diferença média entre os dias que você escolheu e a faixa disponível.
+- [What currency swings cost you over a year](https://novo.treend.com.br/en/fx/annual-cost-of-currency-swings): Multiply your annual foreign-currency volume by the average gap between the days you chose and the range available.
+- [Cuánto cuesta la variación de la moneda al año](https://novo.treend.com.br/es/cambio/coste-anual-de-la-variacion): Multiplicá el volumen anual en moneda extranjera por la diferencia media entre los días que elegiste y el rango disponible.
+- [Euro, libra e yuan: o mesmo problema](https://novo.treend.com.br/pt/cambio/euro-libra-yuan-volume): A decisão é idêntica à do dólar: comparar o preço de hoje com o histórico da própria moeda, dentro da janela que você tem.
+- [Euro, pound and yuan: the same problem](https://novo.treend.com.br/en/fx/euro-pound-yuan): The decision is identical to the dollar's: compare today's price against that currency's own history, inside the window you have.
+- [Euro, libra y yuan: el mismo problema](https://novo.treend.com.br/es/cambio/euro-libra-yuan): La decisión es idéntica a la del dólar: comparar el precio de hoy con el historial de la propia moneda, dentro de la ventana que tenés.
+- [Erros ao fechar câmbio de valor alto](https://novo.treend.com.br/pt/cambio/erros-ao-fechar-cambio-com-volume): Os quatro mais caros são: comprar no vencimento por inércia, decidir pela manchete do dia, olhar a cotação de tela em vez da taxa efetiva, e nunca medir o resultado das operações passadas.
+- [Mistakes when executing large FX trades](https://novo.treend.com.br/en/fx/mistakes-large-fx-trades): The four most expensive are: executing at the due date out of inertia, deciding on the day's headline, comparing on the screen rate instead of the effective rate, and never reviewing past trades.
+- [Errores al cerrar operaciones de cambio altas](https://novo.treend.com.br/es/cambio/errores-cambio-alto-valor): Los cuatro más caros son: comprar al vencimiento por inercia, decidir por el titular del día, mirar la cotización de pantalla en vez de la tasa efectiva, y no medir nunca el resultado de las operaciones pasadas.
+- [Quem decide o câmbio na sua empresa?](https://novo.treend.com.br/pt/cambio/quem-decide-o-cambio-na-empresa): Na maior parte das pequenas e médias empresas, quem decide é quem está disponível: o sócio, o analista financeiro, às vezes o despachante.
+- [Who decides FX timing in your company?](https://novo.treend.com.br/en/fx/who-decides-fx-timing): In most mid-sized companies it is whoever is available: the owner, a finance analyst, sometimes the freight forwarder.
+- [¿Quién decide el cambio en tu empresa?](https://novo.treend.com.br/es/cambio/quien-decide-el-cambio): En la mayoría de las pymes decide quien está disponible: el socio, el analista financiero, a veces el despachante.
+- [Como uma empresa usa a Treend no câmbio](https://novo.treend.com.br/pt/cambio/treend-para-empresas): Uma pessoa do financeiro cadastra as moedas que a empresa opera, define a faixa que considera favorável em cada uma e recebe o aviso quando ela é atingida.
+- [How a company uses Treend day to day](https://novo.treend.com.br/en/fx/treend-for-companies): One person in finance adds the currencies the company trades, defines the range considered favorable in each, and receives an alert when it is reached.
+- [Cómo una empresa usa Treend en el día a día](https://novo.treend.com.br/es/cambio/treend-para-empresas): Una persona del área financiera carga las monedas que la empresa opera, define el rango que considera favorable en cada una y recibe el aviso cuando se alcanza.
+- [Treend ou a mesa de câmbio do banco?](https://novo.treend.com.br/pt/cambio/treend-vs-mesa-de-cambio): A mesa do banco atende, cota e executa a operação, e é remunerada pelo spread dela.
+- [Treend or your bank's FX desk advice?](https://novo.treend.com.br/en/fx/treend-vs-bank-fx-desk): The desk quotes, executes and settles, and earns from the spread on that trade.
+- [¿Treend o la mesa de cambio del banco?](https://novo.treend.com.br/es/cambio/treend-vs-mesa-de-cambio): La mesa del banco atiende, cotiza y ejecuta la operación, y se remunera con su spread.
+- [Quanto movimentar para a Treend se pagar](https://novo.treend.com.br/pt/treend-pro/quando-a-assinatura-se-paga): A Treend Pro custa US$ 199 por mês.
+- [What FX volume makes Treend pay for itself](https://novo.treend.com.br/en/treend-pro/when-it-pays-for-itself): Treend Pro costs US$ 199 per month.
+- [Cuánto mover para que Treend se pague sola](https://novo.treend.com.br/es/treend-pro/cuando-se-paga-sola): Treend Pro cuesta US$ 199 al mes.
+
+- [Treend Pro pricing](https://novo.treend.com.br/offer/): Treend Pro costs US$ 199 per month with an unconditional 7-day guarantee.
